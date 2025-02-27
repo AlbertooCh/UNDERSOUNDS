@@ -4,101 +4,76 @@
     justify-content: space-between;
     align-items: center;
     padding: 10px 20px;
-    background-color: #333;
-    color: #fff;
+    font-family: 'Arial', sans-serif; /* Fuente similar a la imagen */
 }
 
-/* Logo */
+/* Logo más pequeño */
+.logo {
+    font-size: 20px; /* Reducir el tamaño de la fuente */
+    font-weight: bold;
+    color: #000; /* Color del texto del logo */
+}
+
 .logo a {
+    text-decoration: none;
+    color: inherit; /* Hereda el color del logo */
+}
+
+.logo img{
+    width: 100px;
+    height: auto;
+}
+/* Barra de navegación */
+.navbar {
     display: flex;
     align-items: center;
-    text-decoration: none;
-    color: #fff;
 }
 
-.logo img {
-    height: 40px;
-    margin-right: 10px;
-}
-
-/* Barra de navegación */
-.navbar .nav-links {
+.nav-links {
     list-style: none;
     display: flex;
     margin: 0;
     padding: 0;
 }
 
-.navbar .nav-links li {
+.nav-links li {
     margin: 0 15px;
 }
 
-.navbar .nav-links a {
+.nav-links a {
     text-decoration: none;
-    color: #fff;
-    font-weight: bold;
+    color: #000; /* Color del texto de los enlaces */
+    font-size: 16px;
+    font-weight: 500;
+    transition: color 0.3s ease;
 }
 
-.navbar .nav-links a:hover {
+.nav-links a:hover {
     color: #1db954; /* Color verde para el hover */
 }
 
-/* Acciones de usuario */
+/* Acciones de usuario (Login / Register) */
 .user-actions {
     display: flex;
     align-items: center;
 }
 
-.user-actions .btn-login,
-.user-actions .btn-signup {
-    margin-left: 10px;
-    padding: 5px 10px;
-    border-radius: 5px;
+.user-actions a {
     text-decoration: none;
-    color: #fff;
-}
-
-.user-actions .btn-login {
-    background-color: #1db954;
-}
-
-.user-actions .btn-signup {
-    background-color: #555;
-}
-
-/* Menú desplegable */
-.dropdown {
-    position: relative;
-}
-
-.dropbtn {
-    background-color: transparent;
-    border: none;
-    color: #fff;
-    cursor: pointer;
+    color: #000; /* Color del texto de los botones */
     font-size: 16px;
+    font-weight: 500;
+    margin-left: 15px;
+    transition: color 0.3s ease;
 }
 
-.dropdown-content {
-    display: none;
-    position: absolute;
-    background-color: #333;
-    min-width: 160px;
-    box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
-    z-index: 1;
+.user-actions a:hover {
+    color: #1db954; /* Color verde para el hover */
 }
 
-.dropdown-content a {
-    color: #fff;
-    padding: 12px 16px;
-    text-decoration: none;
-    display: block;
-}
-
-.dropdown-content a:hover {
-    background-color: #1db954;
-}
-
-.dropdown:hover .dropdown-content {
-    display: block;
+/* Separador entre Login y Register */
+.user-actions a:not(:last-child)::after {
+    content: "/";
+    margin-left: 15px;
+    color: #000; /* Color del separador */
 }

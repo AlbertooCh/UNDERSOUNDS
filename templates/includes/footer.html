@@ -1,10 +1,16 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+{% load static %}
+<footer class="footer">
+    <div class="footer-logo">
+        <a href="{% url 'inicio' %}">
+            <img src="{% static 'images/white_logo.png' %}" alt="Undersounds logo">
+        </a>
+    </div>
 
-</body>
-</html>
+    <div class="footer-links">
+        <ul class="footer-nav-links">
+            <li><a href="{% url 'inicio' %}">Inicio</a></li>
+            <li><a href="{% url 'catalogo' %}">Catálogo</a></li>
+            <li><a href="{% url 'contacto' %}">Contacto</a></li>
+        </ul>
+    </div>
+</footer>

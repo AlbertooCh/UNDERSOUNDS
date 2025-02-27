@@ -1,0 +1,40 @@
+/* Estilos para el footer */
+.footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    background-color: #000; /* Fondo negro */
+    color: #fff; /* Texto en blanco */
+    font-family: 'Arial', sans-serif; /* Misma fuente que el header */
+}
+
+/* Logo del footer */
+.footer-logo img {
+    width: 100px; /* Ajusta el tamaño del logo */
+    height: auto; /* Mantiene la proporción */
+}
+
+/* Enlaces del footer */
+.footer-links .footer-nav-links {
+    list-style: none;
+    display: flex;
+    margin: 0;
+    padding: 0;
+}
+
+.footer-links .footer-nav-links li {
+    margin: 0 15px;
+}
+
+.footer-links .footer-nav-links a {
+    text-decoration: none;
+    color: #fff; /* Texto en blanco */
+    font-size: 16px;
+    font-weight: 500;
+    transition: color 0.3s ease;
+}
+
+.footer-links .footer-nav-links a:hover {
+    color: #1db954; /* Color verde para el hover */
+}

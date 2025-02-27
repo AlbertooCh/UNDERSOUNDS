@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -8,13 +9,18 @@
 <header class="header">
     <div class="logo">
         <a href="{% url 'inicio' %}">
+            <img src="{% static 'images/black_logo.png' %}" alt="Undersounds logo">
         </a>
     </div>
 
     <nav class="navbar">
         <ul class="nav-links">
             <li><a href="{% url 'inicio' %}">Inicio</a></li>
-            <li><a href="{% url 'contacto' %}">Nosotros</a></li>
+            <li><a href="{% url 'catalogo' %}">Catálogo</a></li>
+            <li><a href="{% url 'contacto' %}">Contacto</a></li>
+            <li><a href="{% url 'perfil' %}">Perfil</a></li>
+            <li><a href="{% url 'login' %}">Iniciar sesión</a></li>
+            <li><a href="{% url 'register' %}">Registrarse</a> </li>
         </ul>
     </nav>
 </header>
