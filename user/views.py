@@ -1,10 +1,10 @@
 from django.shortcuts import render
 
 def login(request):
-    return render(request, 'inicio_sesion.html')
+    return render(request, 'login.html')
 
 def register(request):
-    return render(request, 'registro.html')
+    return render(request, 'register.html')
 
 def perfil(request):
     return render(request, 'perfil.html')
