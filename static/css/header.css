@@ -1,0 +1,104 @@
+/* Estilos para el header */
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+    background-color: #333;
+    color: #fff;
+}
+
+/* Logo */
+.logo a {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    color: #fff;
+}
+
+.logo img {
+    height: 40px;
+    margin-right: 10px;
+}
+
+/* Barra de navegación */
+.navbar .nav-links {
+    list-style: none;
+    display: flex;
+    margin: 0;
+    padding: 0;
+}
+
+.navbar .nav-links li {
+    margin: 0 15px;
+}
+
+.navbar .nav-links a {
+    text-decoration: none;
+    color: #fff;
+    font-weight: bold;
+}
+
+.navbar .nav-links a:hover {
+    color: #1db954; /* Color verde para el hover */
+}
+
+/* Acciones de usuario */
+.user-actions {
+    display: flex;
+    align-items: center;
+}
+
+.user-actions .btn-login,
+.user-actions .btn-signup {
+    margin-left: 10px;
+    padding: 5px 10px;
+    border-radius: 5px;
+    text-decoration: none;
+    color: #fff;
+}
+
+.user-actions .btn-login {
+    background-color: #1db954;
+}
+
+.user-actions .btn-signup {
+    background-color: #555;
+}
+
+/* Menú desplegable */
+.dropdown {
+    position: relative;
+}
+
+.dropbtn {
+    background-color: transparent;
+    border: none;
+    color: #fff;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: #333;
+    min-width: 160px;
+    box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
+    z-index: 1;
+}
+
+.dropdown-content a {
+    color: #fff;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+}
+
+.dropdown-content a:hover {
+    background-color: #1db954;
+}
+
+.dropdown:hover .dropdown-content {
+    display: block;
+}
