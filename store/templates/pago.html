@@ -1,10 +1,13 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+{% extends 'base.html' %}
+{% load static %}
 
-</body>
-</html>
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'css/pago.css' %}">
+{% endblock %}
+
+{% block title %}
+    Pago
+{% endblock %}
+
+{% block content %}
+{% endblock %}
