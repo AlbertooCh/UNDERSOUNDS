@@ -1,11 +1,7 @@
 {% load static %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/header.css' %}">
+{% endblock %}
 <header class="header">
     <div class="logo">
         <a href="{% url 'inicio' %}">
@@ -26,5 +22,3 @@
 </header>
 
 
-</body>
-</html>
