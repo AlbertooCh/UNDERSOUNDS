@@ -2,9 +2,96 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vista de Pago</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            width: 100%;
+            max-width: 600px;
+            margin: 50px auto;
+            background-color: #fff;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 24px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        .form-group input[type="text"],
+        .form-group input[type="number"] {
+            width: 100%;
+            padding: 8px;
+            box-sizing: border-box;
+        }
+        .form-group input[type="checkbox"] {
+            margin-right: 10px;
+        }
+        .form-group a {
+            color: #0073e6;
+            text-decoration: none;
+        }
+        .form-group a:hover {
+            text-decoration: underline;
+        }
+        .buttons {
+            display: flex;
+            justify-content: space-between;
+        }
+        .buttons button {
+            padding: 10px 20px;
+            border: none;
+            cursor: pointer;
+        }
+        .buttons .buy-now {
+            background-color: #28a745;
+            color: #fff;
+        }
+        .buttons .add-to-cart {
+            background-color: #007bff;
+            color: #fff;
+        }
+    </style>
 </head>
 <body>
-
+    <div class="container">
+        <div class="header">
+            <h1>Diva Virtual</h1>
+        </div>
+        <div class="form-group">
+            <label for="cantidad">Cantidad:</label>
+            <input type="number" id="cantidad" name="cantidad" value="1">
+        </div>
+        <div class="form-group">
+            <p>19.99 €</p>
+        </div>
+        <div class="form-group">
+            <p>Vendido por <a href="#">Don Omar</a>.</p>
+            <p>Incluye transmisiones ilimitadas a través de la aplicación gratuita de UnderSounds, además de una descarga en alta calidad en MP3, FLAC y WAV <a href="#">más</a>.</p>
+        </div>
+        <div class="form-group">
+            <p>¿Tienes una tarjeta de regalo? <a href="#">Canjéala aquí</a></p>
+        </div>
+        <div class="buttons">
+            <button class="buy-now">Comprar ahora</button>
+            <button class="add-to-cart">Agregar al carrito</button>
+        </div>
+    </div>
 </body>
 </html>
