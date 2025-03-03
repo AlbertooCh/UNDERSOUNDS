@@ -3,11 +3,11 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 40px 20px; /* Aumenta el padding vertical */
-    background-color: #000; /* Fondo negro */
-    color: #fff; /* Texto en blanco */
+    padding: 15px 20px; /* Reducido el padding vertical */
+    background-color: #fff; /* Cambiado a blanco */
+    color: #000; /* Cambiado a negro */
     font-family: 'Arial', sans-serif;
-    height: 100px; /* Aumenta la altura del header */
+    height: 60px; /* Reducida la altura */
 }
 
 .logo a {
@@ -15,7 +15,7 @@
     color: inherit;
 }
 .logo a img{
-    width: 250px; /* Aumenta el tamaño del logo */
+    width: 200px; /* Reducido el tamaño del logo */
     height: auto;
 }
 
@@ -28,19 +28,19 @@
 }
 
 .navbar .nav-links li {
-    margin: 0 25px; /* Aumenta el margen entre enlaces */
+    margin: 0 25px;
 }
 
 .navbar .nav-links a {
     text-decoration: none;
-    color: #fff;
-    font-size: 20px; /* Aumenta el tamaño de la fuente de los enlaces */
+    color: #000; /* Cambiado a negro */
+    font-size: 16px; /* Reducido el tamaño de la fuente */
     font-weight: 500;
     transition: color 0.3s ease;
 }
 
 .navbar .nav-links a:hover {
-    color: #1db954; /* Color verde para el hover */
+    color: #1db954;
 }
 
 /* Acciones de usuario (Login / Register) */
@@ -51,20 +51,20 @@
 
 .user-actions a {
     text-decoration: none;
-    color: #fff;
-    font-size: 20px; /* Aumenta el tamaño de la fuente */
+    color: #000; /* Cambiado a negro */
+    font-size: 16px; /* Reducido el tamaño de la fuente */
     font-weight: 500;
-    margin-left: 25px; /* Aumenta el margen entre enlaces */
+    margin-left: 25px;
     transition: color 0.3s ease;
 }
 
 .user-actions a:hover {
-    color: #1db954; /* Color verde para el hover */
+    color: #1db954;
 }
 
 /* Separador entre Login y Register */
 .user-actions a:not(:last-child)::after {
     content: "/";
-    margin-left: 25px; /* Aumenta el margen del separador */
-    color: #fff;
+    margin-left: 25px;
+    color: #000; /* Cambiado a negro */
 }

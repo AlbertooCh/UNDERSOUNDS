@@ -18,9 +18,13 @@ from django.contrib import admin
 from django.urls import path, include
 from music import urls
 from user import urls
+from store import urls
+from . import views
 urlpatterns = [
+    path('inicio/', views.inicio, name='inicio'),
+    path('contacto/', views.contacto, name='contacto'),
     path('admin/', admin.site.urls),
-
     path('', include('music.urls')),
     path('', include('user.urls')),
+    path('', include('store.urls')),
 ]
