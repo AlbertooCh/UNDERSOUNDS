@@ -10,7 +10,7 @@
     <form action="{% url 'register' %}" method="post" onsubmit="window.location.href='{% url 'inicio' %}'; return false;">
         {% csrf_token %}
         <div class="form-group">
-            <label for="username">Nombre de usuario</label>
+            <label for="username" >Nombre de usuario</label>
             <input type="text" class="form-control" name="username" id="username" required>
         </div>
         <div class="form-group">
