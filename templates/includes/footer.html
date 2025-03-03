@@ -1,4 +1,7 @@
 {% load static %}
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'css/footer.css' %}">
+{% endblock %}
 <footer class="footer">
     <div class="footer-logo">
         <a href="{% url 'inicio' %}">

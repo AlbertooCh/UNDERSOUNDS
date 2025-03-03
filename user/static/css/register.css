@@ -1,5 +1,5 @@
 /* Estilos generales para el contenedor del login */
-.login-container {
+.register-container {
     transition-duration: 500ms;
     position: relative;
     z-index: 1;
@@ -13,19 +13,19 @@
 }
 
 /* Título del formulario */
-.login-container h3 {
+.register-container h3 {
     margin-bottom: 20px;
     font-size: 24px;
     font-weight: bold;
 }
 
 /* Estilos para el formulario */
-.login-container .form-group {
+.register-container .form-group {
     text-align: left;
     margin-bottom: 15px;
 }
 
-.login-container .form-control {
+.register-container .form-control {
     width: 100%;
     max-width: 350px; /* Aumenta ligeramente el ancho de los inputs */
     height: 45px; /* Reduce la altura */
@@ -38,13 +38,13 @@
     display: block;
 }
 
-.login-container .form-control:focus {
+.register-container .form-control:focus {
     box-shadow: none;
     border-color: #000;
 }
 
 /* Estilos para las etiquetas */
-.login-container label {
+.register-container label {
     font-size: 14px;
     color: #000;
     font-weight: bold;
@@ -53,7 +53,7 @@
 }
 
 /* Estilos para el botón de inicio de sesión */
-.login-container button[type="submit"] {
+.register-container button[type="submit"] {
     background-color: #fff;
     color: #000;
     padding: 10px;
@@ -69,26 +69,26 @@
     display: block;
 }
 
-.login-container button[type="submit"]:hover {
+.register-container button[type="submit"]:hover {
     background-color: #f5f5f5;
 }
 
 /* Estilos para mensajes de error (opcional) */
-.login-container .error-message {
+.register-container .error-message {
     color: #ff4d4d;
     font-size: 14px;
     margin-top: 10px;
 }
 
 /* Estilo adicional para el icono de email */
-.login-container .form-text {
+.register-container .form-text {
     font-size: 12px;
     color: #666;
     display: flex;
     align-items: center;
 }
 
-.login-container .form-text::before {
+.register-container .form-text::before {
     content: "\f023";
     font-family: FontAwesome;
     margin-right: 5px;

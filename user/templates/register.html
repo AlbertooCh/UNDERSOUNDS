@@ -1,21 +1,33 @@
 {% extends 'base.html' %}
-
-{% block title %}
-    Registro
+{% load static %}
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'css/register.css' %}">
 {% endblock %}
 
 {% block content %}
-    <h1>Registro</h1>
-    <form action="{% url 'register' %}" method="post">
+    <div class="register-container">
+    <h3> Crear una cuenta</h3>
+    <form action="{% url 'register' %}" method="post" onsubmit="window.location.href='{% url 'inicio' %}'; return false;">
         {% csrf_token %}
-        <label for="username">Nombre de usuario</label>
-        <input type="text" name="username" id="username" required>
-        <label for="email">Correo electrónico</label>
-        <input type="email" name="email" id="email" required>
-        <label for="password">Contraseña</label>
-        <input type="password" name="password" id="password" required>
-        <label for="password2">Repetir contraseña</label>
-        <input type="password" name="password2" id="password2" required>
-        <button type="submit">Registrarse</button>
+        <div class="form-group">
+            <label for="username" >Nombre de usuario</label>
+            <input type="text" class="form-control" name="username" id="username" required>
+        </div>
+        <div class="form-group">
+            <label for="username">Correo electrónico</label>
+            <input type="email" class="form-control" name="email" id="username" required>
+        </div>
+        <div class="form-group">
+            <label for="password">Contraseña</label>
+            <input type="password" class="form-control" name="password" id="password" required>
+        </div>
+        <div class="form-group">
+            <label for="password">Repetir contraseña</label>
+            <input type="password" class="form-control" name="password" id="password" required>
+        </div>
+        <div class="form-group">
+            <button type="submit">Registrarse</button>
+        </div>
     </form>
+</div>
 {% endblock %}

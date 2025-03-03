@@ -3,54 +3,44 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 10px 20px;
+    padding: 15px 20px; /* Reducido el padding vertical */
+    background-color: #fff; /* Cambiado a blanco */
+    color: #000; /* Cambiado a negro */
     font-family: 'Arial', sans-serif;
-    text-align: center;
-}
-
-/* Logo más pequeño */
-.logo {
-    font-size: 20px; /* Reducir el tamaño de la fuente */
-    font-weight: bold;
-    color: #000; /* Color del texto del logo */
+    height: 60px; /* Reducida la altura */
 }
 
 .logo a {
     text-decoration: none;
-    color: inherit; /* Hereda el color del logo */
+    color: inherit;
 }
-
-.logo img{
-    width: 100px;
+.logo a img{
+    width: 200px; /* Reducido el tamaño del logo */
     height: auto;
 }
-/* Barra de navegación */
-.navbar {
-    display: flex;
-    align-items: center;
-}
 
-.nav-links {
+/* Barra de navegación */
+.navbar .nav-links {
     list-style: none;
     display: flex;
     margin: 0;
     padding: 0;
 }
 
-.nav-links li {
-    margin: 0 15px;
+.navbar .nav-links li {
+    margin: 0 25px;
 }
 
-.nav-links a {
+.navbar .nav-links a {
     text-decoration: none;
-    color: #000; /* Color del texto de los enlaces */
-    font-size: 16px;
+    color: #000; /* Cambiado a negro */
+    font-size: 16px; /* Reducido el tamaño de la fuente */
     font-weight: 500;
     transition: color 0.3s ease;
 }
 
-.nav-links a:hover {
-    color: #1db954; /* Color verde para el hover */
+.navbar .nav-links a:hover {
+    color: #1db954;
 }
 
 /* Acciones de usuario (Login / Register) */
@@ -61,20 +51,20 @@
 
 .user-actions a {
     text-decoration: none;
-    color: #000; /* Color del texto de los botones */
-    font-size: 16px;
+    color: #000; /* Cambiado a negro */
+    font-size: 16px; /* Reducido el tamaño de la fuente */
     font-weight: 500;
-    margin-left: 15px;
+    margin-left: 25px;
     transition: color 0.3s ease;
 }
 
 .user-actions a:hover {
-    color: #1db954; /* Color verde para el hover */
+    color: #1db954;
 }
 
 /* Separador entre Login y Register */
 .user-actions a:not(:last-child)::after {
     content: "/";
-    margin-left: 15px;
-    color: #000; /* Color del separador */
+    margin-left: 25px;
+    color: #000; /* Cambiado a negro */
 }
