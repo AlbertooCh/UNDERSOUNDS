@@ -5,6 +5,8 @@ from django.urls import path, include
 from . import views
 urlpatterns = [
     path('catalogo/', views.catalogo, name='catalogo'),
+    path('music_detail/', views.music_detail, name='music_detail'),
+    path('music_list/', views.music_list, name='music_list'),
 
 ]
 
