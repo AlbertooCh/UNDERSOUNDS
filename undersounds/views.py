@@ -1,7 +1,7 @@
 from django.shortcuts import render
 
 def inicio(request):
-    return render(request, 'inicio.html')
+    return render(request, 'core/inicio.html')    #must contain core/ , the path is core/inicio
 
 def contacto(request):
-    return render(request, 'contacto.html')
+    return render(request, 'core/contacto.html')  #must contain core/ , the path is core/contacto
