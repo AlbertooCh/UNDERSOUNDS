@@ -1,11 +1,64 @@
 {% extends 'base.html' %}
+{% load static %}
 {% block title %}Catálogo - Undersounds{% endblock %}
 {% block content %}
 
-<h2>Catálogo</h2>
-<p>Descubre la mejor música independiente</p>
-    <div>
-    <h2> Últimos lanzamientos</h2>
-    </div>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        .catalog {
+            display: flex;
+            flex-wrap: wrap;
+        }
+        .album {
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            margin: 10px;
+            padding: 10px;
+            width: 200px;
+            text-align: center;
+        }
+        .album img {
+            max-width: 100%;
+            border-radius: 8px;
+        }
+        .album h3 {
+            font-size: 1.2em;
+            margin: 10px 0;
+        }
+        .album p {
+            font-size: 0.9em;
+            color: #555;
+        }
+    </style>
+<body>
+    <h1>Catálogo de Música</h1>
+    <p>Descubre la mejor música independiente</p>
+    <div class="catalogo" id="catalog0"></div>
+
+    <script>
+        // Cargar el archivo JSON
+        fetch('{% static "Tracks.json" %}')
+            .then(response => response.json())
+            .then(data => {
+                const catalog = document.getElementById('catalogo');
+                data.forEach(song => {
+                    const songDiv = document.createElement('div');
+                    songDiv.className = 'song';
+                    songDiv.innerHTML = `
+                        <h3>${song.title}</h3>
+                        <p>${song.artist}</p>
+                        <audio controls>
+                            <source src="${song.audio}" type="audio/mpeg">
+                        </audio>
+                    `;
+                    catalog.appendChild(songDiv);
+                });
+            })
+            .catch(error => console.error('Error al cargar el archivo JSON:', error));
+    </script>
+</body>
 
 {% endblock %}
