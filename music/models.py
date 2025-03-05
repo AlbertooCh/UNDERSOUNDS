@@ -1,4 +1,5 @@
 from django.db import models
+from django.conf import settings
 
 # Create your models here.
 class Music(models.Model):
@@ -13,7 +14,7 @@ class Music(models.Model):
         return f"{self.title} by {self.artist_name}"
 
 class UserCollection(models.Model):
-    user = models.ForeignKey('users.User', on_delete=models.CASCADE)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     song = models.ForeignKey(Music, on_delete=models.CASCADE)
     price = models.DecimalField(max_digits=6, decimal_places=2)
 

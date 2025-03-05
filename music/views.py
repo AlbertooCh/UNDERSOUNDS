@@ -8,3 +8,5 @@ def music_list(request):
 def music_detail(request, song_id):
     song = get_object_or_404(Music, id=song_id)
     return render(request, "music/music_detail.html", {"song": song})
+def catalogo(request):
+    return render(request, "catalogo.html")
