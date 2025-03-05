@@ -1,7 +1,8 @@
 from django.shortcuts import render
 
-def carrito(request):
-    return render(request, 'carrito.html')
 # Create your views here.
+def carrito(request):
+    return render(request, "store/carrito.html")
+
 def pago(request):
-    return render(request, 'pago.html')
+    return render(request, "store/pago.html")
