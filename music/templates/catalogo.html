@@ -8,6 +8,16 @@
             font-family: Arial, sans-serif;
             margin: 20px;
         }
+        .cuadrado {
+            width: 150px;
+            height: 150px;
+            border: 1px solid #000;
+            display: inline-block;
+            margin: 10px;
+            padding: 10px;
+            box-sizing: border-box;
+            text-align: center;
+        }
         .catalog {
             display: flex;
             flex-wrap: wrap;
@@ -34,30 +44,24 @@
         }
     </style>
 <body>
-    <h1>Catálogo de Música</h1>
-    <p>Descubre la mejor música independiente</p>
-    <div class="catalogo" id="catalog0"></div>
+    <div id="contenedor"></div>
 
     <script>
-        // Cargar el archivo JSON
-        fetch('{% static "Tracks.json" %}')
+        fetch('/static/Tracks.json')
             .then(response => response.json())
             .then(data => {
-                const catalog = document.getElementById('catalogo');
-                data.forEach(song => {
-                    const songDiv = document.createElement('div');
-                    songDiv.className = 'song';
-                    songDiv.innerHTML = `
-                        <h3>${song.title}</h3>
-                        <p>${song.artist}</p>
-                        <audio controls>
-                            <source src="${song.audio}" type="audio/mpeg">
-                        </audio>
+                const contenedor = document.getElementById('contenedor');
+                data.forEach(item => {
+                    const div = document.createElement('div');
+                    div.className = 'cuadrado';
+                    div.innerHTML = `
+                        <p><strong>Título:</strong> ${item.title}</p>
+                        <p><strong>Álbum:</strong> ${item.album}</p>
                     `;
-                    catalog.appendChild(songDiv);
+                    contenedor.appendChild(div);
                 });
             })
-            .catch(error => console.error('Error al cargar el archivo JSON:', error));
+            .catch(error => console.error('Error al cargar el JSON:', error));
     </script>
 </body>
 
