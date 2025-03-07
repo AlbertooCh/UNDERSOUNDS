@@ -12,6 +12,7 @@
             padding: 0;
         }
         .container {
+            position: relative;
             width: 100%;
             max-width: 600px;
             margin: 50px auto;
@@ -60,29 +61,38 @@
             cursor: pointer;
         }
         .buttons .buy-now {
-            background-color: #28a745;
+            background-color: #34ebe8;
             color: #fff;
         }
         .buttons .add-to-cart {
-            background-color: #007bff;
+            background-color: #4c34eb;
             color: #fff;
+        }
+        .image-container {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            width: 100px;
+            height: auto;
+        }
+
+        .image-container img {
+            width: 100%;
+            height: auto;
+            display: block;
         }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="header">
-            <h1>Diva Virtual</h1>
-        </div>
-        <div class="form-group">
-            <label for="cantidad">Cantidad:</label>
-            <input type="number" id="cantidad" name="cantidad" value="1">
+            <h1>Diva Virtual</h1> <!-- nombre de la canción o álbum-->
         </div>
         <div class="form-group">
             <p>19.99 €</p>
         </div>
         <div class="form-group">
-            <p>Vendido por <a href="#">Don Omar</a>.</p>
+            <p>Vendido por <a href="#">Don Omar</a>.</p> <!-- artista del álbum o canción -->
             <p>Incluye transmisiones ilimitadas a través de la aplicación gratuita de UnderSounds, además de una descarga en alta calidad en MP3, FLAC y WAV <a href="#">más</a>.</p>
         </div>
         <div class="form-group">
@@ -90,7 +100,10 @@
         </div>
         <div class="buttons">
             <button class="buy-now">Comprar ahora</button>
-            <button  class="add-to-cart">Agregar al carrito</button>
+            <button class="add-to-cart">Agregar al carrito</button> <!-- agregar al carrito y seguir comprando -->
+        </div>
+            <div class="image-container">
+            <img src="" alt="Imagen del álbum o canción"> <!-- Imagen de la canción o albúm en proceso de compra-->
         </div>
     </div>
 </body>
