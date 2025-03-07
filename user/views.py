@@ -15,7 +15,7 @@ def register(request):
         password = request.POST["password"]
         user = User.objects.create_user(username=username, email=email, password=password)
         return redirect("login")
-    return render(request, "users/register.html")
+    return render(request, "register.html")
 
 
 def perfil(request):
