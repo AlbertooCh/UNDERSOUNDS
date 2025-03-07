@@ -2,13 +2,13 @@
 {% load static %}
 {% block title %}Catálogo - Undersounds{% endblock %}
 {% block content %}
-
     <style>
         body {
             font-family: Arial, sans-serif;
             margin: 20px;
         }
         .cuadrado {
+            padding-top: 100%;
             width: 150px;
             height: 150px;
             border: 1px solid #000;
@@ -21,44 +21,54 @@
         .catalog {
             display: flex;
             flex-wrap: wrap;
+            justify-content: space-between;
+            padding: 0 50px;
+            max-width: 800px; /* Ancho máximo del contenedor */
+            margin: 0 auto;
         }
         .album {
-            border: 1px solid #ddd;
-            border-radius: 8px;
+            width: calc(25% - 20px);
             margin: 10px;
-            padding: 10px;
-            width: 200px;
             text-align: center;
+            display: inline-block;
         }
-        .album img {
-            max-width: 100%;
-            border-radius: 8px;
+        .album-title {
+            margin-top: 5px;
+            font-size: 1em;
+            color: #333;
         }
-        .album h3 {
-            font-size: 1.2em;
-            margin: 10px 0;
-        }
-        .album p {
-            font-size: 0.9em;
-            color: #555;
+        .titulo {
+            font-size: 1em;
+            color: #333;
+            text-align: center;
+            display: flex;
         }
     </style>
 <body>
-    <div id="contenedor"></div>
+ <div id="cont" class="titulo"></div>
+    <h2 class="title">Catálogo</h2>
 
+    <div id="contenedor" class="catalog"></div>
     <script>
         fetch('/static/Tracks.json')
             .then(response => response.json())
             .then(data => {
                 const contenedor = document.getElementById('contenedor');
                 data.forEach(item => {
-                    const div = document.createElement('div');
-                    div.className = 'cuadrado';
-                    div.innerHTML = `
-                        <p><strong>Título:</strong> ${item.title}</p>
-                        <p><strong>Álbum:</strong> ${item.album}</p>
-                    `;
-                    contenedor.appendChild(div);
+                   const albumDiv = document.createElement('div');
+                    albumDiv.className = 'album';
+
+                    const cuadradoDiv = document.createElement('div');
+                    cuadradoDiv.className = 'cuadrado';
+
+                    const titleP = document.createElement('p');
+                    titleP.className = 'album-title';
+                    titleP.textContent = item.title;
+
+                    albumDiv.appendChild(cuadradoDiv);
+                    albumDiv.appendChild(titleP);
+
+                    contenedor.appendChild(albumDiv);
                 });
             })
             .catch(error => console.error('Error al cargar el JSON:', error));
