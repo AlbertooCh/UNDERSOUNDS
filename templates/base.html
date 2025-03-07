@@ -7,19 +7,19 @@
     {% block extra_css %} {% endblock %}
 </head>
 <body>
+    <div class="wrapper">
+        {# Incluimos el header en el archivo base.html #}
+        {% include 'includes/header.html' %}
 
-    {# Incluimos el header en el archivo base.html #}
-    {% include 'includes/header.html' %}
+        <!-- Contenido principal -->
+        <main class="main-content">
+            {% block content %}
+               <!-- El contenido específico de cada página se insertará aquí -->
+            {% endblock %}
+        </main>
 
-    <!-- Contenido principal -->
-    <main>
-        {% block content %}
-           <!-- El contenido específico de cada página se insertará aquí -->
-        {% endblock %}
-    </main>
-
-    <!-- Footer -->
-
-    {% include 'includes/footer.html' %}
+        <!-- Footer -->
+        {% include 'includes/footer.html' %}
+    </div>
 </body>
 </html>

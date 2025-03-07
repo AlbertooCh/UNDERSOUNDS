@@ -93,3 +93,8 @@
     font-family: FontAwesome;
     margin-right: 5px;
 }
+
+/* Ensure enough space at the bottom so the footer does not overlap */
+.login-container {
+    margin-bottom: 120px; /* Adjust based on footer height */
+}
