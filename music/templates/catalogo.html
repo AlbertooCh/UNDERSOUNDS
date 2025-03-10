@@ -47,6 +47,12 @@
 <body>
  <div id="cont" class="titulo"></div>
     <h2 class="title">Catálogo</h2>
+    <button onclick="toggleMenu()">Buscar</button>
+ <div class="cuadroBusqueda" id="cuadroBusqueda">
+        <p>Selecciona el formato de busqueda:</p>
+        <button>Por fecha</button>
+        <button>Por nombre</button>
+    </div>
 
     <div id="contenedor" class="catalog"></div>
     <script>
@@ -67,11 +73,20 @@
 
                     albumDiv.appendChild(cuadradoDiv);
                     albumDiv.appendChild(titleP);
+                    albumDiv.addEventListener('click', () => {
+                    window.location.href = '../music_detail/';
+                });
 
                     contenedor.appendChild(albumDiv);
                 });
             })
             .catch(error => console.error('Error al cargar el JSON:', error));
+    </script>
+<script>
+        function toggleMenu() {
+            const menu = document.getElementById('cuadroBusqueda');
+            menu.style.display = menu.style.display === 'none' ? 'block' : 'none';
+        }
     </script>
 </body>
 
