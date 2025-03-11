@@ -2,54 +2,100 @@
 {% load static %}
 {% block title %}Catálogo - Undersounds{% endblock %}
 {% block content %}
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
-        }
-        .cuadrado {
-            padding-top: 100%;
-            width: 150px;
-            height: 150px;
-            border: 1px solid #000;
-            display: inline-block;
-            margin: 10px;
+   <style>
+    body {
+        font-family: Arial, sans-serif;
+        margin: 20px;
+    }
+    .cuadrado {
+        flex: 1;
+        padding-top: 100%;
+        width: 17vw; /* Ajusta el ancho al 20% del ancho de la ventana */
+        height: 17vw;
+        border: 1px solid #000;
+        display: inline-block;
+        margin: 10px;
+        padding: 10px;
+        box-sizing: border-box;
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+        transition: background-color 1s ease;
+    }
+    .cuadrado:hover {
+        background-color: rgba(0, 0, 0, 0.5);
+    }
+    .cuadrado:hover .album-title {
+        display: block;
+    }
+    .album-title {
+        margin-top: 5px;
+        font-size: 1em;
+        color: #fff;
+        display: none;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+    }
+    .catalog {
+        flex: 2;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        padding: 0 50px;
+        max-width: 1200px; /* Ancho máximo del contenedor */
+        margin: 0 auto;
+    }
+    .album {
+        flex: 1 1 calc(25% - 20px);
+        width: calc(25% - 20px);
+        margin: 10px;
+        text-align: center;
+        display: inline-block;
+    }
+    .titulo {
+        font-size: 1em;
+        color: #333;
+        text-align: center;
+        display: flex;
+    }
+    .cuadroBusqueda {
+        flex: 2;
+            display: none;
+            margin-top: 20px;
             padding: 10px;
-            box-sizing: border-box;
-            text-align: center;
+            width: 200px;
+            background-color: #f9f9f9;
+             transform: scale(0); /* Comienza pequeño */
+            transition: opacity 0.5s ease, transform 0.5s ease;
         }
-        .catalog {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: space-between;
-            padding: 0 50px;
-            max-width: 800px; /* Ancho máximo del contenedor */
-            margin: 0 auto;
+        /* Estilos para el botón con transición */
+        #buscarBtn {
+            padding: 10px 20px;
+            background-color: #007BFF;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.3s ease;
         }
-        .album {
-            width: calc(25% - 20px);
-            margin: 10px;
-            text-align: center;
-            display: inline-block;
+        #buscarBtn:hover {
+            background-color: #0056b3;
+            transform: scale(1.05);
         }
-        .album-title {
-            margin-top: 5px;
-            font-size: 1em;
-            color: #333;
+        #buscarBtn:hover + .cuadroBusqueda {
+            display: block;
+            opacity: 1;
+            transform: scale(1); /* Agranda el menú */
         }
-        .titulo {
-            font-size: 1em;
-            color: #333;
-            text-align: center;
-            display: flex;
-        }
-    </style>
+
+</style>
 <body>
- <div id="cont" class="titulo"></div>
+    <div id="cont" class="titulo"></div>
     <h2 class="title">Catálogo</h2>
-    <button onclick="toggleMenu()">Buscar</button>
- <div class="cuadroBusqueda" id="cuadroBusqueda">
-        <p>Selecciona el formato de busqueda:</p>
+    <button id="buscarBtn">Buscar</button>
+    <div class="cuadroBusqueda" id="cuadroBusqueda">
+        <p>Selecciona el formato de búsqueda:</p>
         <button>Por fecha</button>
         <button>Por nombre</button>
     </div>
@@ -61,7 +107,7 @@
             .then(data => {
                 const contenedor = document.getElementById('contenedor');
                 data.forEach(item => {
-                   const albumDiv = document.createElement('div');
+                    const albumDiv = document.createElement('div');
                     albumDiv.className = 'album';
 
                     const cuadradoDiv = document.createElement('div');
@@ -71,22 +117,46 @@
                     titleP.className = 'album-title';
                     titleP.textContent = item.title;
 
+                    cuadradoDiv.appendChild(titleP);
                     albumDiv.appendChild(cuadradoDiv);
-                    albumDiv.appendChild(titleP);
                     albumDiv.addEventListener('click', () => {
-                    window.location.href = '../music_detail/';
-                });
+                        window.location.href = '../music_detail/';
+                    });
 
                     contenedor.appendChild(albumDiv);
                 });
             })
             .catch(error => console.error('Error al cargar el JSON:', error));
     </script>
-<script>
+    <script>
         function toggleMenu() {
             const menu = document.getElementById('cuadroBusqueda');
             menu.style.display = menu.style.display === 'none' ? 'block' : 'none';
         }
+
+        // Asegúrate de que el menú se muestre correctamente la primera vez
+        document.addEventListener('DOMContentLoaded', () => {
+            const menu = document.getElementById('cuadroBusqueda');
+            menu.style.display = 'none';
+        });
+        const buscarBtn = document.getElementById('buscarBtn');
+        const menu = document.getElementById('cuadroBusqueda');
+
+        buscarBtn.addEventListener('mouseover', () => {
+            menu.style.display = 'block';
+        });
+
+        buscarBtn.addEventListener('mouseout', () => {
+            menu.style.display = 'none';
+        });
+
+        menu.addEventListener('mouseover', () => {
+            menu.style.display = 'block';
+        });
+
+        menu.addEventListener('mouseout', () => {
+            menu.style.display = 'none';
+        });
     </script>
 </body>
 

@@ -13,7 +13,14 @@
             justify-content: center;
             margin: 20px;
         }
-        .song-info, .song-center, .singer-info {
+        .singer-info {
+            flex: 2;
+            margin: 10px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            text-align: center;
+        }
+        .song-center {
             flex: 1;
             margin: 10px;
             padding: 10px;
@@ -26,6 +33,9 @@
         .song-info img {
             width: 100%;
             height: auto;
+        }
+        .song-center img {
+            padding-top: 20px;
         }
         .song-info audio {
             width: 100px;
@@ -45,26 +55,21 @@
 </head>
 <body>
     <div class="container">
-        <div class="song-info">
-            <img src="ruta_de_la_imagen.jpg" alt="Imagen de la canción">
-            <p>Track 1 - The Echoes</p>
-            <p><span>Título:</span> Track 1 - The Echoes</p>
-            <p><span>Álbum:</span> The Echoes Greatest Hits</p>
+        <div class="singer-info">
+            <h2>Información del Cantante</h2>
+            <img src="/static/Photos/earthblade.jpg" alt="Foto del cantante">
+            <p><span>Nombre:</span> John Doe</p>
+            <p><span>Biografía:</span> John Doe es un cantante y compositor conocido por su estilo único y su capacidad para conectar con el público a través de sus letras emotivas.</p>
         </div>
         <div class="song-center">
-            <p><span>Duración:</span> 3:17</p>
-            <p><span>Descripción:</span> Una canción que captura la esencia de los recuerdos y las emociones.</p>
+            <img src="/static/Photos/earthblade.jpg" alt="Foto del cantante">
             <audio controls>
                 <source src="The_Echoes_Track1.flac" type="audio/flac">
                 Tu navegador no soporta el elemento de audio.
             </audio>
+            <p><span>Duración:</span> 3:17</p>
+            <p><span>Descripción:</span> Una canción que captura la esencia de los recuerdos y las emociones.</p>
             <button onclick="toggleMenu()">Descargar</button>
-        </div>
-        <div class="singer-info">
-            <h2>Información del Cantante</h2>
-            <img src="ruta_de_la_imagen_cantante.jpg" alt="Foto del cantante">
-            <p><span>Nombre:</span> John Doe</p>
-            <p><span>Biografía:</span> John Doe es un cantante y compositor conocido por su estilo único y su capacidad para conectar con el público a través de sus letras emotivas.</p>
         </div>
     </div>
     <div class="download-menu" id="downloadMenu">
