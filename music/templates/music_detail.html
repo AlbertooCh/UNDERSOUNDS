@@ -2,106 +2,69 @@
 {% load static %}
 {% block title %}Catálogo - Undersounds{% endblock %}
 {% block content %}
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Track 1 - The Echoes</title>
-    <style>
-        .container {
-            justify-content: center;
-            flex: 5;
+<style>
+.cancion {
+        flex: 2;
         display: flex;
         flex-wrap: wrap;
+        justify-content: space-between;
         padding: 0 50px;
         max-width: 1200px;
         margin: 0 auto;
-        }
-        .singer-info {
-            flex: 2;
-            margin: 10px;
-            padding: 10px;
-            border: 1px solid #ccc;
-            text-align: center;
-        }
-        .song-center {
-            flex: 1;
-            margin: 10px;
-            padding: 10px;
-            border: 1px solid #ccc;
-            text-align: center;
-        }
-        .song-info img {
-            width: 80%;
-            height: auto;
-        }
-        .song-center img {
-            padding-top: 20px;
-        }
-        .song-info audio {
-            width: 100px;
-            text-align: center;
-            margin-top: 10px;
-        }
-        .download-menu {
-            display: none;
-            text-align: center;
-            margin-top: 10px;
-        }
-        .InfoCancion {
-
-        }
-        .InfoCancion img {
-
-        }
-    </style>
-</head>
+}
+.cancion-Repr{
+    background-color: rgba(255, 255, 255, 0.9);
+    display: inline-block;
+        margin: 10px;
+        padding: 10px;
+        box-sizing: border-box;
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+        transition: background-color 0.8s ease;
+}
+.cancion-Titulo {
+    display: inline-block;
+        margin: 10px;
+        padding: 10px;
+        box-sizing: border-box;
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+        transition: background-color 0.8s ease;
+}
+.cancion-Info {
+    display: inline-block;
+        margin: 10px;
+        padding: 10px;
+        box-sizing: border-box;
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+        transition: background-color 0.8s ease;
+}
+</style>
 <body>
-    <div class="container">
-        <div class="singer-info">
-            <div class="InfoCancion">
-                <p>{{ song.name }}</p>
-                <p>"jfaksdljasklfjaskljfasklñjfasklñjfdl"</p>
-            </div>
-            <div  id="InfoCantante" class="InfoCantante">
-                <div  id="FotoCantante" class="FotoCantante">
-                    <img src="/static/Photos/earthblade.jpg" alt="/static/Photos/earthblade.jpg">
-                </div>
-                <p><span>Nombre:</span> John Doe</p>
-                <p><span>Biografía:</span> John Doe es un cantante y compositor conocido por su estilo único y su capacidad para conectar con el público a través de sus letras emotivas.</p>
-            </div>
-        </div>
-        <div class="song-center">
-            <img src="/static/Photos/earthblade.jpg" alt="/static/Photos/earthblade.jpg">
-            <audio controls>
-            </audio>
-            <p><span>Duración:</span> 3:17</p>
-            <p><span>Descripción:</span> Una canción que captura la esencia de los recuerdos y las emociones.</p>
-            <p>Comprar/Descargar por 9.99</p>
-            <button onclick="toggleMenu()">Descargar</button>
-            <div class="download-menu" id="downloadMenu">
-            <p>Selecciona el formato de descarga:</p>
-                <button>MP3</button>
-                <button>WAV</button>
-                <button>FLAC</button>
-            </div>
-        </div>
+<div class="cancion">
+    <div class="cancion-Repr">
+        <audio autoplay controls></audio>
     </div>
-
-    <script>
-        function toggleMenu() {
-            const menu = document.getElementById('downloadMenu');
-            menu.style.display = menu.style.display === 'none' ? 'block' : 'none';
-        }
-        document.addEventListener('DOMContentLoaded', () => {
-            const menu = document.getElementById('downloadMenu');
-            menu.style.display = 'none';
-        });
-        const CantanteDiv = document.getElementById('FotoCantante');
-        CantanteDiv.addEventListener('click', () => {
-            window.location.href = '../catalogo/';
-        });
-    </script>
+    <div class="cancion-Titulo">
+        <img src="../static/Photos/pe.jpg">
+    </div>
+</div>
+<div class="Cancion-Info">
+    <input type="text" id="Coment" placeholder="Deja tu comentario...">
+    <div class="Cancion-Perfil">
+        <img src="../static/Photos/pe.jpg">
+    </div>
+    <div class="Cancion-comentarios">
+        <p>comentarios</p>
+    </div>
+    <div class="Cancion-album">
+        <img src="../static/Photos/pe.jpg">
+    </div>
+</div>
 </body>
 
 {% endblock %}

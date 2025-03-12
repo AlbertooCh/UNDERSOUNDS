@@ -55,8 +55,6 @@
             padding: 10px;
             width: 200px;
             background-color: #f9f9f9;
-             transform: scale(0); /* Comienza pequeño */
-        transition-timing-function: ease-out;
         }
     .cuadrado img {
         width: 100%;
@@ -73,93 +71,96 @@
 
             resize: horizontal;
         }
-        #buscarBtn:hover {
-            background-color: #0056b3;
-            transform: scale(1.05);
+        .search-bar {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
         }
-        #buscarBtn:hover + .cuadroBusqueda {
-            display: block;
-            opacity: 1;
-            transform: scaleY(1);
-            resize: horizontal;
+        .search-bar input, .search-bar button {
+            padding: 10px;
+            font-size: 1em;
+        }
+        .search-bar button {
+            background-color: #007BFF;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+        }
+        .search-bar button:hover {
+            background-color: #0056b3;
         }
 
 </style>
 <body>
     <div id="cont" class="titulo"></div>
     <h2 class="title">Catálogo</h2>
-    <button id="buscarBtn">Buscar</button>
-    <div class="cuadroBusqueda" id="cuadroBusqueda">
-        <p>Selecciona el formato de búsqueda:</p>
-        <button>Por fecha</button>
-        <button>Por nombre</button>
+    <div class="search-bar">
+        <input type="text" id="nombreCancion" placeholder="Buscar por canción, artista, álbum, género ...">
+        <input type="date" id="fecha">
+        <button id="buscarBtn">Buscar</button>
     </div>
 
     <div id="contenedor" class="catalog"></div>
     <script>
+        let tracksData = [];
+
         fetch('/static/Tracks.json')
             .then(response => response.json())
             .then(data => {
-                const contenedor = document.getElementById('contenedor');
-                data.forEach(item => {
-                    const albumDiv = document.createElement('div');
-                    albumDiv.className = 'album';
-
-                    const cuadradoDiv = document.createElement('div');
-                    cuadradoDiv.className = 'cuadrado';
-
-                    const titleP = document.createElement('p');
-                    titleP.className = 'album-title';
-                    titleP.textContent = item.title;
-
-                    const img = document.createElement('img');
-                    img.src = '../static/Photos/pe.jpg';
-                    img.alt = item.title;
-                    img.style.width = '100%';
-                    img.style.height = '100%';
-                    img.style.objectFit = 'cover';
-
-                    cuadradoDiv.appendChild(titleP);
-                    cuadradoDiv.appendChild(img);
-                    albumDiv.appendChild(cuadradoDiv);
-                    albumDiv.addEventListener('click', () => {
-                        window.location.href = '../music_detail/';
-                    });
-
-                    contenedor.appendChild(albumDiv);
-                });
+                tracksData = data;
+                displayTracks(tracksData);
             })
             .catch(error => console.error('Error al cargar el JSON:', error));
-    </script>
-    <script>
-        function toggleMenu() {
-            const menu = document.getElementById('cuadroBusqueda');
-            menu.style.display = menu.style.display === 'none' ? 'block' : 'none';
+
+        function displayTracks(tracks) {
+            const contenedor = document.getElementById('contenedor');
+            contenedor.innerHTML = ''; // Limpiar el contenedor antes de mostrar los resultados
+            tracks.forEach(item => {
+                const albumDiv = document.createElement('div');
+                albumDiv.className = 'album';
+
+                const cuadradoDiv = document.createElement('div');
+                cuadradoDiv.className = 'cuadrado';
+
+                const titleP = document.createElement('p');
+                titleP.className = 'album-title';
+                titleP.textContent = item.title;
+
+                const img = document.createElement('img');
+                img.src = '../static/Photos/pe.jpg';
+                img.alt = item.title;
+                img.style.width = '100%';
+                img.style.height = '100%';
+                img.style.objectFit = 'cover';
+
+                cuadradoDiv.appendChild(titleP);
+                cuadradoDiv.appendChild(img);
+                albumDiv.appendChild(cuadradoDiv);
+                albumDiv.addEventListener('click', () => {
+                    window.location.href = '../music_detail/';
+                });
+
+                contenedor.appendChild(albumDiv);
+            });
         }
 
-        document.addEventListener('DOMContentLoaded', () => {
-            const menu = document.getElementById('cuadroBusqueda');
-            menu.style.display = 'none';
-        });
-        const buscarBtn = document.getElementById('buscarBtn');
-        const menu = document.getElementById('cuadroBusqueda');
+        document.getElementById('buscarBtn').addEventListener('click', function() {
+            const searchText = document.getElementById('nombreCancion').value.toLowerCase();
 
-        buscarBtn.addEventListener('mouseover', () => {
-            menu.style.display = 'block';
-        });
+            const filteredTracks = searchText ? tracksData.filter(item => {
+                const matchesTitle = item.title.toLowerCase().includes(searchText);
+                const matchesArtist = item.artist.toLowerCase().includes(searchText);
+                const matchesAlbum = item.album.toLowerCase().includes(searchText);
 
-        buscarBtn.addEventListener('mouseout', () => {
-            menu.style.display = 'none';
-        });
+                return matchesTitle || matchesArtist || matchesAlbum;
+            }) : tracksData;
 
-        menu.addEventListener('mouseover', () => {
-            menu.style.display = 'block';
+            displayTracks(filteredTracks);
         });
 
-        menu.addEventListener('mouseout', () => {
-            menu.style.display = 'none';
-        });
     </script>
+
 </body>
+
 
 {% endblock %}
