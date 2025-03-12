@@ -2,66 +2,164 @@
 {% load static %}
 {% block title %}Catálogo - Undersounds{% endblock %}
 {% block content %}
+   <style>
+    body {
+        font-family: Arial, sans-serif;
+        margin: 20px;
+    }
+    .cuadrado {
+        flex: 1;
+        padding-top: 100%;
+        width: 17vw; /* Ajusta el ancho al 20% del ancho de la ventana */
+        height: 17vw;
+        /*border: 1px solid #000;*/
+        display: inline-block;
+        margin: 10px;
+        padding: 10px;
+        box-sizing: border-box;
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+        transition: background-color 0.8s ease;
+    }
+    .cuadrado:hover {
+        background-color: rgba(0, 0, 0, 0.5);
+    }
+    .cuadrado:hover .album-title {
 
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
-        }
-        .cuadrado {
-            width: 150px;
-            height: 150px;
-            border: 1px solid #000;
-            display: inline-block;
-            margin: 10px;
-            padding: 10px;
-            box-sizing: border-box;
-            text-align: center;
-        }
-        .catalog {
-            display: flex;
-            flex-wrap: wrap;
-        }
-        .album {
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            margin: 10px;
+        display: block;
+    }
+    .album-title {
+        margin-top: 5px;
+        font-size: 1em;
+        color: #fff;
+        display: none;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+    }
+    .catalog {
+        flex: 2;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        padding: 0 50px;
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+    .cuadroBusqueda {
+        flex: 2;
+            display: none;
+            margin-top: 20px;
             padding: 10px;
             width: 200px;
-            text-align: center;
+            background-color: #f9f9f9;
+             transform: scale(0); /* Comienza pequeño */
+        transition-timing-function: ease-out;
         }
-        .album img {
-            max-width: 100%;
-            border-radius: 8px;
-        }
-        .album h3 {
-            font-size: 1.2em;
-            margin: 10px 0;
-        }
-        .album p {
-            font-size: 0.9em;
-            color: #555;
-        }
-    </style>
-<body>
-    <div id="contenedor"></div>
+    .cuadrado img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: filter 0.8s ease, background-color 0.8s ease;
+    }
+        #buscarBtn {
+            padding: 10px 20px;
+            background-color: #007BFF;
+            color: #fff;
+            border: none;
+            cursor: pointer;
 
+            resize: horizontal;
+        }
+        #buscarBtn:hover {
+            background-color: #0056b3;
+            transform: scale(1.05);
+        }
+        #buscarBtn:hover + .cuadroBusqueda {
+            display: block;
+            opacity: 1;
+            transform: scaleY(1);
+            resize: horizontal;
+        }
+
+</style>
+<body>
+    <div id="cont" class="titulo"></div>
+    <h2 class="title">Catálogo</h2>
+    <button id="buscarBtn">Buscar</button>
+    <div class="cuadroBusqueda" id="cuadroBusqueda">
+        <p>Selecciona el formato de búsqueda:</p>
+        <button>Por fecha</button>
+        <button>Por nombre</button>
+    </div>
+
+    <div id="contenedor" class="catalog"></div>
+    <img src="/static/Photos/framewerk.jpg" alt="/static/Photos/earthblade.jpg">
     <script>
         fetch('/static/Tracks.json')
             .then(response => response.json())
             .then(data => {
                 const contenedor = document.getElementById('contenedor');
                 data.forEach(item => {
-                    const div = document.createElement('div');
-                    div.className = 'cuadrado';
-                    div.innerHTML = `
-                        <p><strong>Título:</strong> ${item.title}</p>
-                        <p><strong>Álbum:</strong> ${item.album}</p>
-                    `;
-                    contenedor.appendChild(div);
+                    const albumDiv = document.createElement('div');
+                    albumDiv.className = 'album';
+
+                    const cuadradoDiv = document.createElement('div');
+                    cuadradoDiv.className = 'cuadrado';
+
+                    const titleP = document.createElement('p');
+                    titleP.className = 'album-title';
+                    titleP.textContent = item.title;
+
+                    const img = document.createElement('img');
+                    img.src = '../static/Photos/pe.jpg';
+                    img.alt = item.title;
+                    img.style.width = '100%';
+                    img.style.height = '100%';
+                    img.style.objectFit = 'cover';
+
+                    cuadradoDiv.appendChild(titleP);
+                    cuadradoDiv.appendChild(img);
+                    albumDiv.appendChild(cuadradoDiv);
+                    albumDiv.addEventListener('click', () => {
+                        window.location.href = '../music_detail/';
+                    });
+
+                    contenedor.appendChild(albumDiv);
                 });
             })
             .catch(error => console.error('Error al cargar el JSON:', error));
+    </script>
+    <script>
+        function toggleMenu() {
+            const menu = document.getElementById('cuadroBusqueda');
+            menu.style.display = menu.style.display === 'none' ? 'block' : 'none';
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const menu = document.getElementById('cuadroBusqueda');
+            menu.style.display = 'none';
+        });
+        const buscarBtn = document.getElementById('buscarBtn');
+        const menu = document.getElementById('cuadroBusqueda');
+
+        buscarBtn.addEventListener('mouseover', () => {
+            menu.style.display = 'block';
+        });
+
+        buscarBtn.addEventListener('mouseout', () => {
+            menu.style.display = 'none';
+        });
+
+        menu.addEventListener('mouseover', () => {
+            menu.style.display = 'block';
+        });
+
+        menu.addEventListener('mouseout', () => {
+            menu.style.display = 'none';
+        });
     </script>
 </body>
 
