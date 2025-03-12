@@ -3,6 +3,8 @@ html, body {
     height: 100%;
     margin: 0;
     padding: 0;
+    display: flex;
+    flex-direction: column;
 }
 
 /* Wrapper ensures the main content fills available space */
@@ -10,6 +12,7 @@ html, body {
     display: flex;
     flex-direction: column;
     min-height: 100vh;
+    width: 100%;
 }
 
 /* Main content expands to push the footer down */
@@ -17,41 +20,40 @@ html, body {
     flex: 1;
 }
 
-/* Fixed Footer at the Bottom (Taller Version for Logo Coverage) */
+/* Footer Styling */
 .footer {
     display: flex;
     justify-content: center; /* Centers content horizontally */
     align-items: center; /* Centers content vertically */
     flex-direction: column; /* Align logo and links vertically */
-    padding: 20px 20px; /* Increased padding */
-    background: linear-gradient(to top, black, grey 50%); /* Extended gradient */
-    color: white; /* Text color */
+    padding: 40px 20px; /* Increased padding */
+    background: linear-gradient(to top, black, grey 50%);
+    color: white;
     font-family: 'Arial', sans-serif;
-    height: 100px; /* Increased height to cover logo */
-    width: 100%; /* Full width */
-    position: relative; /* Instead of fixed */
-    margin-top: auto; /* Push footer to the bottom */
-    left: 0;
+    height: auto; /* Adjusts height dynamically */
+    min-height: 150px; /* Ensures a minimum height */
+    width: 100%;
+    margin-top: auto; /* Pushes footer to the bottom */
 }
 
 /* Logo Container */
 .footer-logo {
     display: flex;
     justify-content: center;
-    margin-bottom: 10px; /* Add some spacing between logo and links */
+    margin-bottom: 15px; /* More space between logo and links */
 }
 
 /* Adjust logo size */
 .footer-logo img {
-    height: 50px; /* Adjust as needed */
+    height: 60px;
     width: auto;
 }
 
 /* Footer Links */
 .footer-links .footer-nav-links {
     list-style: none;
-    display: flex; /* Makes the list horizontal */
-    gap: 30px; /* Adds space between items */
+    display: flex;
+    gap: 30px;
     margin: 0;
     padding: 0;
 }
@@ -61,46 +63,22 @@ html, body {
     margin: 0;
 }
 
-/* Footer Links   asdadas*/
+/* Footer Links */
 .footer-links .footer-nav-links a {
     text-decoration: none;
-    color: white; /* Default white text */
-    font-size: 16px; /* Adjust font size */
+    color: white;
+    font-size: 16px;
     font-weight: 500;
     transition: color 0.3s ease;
 }
 
 /* Hover Effect */
 .footer-links .footer-nav-links a:hover {
-    color: #1db954; /* Green hover color */
-}
-
-/* Ensure full height */
-html, body {
-    height: 100%;
-    margin: 0;
-    padding: 0;
-    display: flex;
-    justify-content: center; /* Centers horizontally */
-}
-
-/* Wrapper to center content and add margins */
-.wrapper {
-    display: flex;
-    flex-direction: column;
-    min-height: 10vh;
-    width: 100%; /* Adjust width as needed */
-    max-width: 1000px; /* Limits the maximum width */
-    margin: 0 auto; /* Centers it with automatic margins */
-}
-
-/* Main content expands to push the footer down */
-.main-content {
-    flex: 1;
+    color: #1db954;
 }
 
 /* Main tag to apply spacing and centering */
 main {
-    margin: 20px auto; /* Adds space around the content */
+    margin: 20px auto;
     width: 100%;
 }
