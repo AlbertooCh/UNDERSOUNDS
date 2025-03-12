@@ -22,6 +22,9 @@ def perfil(request):
     return render(request, 'perfil.html')
 # Create your views here.
 
+def configuracion(request):
+    return render(request, 'configuracion.html')
+
 @login_required
 def user_logout(request):
     logout(request)

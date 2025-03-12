@@ -24,6 +24,7 @@ urlpatterns = [
     path('inicio/', views.inicio, name='inicio'),
     path('contacto/', views.contacto, name='contacto'),
     path('admin/', admin.site.urls),
+    path('novedades/', views.novedades, name='novedades'),
     path('', include('music.urls')),
     path('', include('user.urls')),
     path('', include('store.urls')),

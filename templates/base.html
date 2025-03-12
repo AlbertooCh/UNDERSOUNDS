@@ -5,11 +5,43 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Mi Proyecto{% endblock %}</title>
     {% block extra_css %} {% endblock %}
+    <style>
+        /* Estilos para el botón de subir */
+        .scroll-to-top {
+            position: fixed; /* Fija el botón en la pantalla */
+            bottom: 20px; /* Distancia desde la parte inferior */
+            right: 20px; /* Distancia desde la derecha */
+            background-color: #000; /* Color de fondo */
+            color: #fff; /* Color del texto */
+            border: none; /* Sin borde */
+            border-radius: 50%; /* Forma circular */
+            width: 50px; /* Ancho */
+            height: 50px; /* Alto */
+            font-size: 24px; /* Tamaño del ícono */
+            cursor: pointer; /* Cambia el cursor al pasar el ratón */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Sombra */
+            opacity: 0.8; /* Ligera transparencia */
+            transition: opacity 0.3s ease, visibility 0.3s ease; /* Transición suave */
+            visibility: hidden; /* Oculto por defecto */
+            z-index: 1000; /* Asegura que esté por encima de otros elementos */
+        }
+
+        .scroll-to-top.visible {
+            visibility: visible; /* Mostrar el botón */
+        }
+
+        .scroll-to-top:hover {
+            opacity: 1; /* Sin transparencia al pasar el ratón */
+        }
+    </style>
 </head>
 <body>
     <div class="wrapper">
         {# Incluimos el header en el archivo base.html #}
-        {% include 'includes/header.html' %}
+        {% include 'includes/header_guest.html' %}
 
         <!-- Contenido principal -->
         <main class="main-content">
@@ -21,5 +53,29 @@
         <!-- Footer -->
         {% include 'includes/footer.html' %}
     </div>
+
+    <!-- Botón de subir -->
+    <button class="scroll-to-top" onclick="scrollToTop()">↑</button>
+
+    <script>
+        // Función para desplazarse a la parte superior de la página
+        function scrollToTop() {
+            window.scrollTo({
+                top: 0, // Lleva al usuario a la parte superior
+                behavior: "smooth" // Desplazamiento suave
+            });
+        }
+
+        // Mostrar u ocultar el botón según la posición del scroll
+        const scrollToTopButton = document.querySelector('.scroll-to-top');
+
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 200) { // Mostrar el botón después de 200px de scroll
+                scrollToTopButton.classList.add('visible');
+            } else {
+                scrollToTopButton.classList.remove('visible');
+            }
+        });
+    </script>
 </body>
 </html>

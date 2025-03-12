@@ -1,0 +1,141 @@
+{% extends 'base.html' %}
+{% block title %}Novedades - Undersounds{% endblock %}
+{% block content %}
+    <style>
+        /* Estilos para la página de novedades */
+        .news-container {
+            max-width: 1200px;
+            margin: 50px auto;
+            padding: 20px;
+        }
+
+        .news-container h1 {
+            text-align: center;
+            font-size: 36px;
+            margin-bottom: 40px;
+            color: #333;
+        }
+
+        .release-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .release-card {
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .release-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+        }
+
+        .release-card img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+
+        .release-card .release-info {
+            padding: 15px;
+        }
+
+        .release-card h3 {
+            font-size: 18px;
+            margin: 0 0 10px;
+            color: #333;
+        }
+
+        .release-card p {
+            font-size: 14px;
+            color: #666;
+            margin: 0 0 10px;
+        }
+
+        .release-card .artist {
+            font-size: 14px;
+            color: #888;
+            margin: 0;
+        }
+
+        .release-card .price {
+            font-size: 16px;
+            font-weight: bold;
+            color: #000;
+            margin: 10px 0 0;
+        }
+
+        .release-card button {
+            background-color: #000;
+            color: #fff;
+            border: none;
+            padding: 10px 15px;
+            width: 100%;
+            font-size: 14px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .release-card button:hover {
+            background-color: #333;
+        }
+    </style>
+
+    <div class="news-container">
+        <h1>Novedades</h1>
+        <div class="release-list">
+            <!-- Tarjeta de lanzamiento 1 -->
+            <div class="release-card">
+                <img src="https://via.placeholder.com/300" alt="Portada del álbum">
+                <div class="release-info">
+                    <h3>Álbum 1</h3>
+                    <p>Descripción breve del álbum. Un lanzamiento emocionante que no te puedes perder.</p>
+                    <p class="artist">Artista 1</p>
+                    <p class="price">$10.00</p>
+                    <button>Comprar ahora</button>
+                </div>
+            </div>
+
+            <!-- Tarjeta de lanzamiento 2 -->
+            <div class="release-card">
+                <img src="https://via.placeholder.com/300" alt="Portada del álbum">
+                <div class="release-info">
+                    <h3>Álbum 2</h3>
+                    <p>Descripción breve del álbum. Un lanzamiento emocionante que no te puedes perder.</p>
+                    <p class="artist">Artista 2</p>
+                    <p class="price">$12.00</p>
+                    <button>Comprar ahora</button>
+                </div>
+            </div>
+
+            <!-- Tarjeta de lanzamiento 3 -->
+            <div class="release-card">
+                <img src="https://via.placeholder.com/300" alt="Portada del álbum">
+                <div class="release-info">
+                    <h3>Álbum 3</h3>
+                    <p>Descripción breve del álbum. Un lanzamiento emocionante que no te puedes perder.</p>
+                    <p class="artist">Artista 3</p>
+                    <p class="price">$8.00</p>
+                    <button>Comprar ahora</button>
+                </div>
+            </div>
+
+            <!-- Tarjeta de lanzamiento 4 -->
+            <div class="release-card">
+                <img src="https://via.placeholder.com/300" alt="Portada del álbum">
+                <div class="release-info">
+                    <h3>Álbum 4</h3>
+                    <p>Descripción breve del álbum. Un lanzamiento emocionante que no te puedes perder.</p>
+                    <p class="artist">Artista 4</p>
+                    <p class="price">$15.00</p>
+                    <button>Comprar ahora</button>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
