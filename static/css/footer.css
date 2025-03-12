@@ -1,41 +1,84 @@
-/* Estilos para el footer */
+/* Ensure full height */
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Wrapper ensures the main content fills available space */
+.wrapper {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    width: 100%;
+}
+
+/* Main content expands to push the footer down */
+.main-content {
+    flex: 1;
+}
+
+/* Footer Styling */
 .footer {
     display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 40px 20px; /* Aumenta el padding vertical */
-    background-color: #000; /* Fondo negro */
-    color: #fff; /* Texto en blanco */
+    justify-content: center; /* Centers content horizontally */
+    align-items: center; /* Centers content vertically */
+    flex-direction: column; /* Align logo and links vertically */
+    padding: 40px 20px; /* Increased padding */
+    background: linear-gradient(to top, black, grey 50%);
+    color: white;
     font-family: 'Arial', sans-serif;
-    height: 100px; /* Aumenta la altura del footer */
+    height: auto; /* Adjusts height dynamically */
+    min-height: 150px; /* Ensures a minimum height */
+    width: 100%;
+    margin-top: auto; /* Pushes footer to the bottom */
 }
 
-/* Logo del footer */
+/* Logo Container */
+.footer-logo {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 15px; /* More space between logo and links */
+}
+
+/* Adjust logo size */
 .footer-logo img {
-    width: 120px; /* Aumenta el tamaño del logo */
-    height: auto;
+    height: 60px;
+    width: auto;
 }
 
-/* Enlaces del footer */
+/* Footer Links */
 .footer-links .footer-nav-links {
     list-style: none;
     display: flex;
+    gap: 30px;
     margin: 0;
     padding: 0;
 }
 
+/* Footer Link Items */
 .footer-links .footer-nav-links li {
-    margin: 0 20px; /* Aumenta el margen entre enlaces */
+    margin: 0;
 }
 
+/* Footer Links */
 .footer-links .footer-nav-links a {
     text-decoration: none;
-    color: #fff;
-    font-size: 18px; /* Aumenta el tamaño de la fuente */
+    color: white;
+    font-size: 16px;
     font-weight: 500;
     transition: color 0.3s ease;
 }
 
+/* Hover Effect */
 .footer-links .footer-nav-links a:hover {
-    color: #1db954; /* Color verde para el hover */
+    color: #1db954;
+}
+
+/* Main tag to apply spacing and centering */
+main {
+    margin: 20px auto;
+    width: 100%;
 }
