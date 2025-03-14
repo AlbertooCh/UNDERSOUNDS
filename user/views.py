@@ -25,6 +25,10 @@ def perfil(request):
 def configuracion(request):
     return render(request, 'configuracion.html')
 
+def historial_compras(request):
+    return render(request, 'historial_compras.html')
+
+
 @login_required
 def user_logout(request):
     logout(request)
