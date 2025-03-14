@@ -103,18 +103,18 @@
     <script>
         let tracksData = [];
 
-        fetch('/static/Tracks.json')
+        fetch('/static/prueba.json')
             .then(response => response.json())
             .then(data => {
                 tracksData = data;
-                displayTracks(tracksData);
+                displayTracks();
             })
             .catch(error => console.error('Error al cargar el JSON:', error));
 
-        function displayTracks(tracks) {
+        function displayTracks() {
             const contenedor = document.getElementById('contenedor');
-            contenedor.innerHTML = ''; // Limpiar el contenedor antes de mostrar los resultados
-            tracks.forEach(item => {
+            contenedor.innerHTML = '';
+            tracksData.forEach(item => {
                 const albumDiv = document.createElement('div');
                 albumDiv.className = 'album';
 
@@ -123,10 +123,10 @@
 
                 const titleP = document.createElement('p');
                 titleP.className = 'album-title';
-                titleP.textContent = item.title;
+                titleP.textContent = item.song_name;
 
                 const img = document.createElement('img');
-                img.src = '../static/Photos/pe.jpg';
+                img.src = item.album_photo;
                 img.alt = item.title;
                 img.style.width = '100%';
                 img.style.height = '100%';

@@ -2,69 +2,148 @@
 {% load static %}
 {% block title %}Catálogo - Undersounds{% endblock %}
 {% block content %}
-<style>
-.cancion {
-        flex: 2;
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: space-between;
-        padding: 0 50px;
-        max-width: 1200px;
-        margin: 0 auto;
-}
-.cancion-Repr{
-    background-color: rgba(255, 255, 255, 0.9);
-    display: inline-block;
-        margin: 10px;
-        padding: 10px;
-        box-sizing: border-box;
-        text-align: center;
-        position: relative;
-        overflow: hidden;
-        transition: background-color 0.8s ease;
-}
-.cancion-Titulo {
-    display: inline-block;
-        margin: 10px;
-        padding: 10px;
-        box-sizing: border-box;
-        text-align: center;
-        position: relative;
-        overflow: hidden;
-        transition: background-color 0.8s ease;
-}
-.cancion-Info {
-    display: inline-block;
-        margin: 10px;
-        padding: 10px;
-        box-sizing: border-box;
-        text-align: center;
-        position: relative;
-        overflow: hidden;
-        transition: background-color 0.8s ease;
-}
-</style>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f2f2f2;
+        }
+
+        header {
+            background-color: #333;
+            color: white;
+            padding: 10px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        header .logo img {
+            height: 40px;
+        }
+
+        nav ul {
+            list-style: none;
+            display: flex;
+            gap: 20px;
+        }
+
+        nav ul li a {
+            color: white;
+            text-decoration: none;
+        }
+
+        main {
+            padding: 20px;
+        }
+
+        .track-info {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .track-cover {
+            width: 150px;
+            height: 150px;
+            object-fit: cover;
+        }
+
+        .track-details h1 {
+            margin: 0;
+        }
+
+        .play-button {
+            background-color: #ff5500;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+        }
+
+        .comments-section {
+            margin-top: 20px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .comments-section h2 {
+            margin-bottom: 10px;
+        }
+
+        .comment {
+            background-color: white;
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+        }
+
+        .author-info, .track-list {
+            width: 45%;
+        }
+
+        .author-info {
+            background-color: #e0e0e0;
+            padding: 10px;
+            border-radius: 5px;
+        }
+
+        .track-list {
+            background-color: #e0e0e0;
+            padding: 10px;
+            border-radius: 5px;
+        }
+
+        footer {
+            background-color: #333;
+            color: white;
+            text-align: center;
+            padding: 10px 0;
+            position: fixed;
+            width: 100%;
+            bottom: 0;
+        }
+    </style>
 <body>
-<div class="cancion">
-    <div class="cancion-Repr">
-        <audio autoplay controls></audio>
-    </div>
-    <div class="cancion-Titulo">
-        <img src="../static/Photos/pe.jpg">
-    </div>
-</div>
-<div class="Cancion-Info">
-    <input type="text" id="Coment" placeholder="Deja tu comentario...">
-    <div class="Cancion-Perfil">
-        <img src="../static/Photos/pe.jpg">
-    </div>
-    <div class="Cancion-comentarios">
-        <p>comentarios</p>
-    </div>
-    <div class="Cancion-album">
-        <img src="../static/Photos/pe.jpg">
-    </div>
-</div>
+    <main>
+        <button class="back-button" onclick="goBack()">Volver</button>
+        <div class="track-info">
+
+            <div class="track-details">
+                <h1>Pe</h1>
+                <p>by Pe</p>
+                <button class="play-button">Play</button>
+            </div>
+            <img src="Track Cover" class="track-cover">
+        </div>
+        <div class="comments-section">
+            <div class="author-info">
+                <h2>Author Information</h2>
+                <p><strong>Name:</strong> Fuzion UKG</p>
+                <p><strong>Genre:</strong> UK Garage</p>
+                <p><strong>Years Active:</strong> 2010 - Present</p>
+            </div>
+            <div class="comments">
+                <h2>Comments</h2>
+            </div>
+            <div class="track-list">
+                <h2>Track List</h2>
+                <ul>
+                    <li>1. Levels</li>
+                    <li>2. Bassline</li>
+                    <li>3. Groove</li>
+                    <li>4. Rhythm</li>
+                    <li>5. Vibes</li>
+                </ul>
+            </div>
+        </div>
+    </main>
 </body>
+    <script>
+        function goBack() {
+            window.history.back();
+        }
+    </script>
 
 {% endblock %}

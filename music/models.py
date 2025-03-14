@@ -4,15 +4,18 @@ import os
 import json
 
 # Create your models here.
+
 class Music(models.Model):
-    cant = models.IntegerField()
-    title = models.CharField(max_length=255)
-    album_title = models.CharField(max_length=255)
+    song_name = models.CharField(max_length=100)
+    artist_name = models.CharField(max_length=100)
+    album_name = models.CharField(max_length=100)
     duration = models.CharField(max_length=10)
-    file = models.CharField(max_length=255)
+    genre = models.CharField(max_length=50)
+    artist_photo = models.ImageField(upload_to='static/Photos/Cantantes/')
+    album_photo = models.ImageField(upload_to='static/Photos/album/')
 
     def __str__(self):
-        return f"{self.title} by {self.artist_name}"
+        return self.song_name
 
 
 class UserCollection(models.Model):
