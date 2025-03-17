@@ -1,9 +1,8 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Vista de Pago</title>
+{% extends 'base.html' %}
+{% block title %}
+    Pago
+{% endblock %}
+{% block content %}
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -82,7 +81,6 @@
             display: block;
         }
     </style>
-</head>
 <body>
     <div class="container">
         <div class="header">
@@ -109,4 +107,4 @@
         </div>
     </div>
 </body>
-</html>
+{% endblock %}

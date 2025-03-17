@@ -1,9 +1,8 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Carrito</title>
+{% extends 'base.html' %}
+{% block title %}
+    Carrito
+{% endblock %}
+{% block content %}
     <style>
      body {
         font-family: Arial, sans-serif;
@@ -99,7 +98,6 @@
         opacity: 0.85;
     }
     </style>
-</head>
 <body>
     <div class="cart-container">
         <h1>Tu Carrito</h1>
@@ -131,4 +129,4 @@
         </div>
     </div>
 </body>
-</html>
+{% endblock %}
