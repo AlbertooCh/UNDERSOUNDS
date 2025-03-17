@@ -104,46 +104,119 @@
             width: 100%;
             bottom: 0;
         }
+
+        textarea {
+            width: 70%;
+            padding: 10px;
+            margin-top: 10px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+
+        button {
+            padding: 10px 20px;
+            margin-top: 10px;
+            border: none;
+            background-color: #ff5500;
+            color: white;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #e64a00;
+        }
     </style>
+
 <body>
     <main>
         <button class="back-button" onclick="goBack()">Volver</button>
         <div class="track-info">
-
             <div class="track-details">
-                <h1>Pe</h1>
-                <p>by Pe</p>
+                <h1 id="song-name"></h1>
+                <p id="artist-name"></p>
+                <p id="album-name"></p>
+                <p id="duration"></p>
+                <p id="genre"></p>
                 <button class="play-button">Play</button>
             </div>
-            <img src="Track Cover" class="track-cover">
+            <img id="track-cover" class="track-cover" alt="Track Cover">
         </div>
         <div class="comments-section">
             <div class="author-info">
                 <h2>Author Information</h2>
-                <p><strong>Name:</strong> Fuzion UKG</p>
-                <p><strong>Genre:</strong> UK Garage</p>
-                <p><strong>Years Active:</strong> 2010 - Present</p>
+                <p><strong>Name:</strong> <span id="author-name"></span></p>
+                <p><strong>Genre:</strong> <span id="author-genre"></span></p>
+                <p><strong>Years Active:</strong> <span id="author-years"></span></p>
             </div>
             <div class="comments">
                 <h2>Comments</h2>
+                <div id="comments"></div>
+                <textarea id="new-comment" placeholder="Añadir un comentario..."></textarea>
+                <button onclick="addComment()">Enviar</button>
             </div>
             <div class="track-list">
                 <h2>Track List</h2>
-                <ul>
-                    <li>1. Levels</li>
-                    <li>2. Bassline</li>
-                    <li>3. Groove</li>
-                    <li>4. Rhythm</li>
-                    <li>5. Vibes</li>
-                </ul>
+                <ul id="track-list"></ul>
             </div>
         </div>
     </main>
-</body>
     <script>
         function goBack() {
             window.history.back();
         }
+
+        const item = JSON.parse(localStorage.getItem('item'));
+
+        if (item) {
+            document.getElementById('song-name').textContent = item.song_name;
+            document.getElementById('artist-name').textContent = `by ${item.artist_name}`;
+            document.getElementById('album-name').textContent = `Album: ${item.album_name}`;
+            document.getElementById('duration').textContent = `Duration: ${item.duration}`;
+            document.getElementById('genre').textContent = `Genre: ${item.genre}`;
+            document.getElementById('track-cover').src = item.album_photo;
+            document.getElementById('author-name').textContent = item.artist_name;
+            document.getElementById('author-genre').textContent = item.genre;
+
+            const trackList = document.getElementById('track-list');
+            item.tracks.forEach((track, index) => {
+                const li = document.createElement('li');
+                li.textContent = `${index + 1}. ${track}`;
+                trackList.appendChild(li);
+            });
+        } else {
+            document.querySelector('.track-info').innerHTML = '<p>No hay datos disponibles.</p>';
+        }
+
+        const comments = JSON.parse(localStorage.getItem('comments')) || [];
+
+        function displayComments() {
+            const commentsDiv = document.getElementById('comments');
+            commentsDiv.innerHTML = '';
+            comments.forEach(comment => {
+                const commentDiv = document.createElement('div');
+                commentDiv.className = 'comment';
+                commentDiv.innerHTML = `<h3>${comment.author}</h3><p>${comment.text}</p>`;
+                commentsDiv.appendChild(commentDiv);
+            });
+        }
+
+        function addComment() {
+            const newCommentText = document.getElementById('new-comment').value;
+            if (newCommentText) {
+                const newComment = {
+                    author: 'Usuario', // Puedes cambiar esto para obtener el nombre del usuario actual
+                    text: newCommentText
+                };
+                comments.push(newComment);
+                localStorage.setItem('comments', JSON.stringify(comments));
+                displayComments();
+                document.getElementById('new-comment').value = '';
+            }
+        }
+
+        displayComments();
     </script>
+</body>
 
 {% endblock %}

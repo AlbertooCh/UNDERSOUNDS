@@ -12,7 +12,7 @@ def music_list(request):
 
 def music_detail(request):
     song = Music.objects.all()
-    return render(request, "music_detail.html", {"song": song})
+    return render(request, 'music_detail.html', {'song': song})
 def catalogo(request):
     return render(request, "catalogo.html")
 

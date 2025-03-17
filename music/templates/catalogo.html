@@ -107,14 +107,14 @@
             .then(response => response.json())
             .then(data => {
                 tracksData = data;
-                displayTracks();
+                displayTracks(tracksData);
             })
             .catch(error => console.error('Error al cargar el JSON:', error));
 
-        function displayTracks() {
+        function displayTracks(tracks) {
             const contenedor = document.getElementById('contenedor');
             contenedor.innerHTML = '';
-            tracksData.forEach(item => {
+            tracks.forEach(item => {
                 const albumDiv = document.createElement('div');
                 albumDiv.className = 'album';
 
@@ -136,7 +136,8 @@
                 cuadradoDiv.appendChild(img);
                 albumDiv.appendChild(cuadradoDiv);
                 albumDiv.addEventListener('click', () => {
-                    window.location.href = '../music_detail/';
+                    localStorage.setItem('item', JSON.stringify(item));
+                    window.location.href = `../music_detail/`;
                 });
 
                 contenedor.appendChild(albumDiv);
@@ -147,9 +148,9 @@
             const searchText = document.getElementById('nombreCancion').value.toLowerCase();
 
             const filteredTracks = searchText ? tracksData.filter(item => {
-                const matchesTitle = item.title.toLowerCase().includes(searchText);
-                const matchesArtist = item.artist.toLowerCase().includes(searchText);
-                const matchesAlbum = item.album.toLowerCase().includes(searchText);
+                const matchesTitle = item.song_name.toLowerCase().includes(searchText);
+                const matchesArtist = item.artist_name.toLowerCase().includes(searchText);
+                const matchesAlbum = item.album_name.toLowerCase().includes(searchText);
 
                 return matchesTitle || matchesArtist || matchesAlbum;
             }) : tracksData;

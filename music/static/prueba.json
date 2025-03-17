@@ -6,7 +6,8 @@
         "duration": "3:29",
         "genre": "Country",
         "artist_photo": "../static/Photos/Cantantes/l.jpg",
-        "album_photo": "../static/Photos/album/b.jpg"
+        "album_photo": "../static/Photos/album/b.jpg",
+        "id": 1
     },
     {
         "song_name": "a",
@@ -15,7 +16,8 @@
         "duration": "3:53",
         "genre": "Rock",
         "artist_photo": "../static/Photos/Cantantes/u.jpg",
-        "album_photo": "../static/Photos/album/j.jpg"
+        "album_photo": "../static/Photos/album/j.jpg",
+        "id": 2
     },
     {
         "song_name": "v",
@@ -24,7 +26,8 @@
         "duration": "5:38",
         "genre": "Electronic",
         "artist_photo": "../static/Photos/Cantantes/r.jpg",
-        "album_photo": "../static/Photos/album/n.jpg"
+        "album_photo": "../static/Photos/album/n.jpg",
+        "id": 3
     },
     {
         "song_name": "u",
@@ -33,7 +36,8 @@
         "duration": "5:06",
         "genre": "Pop",
         "artist_photo": "../static/Photos/Cantantes/d.jpg",
-        "album_photo": "../static/Photos/album/p.jpg"
+        "album_photo": "../static/Photos/album/p.jpg",
+        "id": 4
     },
     {
         "song_name": "r",
@@ -42,7 +46,8 @@
         "duration": "5:51",
         "genre": "Hip-Hop",
         "artist_photo": "../static/Photos/Cantantes/n.jpg",
-        "album_photo": "../static/Photos/album/u.jpg"
+        "album_photo": "../static/Photos/album/u.jpg",
+        "id": 5
     },
     {
         "song_name": "r",
@@ -51,7 +56,8 @@
         "duration": "3:48",
         "genre": "Rock",
         "artist_photo": "../static/Photos/Cantantes/y.jpg",
-        "album_photo": "../static/Photos/album/c.jpg"
+        "album_photo": "../static/Photos/album/c.jpg",
+        "id": 6
     },
     {
         "song_name": "s",
@@ -60,7 +66,8 @@
         "duration": "2:38",
         "genre": "Country",
         "artist_photo": "../static/Photos/Cantantes/w.jpg",
-        "album_photo": "../static/Photos/album/v.jpg"
+        "album_photo": "../static/Photos/album/v.jpg",
+        "id": 7
     },
     {
         "song_name": "d",
@@ -69,7 +76,8 @@
         "duration": "3:58",
         "genre": "Classical",
         "artist_photo": "../static/Photos/Cantantes/w.jpg",
-        "album_photo": "../static/Photos/album/p.jpg"
+        "album_photo": "../static/Photos/album/p.jpg",
+        "id": 8
     },
     {
         "song_name": "z",
@@ -78,7 +86,8 @@
         "duration": "4:13",
         "genre": "Rock",
         "artist_photo": "../static/Photos/Cantantes/u.jpg",
-        "album_photo": "../static/Photos/album/o.jpg"
+        "album_photo": "../static/Photos/album/o.jpg",
+        "id": 9
     },
     {
         "song_name": "t",
@@ -87,7 +96,8 @@
         "duration": "5:45",
         "genre": "Rock",
         "artist_photo": "../static/Photos/Cantantes/a.jpg",
-        "album_photo": "../static/Photos/album/e.jpg"
+        "album_photo": "../static/Photos/album/e.jpg",
+        "id": 10
     },
     {
         "song_name": "b",
@@ -96,7 +106,8 @@
         "duration": "4:55",
         "genre": "Country",
         "artist_photo": "../static/Photos/Cantantes/m.jpg",
-        "album_photo": "../static/Photos/album/u.jpg"
+        "album_photo": "../static/Photos/album/u.jpg",
+        "id": 11
     },
     {
         "song_name": "c",
@@ -105,7 +116,8 @@
         "duration": "4:07",
         "genre": "Electronic",
         "artist_photo": "../static/Photos/Cantantes/n.jpg",
-        "album_photo": "../static/Photos/album/d.jpg"
+        "album_photo": "../static/Photos/album/d.jpg",
+        "id": 12
     },
     {
         "song_name": "u",
@@ -114,7 +126,8 @@
         "duration": "2:57",
         "genre": "Pop",
         "artist_photo": "../static/Photos/Cantantes/k.jpg",
-        "album_photo": "../static/Photos/album/s.jpg"
+        "album_photo": "../static/Photos/album/s.jpg",
+        "id": 13
     },
     {
         "song_name": "t",
@@ -123,7 +136,8 @@
         "duration": "2:59",
         "genre": "Country",
         "artist_photo": "../static/Photos/Cantantes/g.jpg",
-        "album_photo": "../static/Photos/album/f.jpg"
+        "album_photo": "../static/Photos/album/f.jpg",
+        "id": 14
     },
     {
         "song_name": "q",
@@ -132,7 +146,8 @@
         "duration": "3:39",
         "genre": "Classical",
         "artist_photo": "../static/Photos/Cantantes/v.jpg",
-        "album_photo": "../static/Photos/album/w.jpg"
+        "album_photo": "../static/Photos/album/w.jpg",
+        "id": 15
     },
     {
         "song_name": "u",
@@ -141,7 +156,8 @@
         "duration": "5:02",
         "genre": "Country",
         "artist_photo": "../static/Photos/Cantantes/r.jpg",
-        "album_photo": "../static/Photos/album/i.jpg"
+        "album_photo": "../static/Photos/album/i.jpg",
+        "id": 16
     },
     {
         "song_name": "o",
@@ -150,7 +166,8 @@
         "duration": "2:39",
         "genre": "Jazz",
         "artist_photo": "../static/Photos/Cantantes/l.jpg",
-        "album_photo": "../static/Photos/album/t.jpg"
+        "album_photo": "../static/Photos/album/t.jpg",
+        "id": 17
     },
     {
         "song_name": "v",
@@ -159,7 +176,8 @@
         "duration": "4:06",
         "genre": "Rock",
         "artist_photo": "../static/Photos/Cantantes/k.jpg",
-        "album_photo": "../static/Photos/album/d.jpg"
+        "album_photo": "../static/Photos/album/d.jpg",
+        "id": 18
     },
     {
         "song_name": "y",
@@ -168,7 +186,8 @@
         "duration": "5:21",
         "genre": "Electronic",
         "artist_photo": "../static/Photos/Cantantes/v.jpg",
-        "album_photo": "../static/Photos/album/q.jpg"
+        "album_photo": "../static/Photos/album/q.jpg",
+        "id": 19
     },
     {
         "song_name": "d",
@@ -177,7 +196,8 @@
         "duration": "4:54",
         "genre": "Country",
         "artist_photo": "../static/Photos/Cantantes/u.jpg",
-        "album_photo": "../static/Photos/album/f.jpg"
+        "album_photo": "../static/Photos/album/f.jpg",
+        "id": 20
     },
     {
         "song_name": "m",
@@ -186,7 +206,8 @@
         "duration": "2:21",
         "genre": "Jazz",
         "artist_photo": "../static/Photos/Cantantes/j.jpg",
-        "album_photo": "../static/Photos/album/a.jpg"
+        "album_photo": "../static/Photos/album/a.jpg",
+        "id": 21
     },
     {
         "song_name": "m",
@@ -195,7 +216,8 @@
         "duration": "4:45",
         "genre": "Jazz",
         "artist_photo": "../static/Photos/Cantantes/p.jpg",
-        "album_photo": "../static/Photos/album/h.jpg"
+        "album_photo": "../static/Photos/album/h.jpg",
+        "id": 22
     },
     {
         "song_name": "k",
@@ -204,7 +226,8 @@
         "duration": "2:56",
         "genre": "Hip-Hop",
         "artist_photo": "../static/Photos/Cantantes/m.jpg",
-        "album_photo": "../static/Photos/album/r.jpg"
+        "album_photo": "../static/Photos/album/r.jpg",
+        "id": 23
     },
     {
         "song_name": "g",
@@ -213,7 +236,8 @@
         "duration": "3:54",
         "genre": "Pop",
         "artist_photo": "../static/Photos/Cantantes/z.jpg",
-        "album_photo": "../static/Photos/album/b.jpg"
+        "album_photo": "../static/Photos/album/b.jpg",
+        "id": 24
     },
     {
         "song_name": "v",
@@ -222,7 +246,8 @@
         "duration": "4:31",
         "genre": "Electronic",
         "artist_photo": "../static/Photos/Cantantes/z.jpg",
-        "album_photo": "../static/Photos/album/n.jpg"
+        "album_photo": "../static/Photos/album/n.jpg",
+        "id": 25
     },
     {
         "song_name": "f",
@@ -231,7 +256,8 @@
         "duration": "4:18",
         "genre": "Hip-Hop",
         "artist_photo": "../static/Photos/Cantantes/y.jpg",
-        "album_photo": "../static/Photos/album/j.jpg"
+        "album_photo": "../static/Photos/album/j.jpg",
+        "id": 26
     },
     {
         "song_name": "b",
@@ -240,7 +266,8 @@
         "duration": "4:18",
         "genre": "Classical",
         "artist_photo": "../static/Photos/Cantantes/c.jpg",
-        "album_photo": "../static/Photos/album/o.jpg"
+        "album_photo": "../static/Photos/album/o.jpg",
+        "id": 27
     },
     {
         "song_name": "b",
@@ -249,7 +276,8 @@
         "duration": "4:02",
         "genre": "Electronic",
         "artist_photo": "../static/Photos/Cantantes/c.jpg",
-        "album_photo": "../static/Photos/album/x.jpg"
+        "album_photo": "../static/Photos/album/x.jpg",
+        "id": 28
     },
     {
         "song_name": "j",
@@ -258,7 +286,8 @@
         "duration": "5:57",
         "genre": "Hip-Hop",
         "artist_photo": "../static/Photos/Cantantes/t.jpg",
-        "album_photo": "../static/Photos/album/e.jpg"
+        "album_photo": "../static/Photos/album/e.jpg",
+        "id": 29
     },
     {
         "song_name": "y",
@@ -267,6 +296,7 @@
         "duration": "2:17",
         "genre": "Electronic",
         "artist_photo": "../static/Photos/Cantantes/q.jpg",
-        "album_photo": "../static/Photos/album/z.jpg"
+        "album_photo": "../static/Photos/album/z.jpg",
+        "id": 30
     }
 ]
