@@ -133,12 +133,19 @@
         <button class="back-button" onclick="goBack()">Volver</button>
         <div class="track-info">
             <div class="track-details">
+                <img src= '../static/Photos/pr.gif'>
                 <h1 id="song-name"></h1>
                 <p id="artist-name"></p>
                 <p id="album-name"></p>
                 <p id="duration"></p>
                 <p id="genre"></p>
-                <button class="play-button">Play</button>
+                <button id="play-button" >Play</button>
+                <script>
+                    const playButton = document.getElementById('play-button');
+                    playButton.addEventListener('click', () => {
+                    window.location.href = '../pago/';
+                    });
+                </script>
             </div>
             <img id="track-cover" class="track-cover" alt="Track Cover">
         </div>
@@ -187,6 +194,7 @@
             document.querySelector('.track-info').innerHTML = '<p>No hay datos disponibles.</p>';
         }
 
+
         const comments = JSON.parse(localStorage.getItem('comments')) || [];
 
         function displayComments() {
@@ -204,7 +212,7 @@
             const newCommentText = document.getElementById('new-comment').value;
             if (newCommentText) {
                 const newComment = {
-                    author: 'Usuario', // Puedes cambiar esto para obtener el nombre del usuario actual
+                    author: 'Usuario',
                     text: newCommentText
                 };
                 comments.push(newComment);

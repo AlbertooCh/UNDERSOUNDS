@@ -9,9 +9,8 @@
     .cuadrado {
         flex: 1;
         padding-top: 100%;
-        width: 17vw; /* Ajusta el ancho al 20% del ancho de la ventana */
+        width: 17vw;
         height: 17vw;
-        /*border: 1px solid #000;*/
         display: inline-block;
         margin: 10px;
         padding: 10px;
@@ -19,13 +18,12 @@
         text-align: center;
         position: relative;
         overflow: hidden;
-        transition: background-color 0.8s ease;
+        transition: background-color 0.8s ease, filter 0.8s ease;
     }
     .cuadrado:hover {
         background-color: rgba(0, 0, 0, 0.5);
     }
     .cuadrado:hover .album-title {
-
         display: block;
     }
     .album-title {
@@ -37,6 +35,8 @@
         top: 50%;
         left: 50%;
         transform: translate(-50%, -50%);
+                z-index: 2;
+
     }
     .catalog {
         flex: 2;
@@ -58,8 +58,12 @@
     .cuadrado img {
         width: 100%;
         height: 100%;
-        object-fit: cover;
-        transition: filter 0.8s ease, background-color 0.8s ease;
+        object-fit: fill;
+        transition: filter 0.6s ease, background-color 0.6s ease;
+        z-index: 1;
+    }
+        .cuadrado:hover img {
+        filter: brightness(20%);
     }
         #buscarBtn {
             padding: 10px 20px;
@@ -67,7 +71,6 @@
             color: #fff;
             border: none;
             cursor: pointer;
-
             resize: horizontal;
         }
         .search-bar {
