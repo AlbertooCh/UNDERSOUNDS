@@ -1,0 +1,429 @@
+[
+    {
+        "artist_name": "Laura Martin",
+        "artist_photo": "../static/Photos/Cantantes/l.jpg",
+        "description": "A talented country singer known for her soulful voice.",
+        "age": 28,
+        "nationality": "American",
+        "awards": [
+            "Grammy Award",
+            "Country Music Award"
+        ],
+        "albums": [
+            {
+                "album_name": "Album_B",
+                "song_name": "Whispering Winds",
+                "duration": "3:29",
+                "genre": "Country",
+                "creation_date": "2016-09-29"
+            },
+            {
+                "album_name": "Album_T",
+                "song_name": "Astral Aria",
+                "duration": "2:39",
+                "genre": "Jazz",
+                "creation_date": "2024-05-27"
+            }
+        ]
+    },
+    {
+        "artist_name": "Uma Thompson",
+        "artist_photo": "../static/Photos/Cantantes/u.jpg",
+        "description": "A rock artist with a powerful stage presence.",
+        "age": 32,
+        "nationality": "British",
+        "awards": [
+            "Rock Music Award"
+        ],
+        "albums": [
+            {
+                "album_name": "Album_J",
+                "song_name": "Echoes of Eternity",
+                "duration": "3:53",
+                "genre": "Rock",
+                "creation_date": "2018-12-15"
+            },
+            {
+                "album_name": "Album_O",
+                "song_name": "Melodic Mirage",
+                "duration": "4:13",
+                "genre": "Rock",
+                "creation_date": "2012-05-26"
+            },
+            {
+                "album_name": "Album_F",
+                "song_name": "Galactic Gala",
+                "duration": "4:54",
+                "genre": "Country",
+                "creation_date": "2021-01-17"
+            }
+        ]
+    },
+    {
+        "artist_name": "Rachel Adams",
+        "artist_photo": "../static/Photos/Cantantes/r.jpg",
+        "description": "An electronic music producer and DJ.",
+        "age": 26,
+        "nationality": "Canadian",
+        "awards": [
+            "Electronic Music Award"
+        ],
+        "albums": [
+            {
+                "album_name": "Album_N",
+                "song_name": "Starlit Dreams",
+                "duration": "5:38",
+                "genre": "Electronic",
+                "creation_date": "2012-05-09"
+            },
+            {
+                "album_name": "Album_I",
+                "song_name": "Cosmic Cadence",
+                "duration": "5:02",
+                "genre": "Country",
+                "creation_date": "2013-01-18"
+            }
+        ]
+    },
+    {
+        "artist_name": "David Wilson",
+        "artist_photo": "../static/Photos/Cantantes/d.jpg",
+        "description": "A pop singer and songwriter.",
+        "age": 30,
+        "nationality": "Australian",
+        "awards": [
+            "Pop Music Award"
+        ],
+        "albums": [
+            {
+                "album_name": "Album_P",
+                "song_name": "Mystic Voyage",
+                "duration": "5:06",
+                "genre": "Pop",
+                "creation_date": "2017-06-19"
+            }
+        ]
+    },
+    {
+        "artist_name": "Nancy Lewis",
+        "artist_photo": "../static/Photos/Cantantes/n.jpg",
+        "description": "A hip-hop artist and rapper.",
+        "age": 27,
+        "nationality": "American",
+        "awards": [
+            "Hip-Hop Music Award"
+        ],
+        "albums": [
+            {
+                "album_name": "Album_U",
+                "song_name": "Harmonic Horizon",
+                "duration": "5:51",
+                "genre": "Hip-Hop",
+                "creation_date": "2014-06-12"
+            },
+            {
+                "album_name": "Album_D",
+                "song_name": "Sonic Symphony",
+                "duration": "4:07",
+                "genre": "Electronic",
+                "creation_date": "2024-05-18"
+            }
+        ]
+    },
+    {
+        "artist_name": "Yvonne Baker",
+        "artist_photo": "../static/Photos/Cantantes/y.jpg",
+        "description": "A rock guitarist and vocalist.",
+        "age": 29,
+        "nationality": "British",
+        "awards": [
+            "Rock Music Award"
+        ],
+        "albums": [
+            {
+                "album_name": "Album_C",
+                "song_name": "Celestial Serenade",
+                "duration": "3:48",
+                "genre": "Rock",
+                "creation_date": "2019-04-09"
+            },
+            {
+                "album_name": "Album_J",
+                "song_name": "Orbital Overture",
+                "duration": "4:18",
+                "genre": "Hip-Hop",
+                "creation_date": "2014-06-10"
+            }
+        ]
+    },
+    {
+        "artist_name": "Wendy Green",
+        "artist_photo": "../static/Photos/Cantantes/w.jpg",
+        "description": "A country music star with multiple hits.",
+        "age": 31,
+        "nationality": "American",
+        "awards": [
+            "Country Music Award"
+        ],
+        "albums": [
+            {
+                "album_name": "Album_V",
+                "song_name": "Ethereal Echoes",
+                "duration": "2:38",
+                "genre": "Country",
+                "creation_date": "2015-09-10"
+            },
+            {
+                "album_name": "Album_P",
+                "song_name": "Radiant Rhapsody",
+                "duration": "3:58",
+                "genre": "Classical",
+                "creation_date": "2016-09-20"
+            }
+        ]
+    },
+    {
+        "artist_name": "Alice Johnson",
+        "artist_photo": "../static/Photos/Cantantes/a.jpg",
+        "description": "A rock singer with a unique voice.",
+        "age": 25,
+        "nationality": "American",
+        "awards": [
+            "Rock Music Award"
+        ],
+        "albums": [
+            {
+                "album_name": "Album_E",
+                "song_name": "Infinite Impressions",
+                "duration": "5:45",
+                "genre": "Rock",
+                "creation_date": "2021-11-14"
+            }
+        ]
+    },
+    {
+        "artist_name": "Michael Clark",
+        "artist_photo": "../static/Photos/Cantantes/m.jpg",
+        "description": "A country singer and guitarist.",
+        "age": 33,
+        "nationality": "Canadian",
+        "awards": [
+            "Country Music Award"
+        ],
+        "albums": [
+            {
+                "album_name": "Album_U",
+                "song_name": "Luminous Lullaby",
+                "duration": "4:55",
+                "genre": "Country",
+                "creation_date": "2023-01-09"
+            },
+            {
+                "album_name": "Album_R",
+                "song_name": "Comet's Chorus",
+                "duration": "2:56",
+                "genre": "Hip-Hop",
+                "creation_date": "2011-11-25"
+            }
+        ]
+    },
+    {
+        "artist_name": "Karen White",
+        "artist_photo": "../static/Photos/Cantantes/k.jpg",
+        "description": "A pop artist known for her catchy tunes.",
+        "age": 24,
+        "nationality": "Australian",
+        "awards": [
+            "Pop Music Award"
+        ],
+        "albums": [
+            {
+                "album_name": "Album_S",
+                "song_name": "Aurora's Anthem",
+                "duration": "2:57",
+                "genre": "Pop",
+                "creation_date": "2010-07-30"
+            },
+            {
+                "album_name": "Album_D",
+                "song_name": "Celestial Chimes",
+                "duration": "4:06",
+                "genre": "Rock",
+                "creation_date": "2024-10-03"
+            }
+        ]
+    },
+    {
+        "artist_name": "Grace Lee",
+        "artist_photo": "../static/Photos/Cantantes/g.jpg",
+        "description": "A country singer with a strong fan base.",
+        "age": 28,
+        "nationality": "American",
+        "awards": [
+            "Country Music Award"
+        ],
+        "albums": [
+            {
+                "album_name": "Album_F",
+                "song_name": "Nebula Notes",
+                "duration": "2:59",
+                "genre": "Country",
+                "creation_date": "2011-03-20"
+            }
+        ]
+    },
+    {
+        "artist_name": "Victor Harris",
+        "artist_photo": "../static/Photos/Cantantes/v.jpg",
+        "description": "A classical musician and composer.",
+        "age": 35,
+        "nationality": "British",
+        "awards": [
+            "Classical Music Award"
+        ],
+        "albums": [
+            {
+                "album_name": "Album_W",
+                "song_name": "Galactic Groove",
+                "duration": "3:39",
+                "genre": "Classical",
+                "creation_date": "2022-11-25"
+            },
+            {
+                "album_name": "Album_Q",
+                "song_name": "Stellar Symphony",
+                "duration": "5:21",
+                "genre": "Electronic",
+                "creation_date": "2010-06-21"
+            }
+        ]
+    },
+    {
+        "artist_name": "James Diaz",
+        "artist_photo": "../static/Photos/Cantantes/j.jpg",
+        "description": "A jazz musician and saxophonist.",
+        "age": 29,
+        "nationality": "American",
+        "awards": [
+            "Jazz Music Award"
+        ],
+        "albums": [
+            {
+                "album_name": "Album_A",
+                "song_name": "Lunar Lullaby",
+                "duration": "2:21",
+                "genre": "Jazz",
+                "creation_date": "2023-10-06"
+            }
+        ]
+    },
+    {
+        "artist_name": "Paul Walker",
+        "artist_photo": "../static/Photos/Cantantes/p.jpg",
+        "description": "A jazz pianist and composer.",
+        "age": 34,
+        "nationality": "Canadian",
+        "awards": [
+            "Jazz Music Award"
+        ],
+        "albums": [
+            {
+                "album_name": "Album_H",
+                "song_name": "Solar Serenade",
+                "duration": "4:45",
+                "genre": "Jazz",
+                "creation_date": "2015-04-17"
+            }
+        ]
+    },
+    {
+        "artist_name": "Zachary Evans",
+        "artist_photo": "../static/Photos/Cantantes/z.jpg",
+        "description": "A pop singer and dancer.",
+        "age": 22,
+        "nationality": "Australian",
+        "awards": [
+            "Pop Music Award"
+        ],
+        "albums": [
+            {
+                "album_name": "Album_B",
+                "song_name": "Meteor Melody",
+                "duration": "3:54",
+                "genre": "Pop",
+                "creation_date": "2017-01-09"
+            },
+            {
+                "album_name": "Album_N",
+                "song_name": "Planetary Prelude",
+                "duration": "4:31",
+                "genre": "Electronic",
+                "creation_date": "2010-03-16"
+            }
+        ]
+    },
+    {
+        "artist_name": "Charlie Brown",
+        "artist_photo": "../static/Photos/Cantantes/c.jpg",
+        "description": "A classical pianist and composer.",
+        "age": 31,
+        "nationality": "British",
+        "awards": [
+            "Classical Music Award"
+        ],
+        "albums": [
+            {
+                "album_name": "Album_O",
+                "song_name": "Astro Anthem",
+                "duration": "4:18",
+                "genre": "Classical",
+                "creation_date": "2016-07-24"
+            },
+            {
+                "album_name": "Album_X",
+                "song_name": "Starry Sonata",
+                "duration": "4:02",
+                "genre": "Electronic",
+                "creation_date": "2012-09-09"
+            }
+        ]
+    },
+    {
+        "artist_name": "Thomas Scott",
+        "artist_photo": "../static/Photos/Cantantes/t.jpg",
+        "description": "A hip-hop artist and producer.",
+        "age": 27,
+        "nationality": "American",
+        "awards": [
+            "Hip-Hop Music Award"
+        ],
+        "albums": [
+            {
+                "album_name": "Album_E",
+                "song_name": "Nebula Nocturne",
+                "duration": "5:57",
+                "genre": "Hip-Hop",
+                "creation_date": "2010-02-07"
+            }
+        ]
+    },
+    {
+        "artist_name": "Quinn Hall",
+        "artist_photo": "../static/Photos/Cantantes/q.jpg",
+        "description": "An electronic music producer and DJ.",
+        "age": 26,
+        "nationality": "Canadian",
+        "awards": [
+            "Electronic Music Award"
+        ],
+        "albums": [
+            {
+                "album_name": "Album_Z",
+                "song_name": "Galactic Glee",
+                "duration": "2:17",
+                "genre": "Electronic",
+                "creation_date": "2022-03-22"
+            }
+        ]
+    }
+]

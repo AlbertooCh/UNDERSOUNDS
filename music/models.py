@@ -14,9 +14,19 @@ class Music(models.Model):
     artist_photo = models.ImageField(upload_to='static/Photos/Cantantes/')
     album_photo = models.ImageField(upload_to='static/Photos/album/')
     id = models.AutoField(primary_key=True)
+    creation_date = models.DateField()
+
 
     def __str__(self):
         return self.song_name
+
+class Artist(models.Model):
+    artist_name = models.CharField(max_length=100)
+    artist_photo = models.ImageField(upload_to='static/Photos/Cantantes/')
+    description = models.TextField()
+    age = models.IntegerField()
+    nationality = models.CharField(max_length=50)
+    awards = models.JSONField()
 
 
 class UserCollection(models.Model):

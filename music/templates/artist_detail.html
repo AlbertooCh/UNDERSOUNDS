@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+{% block title %}Catálogo - Undersounds{% endblock %}
+{% block content %}
+<body>
+<style>
+        .artist-info {
+            max-width: 600px;
+            margin: auto;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            text-align: center;
+        }
+        .artist-photo {
+            width: 200px;
+            height: auto;
+            border-radius: 50%;
+        }
+        .artist-details {
+            margin-top: 20px;
+            text-align: left;
+        }
+        .albums {
+            margin-top: 20px;
+        }
+    </style>
+    <div class="artist-info">
+        <img id="artistPhoto" class="artist-photo" src="" alt="Foto del Artista">
+        <h1 id="artistName"></h1>
+        <p id="description"></p>
+        <div class="artist-details">
+            <p><strong>Edad:</strong> <span id="age"></span></p>
+            <p><strong>Nacionalidad:</strong> <span id="nationality"></span></p>
+            <p><strong>Premios:</strong> <span id="awards"></span></p>
+        </div>
+        <div class="albums">
+            <h2>Álbumes</h2>
+            <ul id="albumsList"></ul>
+        </div>
+    </div>
+
+    <script>
+        const item = JSON.parse(localStorage.getItem('item'));
+
+        document.getElementById('artistPhoto').src = item.artist_photo;
+        document.getElementById('artistName').textContent = item.artist_name;
+        document.getElementById('description').textContent = item.description;
+        document.getElementById('age').textContent = item.age;
+        document.getElementById('nationality').textContent = item.nationality;
+        document.getElementById('awards').textContent = item.awards.join(', ');
+
+        const albumsList = document.getElementById('albumsList');
+        item.albums.forEach(album => {
+            const li = document.createElement('li');
+            li.innerHTML = `<strong>${album.album_name}</strong> - ${album.song_name} (${album.duration})<br>Género: ${album.genre}<br>Fecha de creación: ${album.creation_date}`;
+            albumsList.appendChild(li);
+        });
+    </script>
+</body>
+{% endblock %}
