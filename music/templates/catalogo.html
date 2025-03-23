@@ -79,7 +79,7 @@
     }
         .nombreCancion{
             flex: 1;
-            display: flex;
+            display: none;
             flex-wrap: wrap;
             justify-content: space-between;
             padding: 10px;
@@ -116,12 +116,14 @@
             background-color: #0056b3;
         }
         @keyframes fadeIn {
-        from {
-            opacity: 0;
-        }
-        to {
-            opacity: 1;
-        }
+            from {
+                opacity: 0;
+                transform: scale(0.9);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
     }
 
 </style>
@@ -129,6 +131,7 @@
     <div id="cont" class="titulo"></div>
     <h2 class="title">Catálogo</h2>
     <div class="search-bar">
+        <button id="lupa" >lupa</button>
         <input type="text" id="nombreCancion" placeholder="Buscar por canción, artista, álbum, género ..." class="nombreCancion">
         <input type="date" id="fecha">
         <button id="buscarBtn">Buscar</button>
@@ -182,7 +185,8 @@
 
         document.getElementById('buscarBtn').addEventListener('click', function() {
             const searchText = document.getElementById('nombreCancion').value.toLowerCase();
-
+            const search = document.getElementById('nombreCancion');
+            search.value = "";
 
             const filteredTracks = searchText ? tracksData.filter(item => {
                 const matchesTitle = item.song_name.toLowerCase().includes(searchText);
@@ -194,6 +198,30 @@
             }) : tracksData;
 
             displayTracks(filteredTracks);
+        });
+
+        document.getElementById('lupa').addEventListener('click', function() {
+            const nombreCancion = document.getElementById('nombreCancion');
+            nombreCancion.style.display = nombreCancion.style.display === 'none' ? 'block' : 'none';
+        });
+
+        document.getElementById('nombreCancion').addEventListener('keydown', function(event) {
+            if (event.key === 'Enter') {
+                const searchText = document.getElementById('nombreCancion').value.toLowerCase();
+            const search = document.getElementById('nombreCancion');
+            search.value = "";
+
+            const filteredTracks = searchText ? tracksData.filter(item => {
+                const matchesTitle = item.song_name.toLowerCase().includes(searchText);
+                const matchesArtist = item.artist_name.toLowerCase().includes(searchText);
+                const matchesAlbum = item.album_name.toLowerCase().includes(searchText);
+                const matchesGenre = item.genre.toLowerCase().includes(searchText);
+
+                return matchesTitle || matchesArtist || matchesAlbum || matchesGenre ;
+            }) : tracksData;
+
+            displayTracks(filteredTracks);
+            }
         });
 
     </script>

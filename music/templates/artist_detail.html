@@ -1,60 +1,85 @@
 {% extends 'base.html' %}
-{% block title %}Catálogo - Undersounds{% endblock %}
+{% block title %}Artist - Undersounds{% endblock %}
 {% block content %}
 <body>
 <style>
-        .artist-info {
-            max-width: 600px;
-            margin: auto;
-            padding: 20px;
-            border: 1px solid #ccc;
+        body {
+        font-family: Arial, sans-serif;
+        margin: 20px;
+    }
+    .title {
+        font-size: 40px;
+        font-weight: bold;
+        text-align: center;
+    }
+        .profile {
+            background-color: #fff;
             border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            width: 300px;
             text-align: center;
+            animation: fadeIn 1s ease-in-out;
         }
-        .artist-photo {
-            width: 200px;
+        .profile img {
+            width: 100%;
             height: auto;
-            border-radius: 50%;
+            border-bottom: 1px solid #ddd;
         }
-        .artist-details {
-            margin-top: 20px;
-            text-align: left;
+        .profile h1 {
+            font-size: 24px;
+            margin: 10px 0;
         }
-        .albums {
-            margin-top: 20px;
+        .profile p {
+            color: #666;
+            margin: 10px 20px;
+        }
+        .profile ul {
+            list-style: none;
+            padding: 0;
+        }
+        .profile ul li {
+            background-color: #f9f9f9;
+            margin: 5px 0;
+            padding: 10px;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+        .profile ul li:hover {
+            background-color: #e0e0e0;
+        }
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: scale(0.9);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
         }
     </style>
-    <div class="artist-info">
-        <img id="artistPhoto" class="artist-photo" src="" alt="../static/Photos/OIP.jpg">
-        <h1 id="artistName"></h1>
-        <p id="description"></p>
-        <div class="artist-details">
-            <p><strong>Edad:</strong> <span id="age"></span></p>
-            <p><strong>Nacionalidad:</strong> <span id="nationality"></span></p>
-            <p><strong>Premios:</strong> <span id="awards"></span></p>
-        </div>
-        <div class="albums">
-            <h2>Álbumes</h2>
-            <ul id="albumsList"></ul>
-        </div>
+<body>
+    <div class="profile">
+        <img src="../static/Photos/Cantantes/q.jpg" alt="Quinn Hall">
+        <h1>Quinn Hall</h1>
+        <p>Un productor de música electrónica y DJ.</p>
+        <p><strong>Edad:</strong> 26 años</p>
+        <p><strong>Nacionalidad:</strong> Canadiense</p>
+        <p><strong>Premios:</strong></p>
+        <ul>
+            <li>Electronic Music Award</li>
+        </ul>
+        <p><strong>Álbumes:</strong></p>
+        <ul>
+            <li>
+                <strong>Album_Z</strong><br>
+                Canción: Galactic Glee<br>
+                Duración: 2:17<br>
+                Género: Electrónica<br>
+                Fecha de creación: 22 de marzo de 2022
+            </li>
+        </ul>
     </div>
-
-    <script>
-        const item = JSON.parse(localStorage.getItem('item'));
-
-        document.getElementById('artistPhoto').src = item.artist_photo;
-        document.getElementById('artistName').textContent = item.artist_name;
-        document.getElementById('description').textContent = item.description;
-        document.getElementById('age').textContent = item.age;
-        document.getElementById('nationality').textContent = item.nationality;
-        document.getElementById('awards').textContent = item.awards.join(', ');
-
-        const albumsList = document.getElementById('albumsList');
-        item.albums.forEach(album => {
-            const li = document.createElement('li');
-            li.innerHTML = `<strong>${album.album_name}</strong> - ${album.song_name} (${album.duration})<br>Género: ${album.genre}<br>Fecha de creación: ${album.creation_date}`;
-            albumsList.appendChild(li);
-        });
-    </script>
 </body>
 {% endblock %}
