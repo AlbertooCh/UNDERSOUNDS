@@ -1,7 +1,64 @@
 {% load static %}
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'css/header.css' %}">
+<style>
+    /* Estilos para los menús desplegables */
+    .profile-dropdown, .register-dropdown {
+        position: relative;
+        display: inline-block;
+    }
+
+    .profile-dropdown .dropdown-content,
+    .register-dropdown .dropdown-content {
+        display: none;
+        position: absolute;
+        background-color: #f9f9f9;
+        min-width: 160px;
+        box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
+        z-index: 1;
+        top: 100%;
+        left: 0;
+    }
+
+    .profile-dropdown .dropdown-content a,
+    .register-dropdown .dropdown-content a {
+        color: #000;
+        padding: 12px 16px;
+        text-decoration: none;
+        display: block;
+        text-align: left;
+    }
+
+    .profile-dropdown .dropdown-content a:hover,
+    .register-dropdown .dropdown-content a:hover {
+        background-color: #f1f1f1;
+    }
+
+    .profile-dropdown.active .dropdown-content,
+    .register-dropdown.active .dropdown-content {
+        display: block;
+    }
+
+    /* Estilos para los íconos */
+    .icon-link {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .nav-icon {
+        width: 24px;
+        height: 24px;
+        object-fit: contain;
+    }
+
+    /* Estilo para el enlace de registro */
+    .register-link {
+        cursor: pointer;
+    }
+</style>
 {% endblock %}
+
 <header class="header">
     <div class="logo">
         <a href="{% url 'inicio' %}">
@@ -15,10 +72,59 @@
             <li><a href="{% url 'catalogo' %}">Catálogo</a></li>
             <li><a href="{% url 'novedades' %}">Novedades</a></li>
             <li><a href="{% url 'contacto' %}">Contacto</a></li>
+            {% if user.is_authenticated %}
+            <li class="profile-dropdown" id="profileDropdown">
+                <a href="#" onclick="toggleDropdown(event, 'profileDropdown')" class="icon-link">
+                    <img src="{% static 'images/perfil.png' %}" alt="Perfil" class="nav-icon">
+                </a>
+                <div class="dropdown-content">
+                    <a href="{% url 'perfil' %}">Mi perfil</a>
+                    <a href="{% url 'historial_compras' %}">Compras</a>
+                    <a href="{% url 'configuracion' %}">Configuración</a>
+                    <a href="{% url 'logout' %}">Cerrar sesión</a>
+                </div>
+            </li>
+            {% else %}
+            <li class="register-dropdown" id="registerDropdown">
+                <a href="#" onclick="toggleDropdown(event, 'registerDropdown')" class="register-link">Registrarse</a>
+                <div class="dropdown-content">
+                    <a href="{% url 'register' %}">Registrarse como fan</a>
+                    <a href="{% url 'artist_register' %}">Registrarse como artista</a>
+                </div>
+            </li>
             <li><a href="{% url 'login' %}">Iniciar sesión</a></li>
-            <li><a href="{% url 'register' %}">Registrarse</a> </li>
+            {% endif %}
         </ul>
     </nav>
 </header>
 
+<script>
+    // Función para mostrar/ocultar los menús desplegables
+    function toggleDropdown(event, dropdownId) {
+        event.preventDefault();
+        const dropdown = document.getElementById(dropdownId);
+        dropdown.classList.toggle("active");
 
+        // Cerrar otros dropdowns que estén abiertos
+        const allDropdowns = document.querySelectorAll('.profile-dropdown, .register-dropdown');
+        allDropdowns.forEach(item => {
+            if (item.id !== dropdownId && item.classList.contains('active')) {
+                item.classList.remove('active');
+            }
+        });
+    }
+
+    // Cerrar los menús desplegables al hacer clic fuera de ellos
+    document.addEventListener("click", function(event) {
+        const profileDropdown = document.getElementById("profileDropdown");
+        const registerDropdown = document.getElementById("registerDropdown");
+
+        if (profileDropdown && !profileDropdown.contains(event.target)) {
+            profileDropdown.classList.remove("active");
+        }
+
+        if (registerDropdown && !registerDropdown.contains(event.target)) {
+            registerDropdown.classList.remove("active");
+        }
+    });
+</script>
