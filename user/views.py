@@ -27,7 +27,8 @@ def configuracion(request):
 
 def historial_compras(request):
     return render(request, 'historial_compras.html')
-
+def mis_obras(request):
+    return render(request, 'mis_obras.html')
 
 @login_required
 def user_logout(request):

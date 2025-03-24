@@ -34,6 +34,19 @@
     .profile-dropdown.active .dropdown-content {
         display: block;
     }
+
+    /* Estilos para los íconos */
+    .icon-link {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .nav-icon {
+        width: 24px;
+        height: 24px;
+        object-fit: contain;
+    }
 </style>
 {% endblock %}
 
@@ -50,9 +63,15 @@
             <li><a href="{% url 'catalogo' %}">Catálogo</a></li>
             <li><a href="{% url 'novedades' %}">Novedades</a></li>
             <li><a href="{% url 'contacto' %}">Contacto</a></li>
-            <li><a href="{% url 'carrito' %}">Carrito</a></li>
+            <li>
+                <a href="{% url 'carrito' %}" class="icon-link">
+                    <img src="{% static 'images/carrito.png' %}" alt="Carrito" class="nav-icon">
+                </a>
+            </li>
             <li class="profile-dropdown" id="profileDropdown">
-                <a href="#" onclick="toggleDropdown(event)">Perfil</a>
+                <a href="#" onclick="toggleDropdown(event)" class="icon-link">
+                    <img src="{% static 'images/perfil.png' %}" alt="Perfil" class="nav-icon">
+                </a>
                 <div class="dropdown-content">
                     <a href="{% url 'perfil' %}">Mi perfil</a>
                     <a href="{% url 'historial_compras' %}">Compras</a>
