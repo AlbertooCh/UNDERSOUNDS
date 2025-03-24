@@ -1,0 +1,67 @@
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: #f9f9f9;
+}
+
+.perfil {
+  max-width: 1200px;
+  margin: 0 auto;
+  background: white;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.banner {
+  background-color: #2196F3; /* Banner azul */
+  color: white;
+  text-align: left; /* Alineamos el texto a la izquierda */
+  padding: 20px;
+}
+
+.contenido {
+  padding: 20px;
+  text-align: left; /* Alineamos todo el contenido a la izquierda */
+}
+
+.foto-perfil {
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  margin: 10px 0;
+}
+
+.lista-canciones {
+  list-style: none;
+  padding: 0;
+  text-align: left;
+  margin: 20px 0;
+  display: flex; /* Usamos flexbox para alinear las canciones en fila */
+  justify-content: flex-start; /* Alineamos las canciones al principio */
+  flex-wrap: wrap; /* Permite que las canciones se muevan a una nueva línea si no caben */
+}
+
+.lista-canciones li {
+  background-color: #f1f1f1;
+  padding: 10px;
+  margin: 10px;
+  border-radius: 4px;
+  border: 1px solid #ddd;
+  width: 150px; /* Establecemos un tamaño fijo para las canciones */
+  text-align: center;
+}
+
+.lista-canciones li:hover {
+  background-color: #e0f7fa;
+}
+
+.lista-canciones .portada {
+  width: 100px; /* Tamaño de la portada */
+  height: 100px;
+  border-radius: 8px;
+  margin-bottom: 10px; /* Espaciado entre la portada y el texto */
+  object-fit: cover; /* Asegura que la imagen se ajuste sin deformarse */
+  border: 2px solid #ccc;
+}

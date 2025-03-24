@@ -1,14 +1,33 @@
-{% extends 'base.html' %}
-
-{% block title %}
-    Perfil
-{% endblock %}
-
-{% block content %}
-    <h1>Perfil</h1>
-    <p>Nombre de usuario: </p>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Perfil de Usuario</title>
+  <link rel="stylesheet" href="Perfil.css">
+</head>
+<body>
+  <div class="perfil">
+    <div class="banner">
+      <h1>Perfil</h1>
+    </div>
+    <div class="contenido">
+      <img class="foto-perfil" src="foto.jpg" alt="Foto de perfil">
+      <p>Nombre de usuario: </p>
     <p>Correo electrónico: </p>
     <p>Fecha de registro: </p>
     <p>Último acceso: </p>
     <p>Última modificación: </p>
-{% endblock %}
+      <h3>Mis Canciones Favoritas</h3>
+      <ul class="lista-canciones">
+ 	<img class="Portada-Canción" src="cancion1.jpg" alt="Caratula del disco">
+        <li>🎵 Canción 1 - Artista 1</li>
+	<img class="Portada-Canción" src="cancion2.jpg" alt="Caratula del disco">
+        <li>🎵 Canción 2 - Artista 2</li>
+	<img class="Portada-Canción" src="cancion3.jpg" alt="Caratula del disco">
+        <li>🎵 Canción 3 - Artista 3</li>
+      </ul>
+    </div>
+  </div>
+</body>
+</html>
