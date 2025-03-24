@@ -2,91 +2,120 @@
 {% block title %}Contacto - Undersounds{% endblock %}
 {% block content %}
     <style>
-        /* Estilos para la página de contacto */
+        /* Estilos consistentes con la página de novedades */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f8f9fa;
+        }
+
+        .title {
+            font-size: 40px;
+            font-weight: bolder; /* Más grueso */
+            text-align: center;
+            margin-bottom: 30px;
+            color: #000000; /* Negro puro */
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.1); /* Sutil sombra para profundidad */
+        }
+
         .contact-container {
             max-width: 600px;
-            margin: 50px auto;
-            padding: 20px;
-            background-color: #f5f9fa;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            margin: 0 auto;
+            padding: 30px;
+            background-color: #e0e0e0; /* Gris un poco más oscuro */
+            border-radius: 15px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15); /* Sombra más pronunciada */
         }
 
-        .contact-container h2 {
-            text-align: center;
+        .form-group {
             margin-bottom: 20px;
-            font-size: 28px;
-            color: #333;
-        }
-
-        .contact-container .form-group {
-            margin-bottom: 15px;
         }
 
         .contact-container label {
             display: block;
-            font-size: 14px;
-            color: #333;
+            font-size: 16px;
+            color: #000; /* Negro puro */
+            margin-bottom: 8px;
             font-weight: bold;
-            margin-bottom: 5px;
         }
 
         .contact-container input,
         .contact-container textarea {
             width: 100%;
-            padding: 10px;
-            font-size: 14px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
+            padding: 12px;
+            font-size: 16px;
+            border: 2px solid #999; /* Borde más oscuro */
+            border-radius: 15px;
             box-sizing: border-box;
+            background-color: white;
+            transition: all 0.3s ease;
+        }
+
+        .contact-container input:focus,
+        .contact-container textarea:focus {
+            outline: none;
+            border-color: #000; /* Borde negro al enfocar */
+            box-shadow: 0 0 8px rgba(0, 0, 0, 0.2);
         }
 
         .contact-container textarea {
-            resize: vertical; /* Permite redimensionar verticalmente */
+            resize: vertical;
             min-height: 150px;
         }
 
         .contact-container button[type="submit"] {
-            background-color: #000;
+            background-color: #000000; /* Negro puro */
             color: #fff;
-            padding: 10px 20px;
+            padding: 15px 20px;
             border: none;
-            border-radius: 4px;
-            font-size: 16px;
+            border-radius: 15px;
+            font-size: 18px;
+            font-weight: bold;
             cursor: pointer;
-            transition: background-color 0.3s ease;
+            transition: all 0.3s ease;
             width: 100%;
+            margin-top: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
         }
 
         .contact-container button[type="submit"]:hover {
-            background-color: #333;
+            background-color: #222222; /* Negro ligeramente más claro al hover */
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.25);
         }
 
-        /* Estilos para mensajes de éxito o error */
-        .contact-container .message {
+        /* Mensajes estilo similar a la página anterior */
+        .message {
             margin-top: 20px;
-            padding: 10px;
-            border-radius: 4px;
+            padding: 15px;
+            border-radius: 15px;
             text-align: center;
-            font-size: 14px;
+            font-size: 16px;
+            animation: fadeIn 0.5s ease forwards;
+            border: 2px solid transparent;
         }
 
-        .contact-container .message.success {
-            background-color: #d4edda;
-            color: #155724;
-            border: 1px solid #c3e6cb;
+        .message.success {
+            background-color: rgba(200, 230, 200, 0.9); /* Verde más oscuro */
+            color: #0a3a0a; /* Texto más oscuro */
+            border-color: #0a3a0a;
         }
 
-        .contact-container .message.error {
-            background-color: #f8d7da;
-            color: #721c24;
-            border: 1px solid #f5c6cb;
+        .message.error {
+            background-color: rgba(240, 200, 200, 0.9); /* Rojo más oscuro */
+            color: #5a1a1a; /* Texto más oscuro */
+            border-color: #5a1a1a;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
         }
     </style>
 
+    <h2 class="title">CONTACTO</h2> <!-- En mayúsculas para más impacto -->
+
     <div class="contact-container">
-        <h2>Contacto</h2>
         <form action="#" method="post">
             {% csrf_token %}
             <div class="form-group">
@@ -106,11 +135,10 @@
                 <textarea id="message" name="message" required></textarea>
             </div>
             <div class="form-group">
-                <button type="submit">Enviar mensaje</button>
+                <button type="submit">ENVIAR MENSAJE</button> <!-- También en mayúsculas -->
             </div>
         </form>
 
-        <!-- Mensajes de éxito o error (opcional) -->
         {% if messages %}
             {% for message in messages %}
                 <div class="message {% if message.tags %}{{ message.tags }}{% endif %}">
