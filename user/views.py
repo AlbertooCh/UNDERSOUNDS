@@ -17,6 +17,15 @@ def register(request):
         return redirect("login")
     return render(request, "register.html")
 
+def artist_register(request):
+    if request.method == "POST":
+        username = request.POST["username"]
+        email = request.POST["email"]
+        password = request.POST["password"]
+        user = User.objects.create_user(username=username, email=email, password=password, is_artist=True)
+        return redirect("login")
+    return render(request, "artist_register.html")
+
 
 def perfil(request):
     return render(request, 'perfil.html')
