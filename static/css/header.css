@@ -3,11 +3,11 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 15px 20px; /* Reducido el padding vertical */
-    background-color: #fff; /* Cambiado a blanco */
-    color: #000; /* Cambiado a negro */
+    padding: 15px 20px;
+    background-color: #fff;
+    color: #000;
     font-family: 'Arial', sans-serif;
-    height: 60px; /* Reducida la altura */
+    height: 60px;
 }
 
 .logo a {
@@ -15,7 +15,7 @@
     color: inherit;
 }
 .logo a img{
-    width: 200px; /* Reducido el tamaño del logo */
+    width: 200px;
     height: auto;
 }
 
@@ -33,8 +33,8 @@
 
 .navbar .nav-links a {
     text-decoration: none;
-    color: #000; /* Cambiado a negro */
-    font-size: 16px; /* Reducido el tamaño de la fuente */
+    color: #000;
+    font-size: 16px;
     font-weight: 500;
     transition: color 0.3s ease;
 }
@@ -51,8 +51,8 @@
 
 .user-actions a {
     text-decoration: none;
-    color: #000; /* Cambiado a negro */
-    font-size: 16px; /* Reducido el tamaño de la fuente */
+    color: #000;
+    font-size: 16px;
     font-weight: 500;
     margin-left: 25px;
     transition: color 0.3s ease;
@@ -66,5 +66,5 @@
 .user-actions a:not(:last-child)::after {
     content: "/";
     margin-left: 25px;
-    color: #000; /* Cambiado a negro */
+    color: #000;
 }

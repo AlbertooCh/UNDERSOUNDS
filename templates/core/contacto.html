@@ -2,7 +2,7 @@
 {% block title %}Contacto - Undersounds{% endblock %}
 {% block content %}
     <style>
-        /* Estilos consistentes con la página de novedades */
+
         body {
             font-family: Arial, sans-serif;
             margin: 20px;
@@ -11,20 +11,20 @@
 
         .title {
             font-size: 40px;
-            font-weight: bolder; /* Más grueso */
+            font-weight: bolder;
             text-align: center;
             margin-bottom: 30px;
-            color: #000000; /* Negro puro */
-            text-shadow: 1px 1px 2px rgba(0,0,0,0.1); /* Sutil sombra para profundidad */
+            color: #000000;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
         }
 
         .contact-container {
             max-width: 600px;
             margin: 0 auto;
             padding: 30px;
-            background-color: #e0e0e0; /* Gris un poco más oscuro */
+            background-color: #e0e0e0;
             border-radius: 15px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15); /* Sombra más pronunciada */
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
         }
 
         .form-group {
@@ -34,7 +34,7 @@
         .contact-container label {
             display: block;
             font-size: 16px;
-            color: #000; /* Negro puro */
+            color: #000;
             margin-bottom: 8px;
             font-weight: bold;
         }
@@ -44,7 +44,7 @@
             width: 100%;
             padding: 12px;
             font-size: 16px;
-            border: 2px solid #999; /* Borde más oscuro */
+            border: 2px solid #999;
             border-radius: 15px;
             box-sizing: border-box;
             background-color: white;
@@ -54,7 +54,7 @@
         .contact-container input:focus,
         .contact-container textarea:focus {
             outline: none;
-            border-color: #000; /* Borde negro al enfocar */
+            border-color: #000;
             box-shadow: 0 0 8px rgba(0, 0, 0, 0.2);
         }
 
@@ -64,7 +64,7 @@
         }
 
         .contact-container button[type="submit"] {
-            background-color: #000000; /* Negro puro */
+            background-color: #000000;
             color: #fff;
             padding: 15px 20px;
             border: none;
@@ -79,12 +79,10 @@
         }
 
         .contact-container button[type="submit"]:hover {
-            background-color: #222222; /* Negro ligeramente más claro al hover */
+            background-color: #222222;
             transform: translateY(-2px);
             box-shadow: 0 6px 12px rgba(0, 0, 0, 0.25);
         }
-
-        /* Mensajes estilo similar a la página anterior */
         .message {
             margin-top: 20px;
             padding: 15px;
@@ -96,14 +94,14 @@
         }
 
         .message.success {
-            background-color: rgba(200, 230, 200, 0.9); /* Verde más oscuro */
-            color: #0a3a0a; /* Texto más oscuro */
+            background-color: rgba(200, 230, 200, 0.9);
+            color: #0a3a0a;
             border-color: #0a3a0a;
         }
 
         .message.error {
-            background-color: rgba(240, 200, 200, 0.9); /* Rojo más oscuro */
-            color: #5a1a1a; /* Texto más oscuro */
+            background-color: rgba(240, 200, 200, 0.9);
+            color: #5a1a1a;
             border-color: #5a1a1a;
         }
 
@@ -113,7 +111,7 @@
         }
     </style>
 
-    <h2 class="title">CONTACTO</h2> <!-- En mayúsculas para más impacto -->
+    <h2 class="title">CONTACTO</h2>
 
     <div class="contact-container">
         <form action="#" method="post">
@@ -135,7 +133,7 @@
                 <textarea id="message" name="message" required></textarea>
             </div>
             <div class="form-group">
-                <button type="submit">ENVIAR MENSAJE</button> <!-- También en mayúsculas -->
+                <button type="submit">ENVIAR MENSAJE</button>
             </div>
         </form>
 
