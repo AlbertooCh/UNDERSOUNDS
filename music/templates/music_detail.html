@@ -1,13 +1,28 @@
 {% extends 'base.html' %}
 {% load static %}
-{% block title %}Catálogo - Undersounds{% endblock %}
+{% block title %}Cancion - Undersounds{% endblock %}
 {% block content %}
     <style>
         body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #f2f2f2;
+        font-family: Arial, sans-serif;
+        margin: 20px;
+    }
+    .title {
+        font-size: 40px;
+        font-weight: bold;
+        text-align: center;
+    }
+    .new-comment {
+             flex: 1;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            padding: 10px;
+        height: 5vw;
+        width: 25vw;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
         }
 
         header {
@@ -39,21 +54,40 @@
         }
 
         .track-info {
+            background-color: #e0e0e0;
+            padding: 10px;
+            border-radius: 15px;
             display: flex;
             align-items: center;
-            gap: 20px;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            margin-right: 40px;
+        }
+        .track-info img {
+            height: 20vw;
+            margin: 15px;
+            border-radius: 15px;
         }
 
-        .track-cover {
-            width: 150px;
-            height: 150px;
-            object-fit: cover;
-        }
+.track-details {
+    flex: 1;
+    text-align: left;
+}
 
-        .track-details h1 {
-            margin: 0;
-        }
+.track-details h1,
+.track-details p {
+    margin: 5px 0;
+}
 
+.track-buttons {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.track-buttons button {
+    margin: 5px 0;
+}
         .play-button {
             background-color: #ff5500;
             color: white;
@@ -124,7 +158,8 @@
         .author-info {
             background-color: #e0e0e0;
             padding: 10px;
-            border-radius: 5px;
+            border-radius: 15px;
+            margin-right: 40px;
         }
 
         .track-list {
@@ -208,6 +243,31 @@
             background-color: #e64a00;
         }
 
+
+        .star-rating {
+            direction: rtl;
+            display: inline-block;
+            padding: 20px;
+        }
+        .star-rating input[type="radio"] {
+            display: none;
+        }
+        .star-rating label {
+            color: #bbb;
+            font-size: 30px;
+            padding: 0;
+            cursor: pointer;
+        }
+        .star-rating input[type="radio"]:checked ~ label,
+        .star-rating label:hover,
+        .star-rating label:hover ~ label {
+            color: #f2b600;
+        }
+        .Desc {
+            display: none;
+        }
+
+
     </style>
 
 <body>
@@ -246,27 +306,33 @@
             <button onclick="hideInfoBoxC()">Cerrar</button>
         </div>
         </div>
-        <button class="back-button" onclick="goBack()">Volver</button>
-        <div class="track-info">
+        <button class="back-button" onclick="goBack()"><-</button>
+        <div class="track-info" id = "track-info">
             <div class="track-details">
                 <h1 id="song-name"></h1>
                 <p id="artist-name"></p>
-                <p id="album-name"></p>
-                <p id="duration"></p>
-                <p id="genre"></p>
                 <button id="play-button" onclick="showInfoBox()" >Play</button>
                 <button id="Desc-button" onclick="showInfoBoxD()" >Descargar</button>
-                <button id="like" >Like</button>
+                <button id="like" >Like ♡ ❤</button>
             </div>
-
             <img id="track-cover" class="track-cover" alt="Track Cover">
         </div>
         <button id="Descripcion">Descripcion</button>
+        <div id="Desc" class="Desc">
+            <p>Descripcion de la cancion</p>
+        </div>
         <div class="comments-section">
             <div class="comments">
                 <h2>Comments</h2>
                 <div id="comments-anadir">
-                   <textarea id="new-comment" placeholder="Añadir un comentario..."></textarea>
+                   <input type="text" id="new-comment" placeholder="Añadir un comentario..." class="new-comment"></input>
+                    <div class="star-rating">
+        <input type="radio" id="star5" name="rating" value="5"><label for="star5">★</label>
+        <input type="radio" id="star4" name="rating" value="4"><label for="star4">★</label>
+        <input type="radio" id="star3" name="rating" value="3"><label for="star3">★</label>
+        <input type="radio" id="star2" name="rating" value="2"><label for="star2">★</label>
+        <input type="radio" id="star1" name="rating" value="1"><label for="star1">★</label>
+    </div>
                 <button onclick="showInfoBoxC()">Enviar</button>
                 </div>
                 <div id="comentarios"></div>
@@ -274,18 +340,18 @@
             </div>
             <div class="author-info">
                 <h2>Author Information</h2>
-                <button id="edit-button" onclick="window.location.href='../artist_detail/';" >Artist</button>
+                <button id="edit-button" onclick="window.location.href='../artist_detail/';" >Seguir</button>
                 <img id="author-image" class="author-images" alt="../static/Photos/OIP.jpg" >
                 <p><strong>Name:</strong> <span id="author-name"></span></p>
                 <p><strong>Genre:</strong> <span id="author-genre"></span></p>
-                <div class="track-list">
-                    <h1 class="album-title" id="albumTitle"></h1>
-                    <ul class="song-list" id="songList"></ul>
-                </div>
+                <h2>Canciones del mismo album</h2>
+                <div id="song-list"></div>
             </div>
         </div>
     </main>
     <script>
+
+
         function goBack() {
             window.history.back();
         }
@@ -320,9 +386,6 @@
         if (item) {
             document.getElementById('song-name').textContent = item.song_name;
             document.getElementById('artist-name').textContent = `by ${item.artist_name}`;
-            document.getElementById('album-name').textContent = `Album: ${item.album_name}`;
-            document.getElementById('duration').textContent = `Duration: ${item.duration}`;
-            document.getElementById('genre').textContent = `Genre: ${item.genre}`;
             document.getElementById('track-cover').src = item.album_photo;
             document.getElementById('author-name').textContent = item.artist_name;
             document.getElementById('author-genre').textContent = item.genre;
@@ -330,47 +393,64 @@
             mostrarComentarios();
 
             const trackList = document.getElementById('track-list');
-            item.tracks.forEach((track, index) => {
-                const li = document.createElement('li');
-                li.textContent = `${index + 1}. ${track}`;
-                trackList.appendChild(li);
-            });
-
             mostrarComentarios();
         } else {
             document.querySelector('.track-info').innerHTML = '<p>No hay datos disponibles.</p>';
         }
 
 
-
+        let canciones = [];
         fetch('/static/prueba5.json')
-  .then(response => response.json())
-  .then(data => {
-    const albumName = "Album_B";
-    const songsInAlbum = data.filter(song => song.album === albumName);
+            .then(response => response.json())
+            .then(data => {
+                canciones = data;
+                filterCanciones();
+            })
+        .catch(error => console.error('Error al cargar el JSON:', error));
 
-    document.getElementById('albumTitle').textContent = `Songs from ${albumName}`;
-    const songList = document.getElementById('songList');
-    songsInAlbum.forEach(song => {
-        const listItem = document.createElement('li');
-        listItem.textContent = song.title;
-        songList.appendChild(listItem);
-    });
-  })
-  .catch(error => console.error('Error loading JSON:', error));
+        function filterCanciones() {
+            fetch('/static/prueba5.json')
+                .then(response => response.json())
+                .then(data => {
+                    canciones = data;
+                    const filteredSongs = canciones.filter(cancion => {
+                        const matchesAlbum = cancion.album_name.toLowerCase() === item.album_name.toLowerCase();
+                        const isNotCurrentSong = cancion.song_name.toLowerCase() !== item.song_name.toLowerCase();
 
+                        return matchesAlbum && isNotCurrentSong;
+                    });
+                    mostarCanciones(filteredSongs);
+                })
+        }
 
+        function mostarCanciones(songs){
+            const contenedor = document.getElementById('song-list');
+            contenedor.innerHTML = '';
+            songs.forEach(cancion => {
+                const songDiv = document.createElement('div');
+                songDiv.className = 'songDiv';
+                const li = document.createElement('p');
+                li.className = 'linfo';
+                li.textContent = cancion.song_name;
+                li.addEventListener('click', () => {
+                    localStorage.setItem('item', JSON.stringify(cancion));
+                    window.location.href = `../music_detail/`;
+                });
+                songDiv.appendChild(li);
+                contenedor.appendChild(songDiv);
+            });
+        }
 
-
-
-
-
+        document.getElementById('Descripcion').addEventListener('click', function() {
+            const Desc = document.getElementById('Desc');
+            Desc.style.display = Desc.style.display === 'block' ? 'none' : 'block';
+        });
 
         function mostrarComentarios() {
     const comentariosDiv = document.getElementById('comentarios');
     comentariosDiv.innerHTML = '';
 
-    item.comments.forEach(comment => {
+    item.comments.forEach((comment, index) => {
         const commentDiv = document.createElement('div');
         commentDiv.classList.add('comment');
 
@@ -414,9 +494,9 @@
 
         function addComment() {
             const newComment = document.getElementById('new-comment').value;
-            const userName = "Nuevo Usuario"; // Puedes cambiar esto para obtener el nombre del usuario actual
-            const profilePhoto = "../static/Photos/Users/default.jpg"; // Foto de perfil predeterminada
-            const rating = 5; // Puedes cambiar esto para obtener la valoración del usuario
+            const userName = "Nuevo Usuario";
+            const profilePhoto = "../static/Photos/Users/default.jpg";
+            const rating = document.querySelector('.star-rating input:checked') ? document.querySelector('.star-rating input:checked').value : 0;
 
             if (newComment) {
                 const comment = {
@@ -426,14 +506,16 @@
                     rating: rating
                 };
 
-                item.comments.push(comment);
+                item.comments.unshift(comment);
                 mostrarComentarios();
 
                 document.getElementById('new-comment').value = '';
+                document.querySelector('.star-rating input:checked').checked = false;
             } else {
                 alert('Por favor, añade un comentario.');
             }
             hideInfoBoxC();
         }
+
     </script>
 {% endblock %}
