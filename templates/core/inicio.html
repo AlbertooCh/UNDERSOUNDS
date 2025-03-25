@@ -3,7 +3,12 @@
 {% block title %}Inicio - Undersounds{% endblock %}
 {% block content %}
 <style>
-    /* Estilos consistentes con Undersounds */
+
+    body {
+        padding-top: 80px;
+    }
+
+
     .hero-section {
         background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('{% static "images/hero-bg.jpg" %}');
         background-size: cover;
@@ -12,6 +17,7 @@
         text-align: center;
         padding: 100px 20px;
         margin-bottom: 40px;
+        margin-top: -80px;
     }
 
     .hero-title {
@@ -194,7 +200,6 @@
         font-family: Arial, sans-serif;
     }
 
-    /* Nuevos estilos para las secciones añadidas */
     .new-releases-cta {
         background-color: #000;
         color: white;
@@ -243,6 +248,7 @@
     }
 </style>
 
+
 <section class="hero-section">
     <h1 class="hero-title">Descubre música única en Undersounds</h1>
     <p class="hero-subtitle">La plataforma donde artistas independientes comparten sus creaciones</p>
@@ -251,6 +257,7 @@
         <a href="{% url 'register' %}" class="btn btn-secondary">Regístrate gratis</a>
     </div>
 </section>
+
 
 <div class="features-container">
     <h2 class="section-title">Por qué elegir Undersounds</h2>
@@ -275,17 +282,20 @@
     </div>
 </div>
 
+
 <section class="new-releases-cta">
     <h2 class="new-releases-title">¿Quieres ver lo más nuevo?</h2>
     <p class="new-releases-text">Explora nuestras últimas novedades y descubre la música más reciente de artistas independientes.</p>
     <a href="{% url 'novedades' %}" class="btn btn-secondary">Ver novedades</a>
 </section>
 
+
 <section class="cta-section">
     <h2 class="cta-title">¿Eres artista?</h2>
     <p class="cta-text">Únete a Undersounds y comparte tu música con el mundo. Mantén el control total de tus creaciones y recibe el 100% de tus ganancias.</p>
     <a href="{% url 'artist_register' %}" class="btn btn-primary">Sube tu música ahora</a>
 </section>
+
 
 <section class="contact-section">
     <h2 class="contact-title">¿Tienes algún problema o alguna duda?</h2>
