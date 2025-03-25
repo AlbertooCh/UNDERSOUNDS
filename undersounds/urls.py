@@ -21,6 +21,7 @@ from user import urls
 from store import urls
 from . import views
 urlpatterns = [
+    path('', views.inicio, name='inicio'),
     path('inicio/', views.inicio, name='inicio'),
     path('contacto/', views.contacto, name='contacto'),
     path('admin/', admin.site.urls),
