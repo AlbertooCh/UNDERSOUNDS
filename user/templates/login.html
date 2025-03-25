@@ -1,8 +1,8 @@
 {% extends 'base.html' %}
+{% load static %}
 {% block title %}Login - Undersounds{% endblock %}
 {% block content %}
 <style>
-    /* Estilos consistentes */
     .auth-container {
         max-width: 500px;
         margin: 60px auto;
@@ -22,6 +22,7 @@
 
     .form-group {
         margin-bottom: 25px;
+        position: relative;
     }
 
     .form-group label {
@@ -82,6 +83,16 @@
     .auth-footer a:hover {
         text-decoration: underline;
     }
+
+    /* Estilos para el botón de mostrar/ocultar contraseña */
+    .toggle-password {
+        position: absolute;
+        right: 15px;
+        top: 38px;
+        cursor: pointer;
+        width: 24px;
+        height: 24px;
+    }
 </style>
 
 <div class="auth-container">
@@ -105,13 +116,29 @@
         <div class="form-group">
             <label for="password">Contraseña:</label>
             <input type="password" id="password" name="password" class="form-control" required>
+            <img src="{% static 'images/ver_oculto.png' %}" class="toggle-password" onclick="togglePasswordVisibility('password', this)" alt="Mostrar contraseña">
         </div>
 
         <button type="submit" class="submit-btn">ENTRAR</button>
     </form>
 
     <div class="auth-footer">
-        ¿No tienes cuenta? <a href="{% url 'register' %}">Regístrate aquí</a>
+        ¿No tienes cuenta? Registrate aquí
+        <a href="{% url 'register' %}">como fan</a> o <a href="{% url 'artist_register' %}">como artista</a>.
     </div>
 </div>
+
+<script>
+    // Función para mostrar/ocultar contraseña
+    function togglePasswordVisibility(inputId, icon) {
+        const input = document.getElementById(inputId);
+        if (input.type === "password") {
+            input.type = "text";
+            icon.src = "{% static 'images/viendo_oculto.png' %}";
+        } else {
+            input.type = "password";
+            icon.src = "{% static 'images/ver_oculto.png' %}";
+        }
+    }
+</script>
 {% endblock %}

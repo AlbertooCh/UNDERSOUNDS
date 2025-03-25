@@ -1,4 +1,4 @@
-/* Ensure full height */
+
 html, body {
     height: 100%;
     margin: 0;
@@ -7,7 +7,7 @@ html, body {
     flex-direction: column;
 }
 
-/* Wrapper ensures the main content fills available space */
+
 .wrapper {
     display: flex;
     flex-direction: column;
@@ -15,7 +15,7 @@ html, body {
     width: 100%;
 }
 
-/* Main content expands to push the footer down */
+
 .main-content {
     flex: 1;
 }
@@ -23,24 +23,24 @@ html, body {
 /* Footer Styling */
 .footer {
     display: flex;
-    justify-content: center; /* Centers content horizontally */
-    align-items: center; /* Centers content vertically */
-    flex-direction: column; /* Align logo and links vertically */
-    padding: 40px 20px; /* Increased padding */
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    padding: 40px 20px;
     background: linear-gradient(to top, black, grey 50%);
     color: white;
     font-family: 'Arial', sans-serif;
-    height: auto; /* Adjusts height dynamically */
-    min-height: 150px; /* Ensures a minimum height */
+    height: auto;
+    min-height: 150px;
     width: 100%;
-    margin-top: auto; /* Pushes footer to the bottom */
+    margin-top: auto;
 }
 
 /* Logo Container */
 .footer-logo {
     display: flex;
     justify-content: center;
-    margin-bottom: 15px; /* More space between logo and links */
+    margin-bottom: 15px;
 }
 
 /* Adjust logo size */
