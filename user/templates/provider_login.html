@@ -1,0 +1,67 @@
+<!-- templates/socialaccount/provider_login.html -->
+{% extends "socialaccount/login.html" %}
+
+{% block social-login %}
+<div class="google-login-wrapper">
+    <p class="google-login-message">Serás redirigido a Google para autenticarte</p>
+    <div class="loading-spinner">
+        <div class="spinner"></div>
+        <p>Redirigiendo...</p>
+    </div>
+</div>
+
+<style>
+    /* Estilos personalizados */
+    .social-login-container {
+        max-width: 500px;
+        margin: 2rem auto;
+        padding: 2rem;
+        background: #fff;
+        border-radius: 8px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+
+    .social-login-title {
+        color: #333;
+        text-align: center;
+        margin-bottom: 1.5rem;
+    }
+
+    .google-login-wrapper {
+        text-align: center;
+    }
+
+    .google-login-message {
+        color: #555;
+        margin-bottom: 2rem;
+    }
+
+    .loading-spinner {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 1rem;
+    }
+
+    .spinner {
+        width: 40px;
+        height: 40px;
+        border: 4px solid #f3f3f3;
+        border-top: 4px solid #4285F4; /* Color de Google */
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+</style>
+
+<script>
+    // Redirección automática después de 1 segundo
+    setTimeout(function() {
+        window.location.href = "{{ provider_login_url }}";
+    }, 1000);
+</script>
+{% endblock %}

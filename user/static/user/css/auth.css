@@ -90,6 +90,57 @@
         width: 24px;
         height: 24px;
     }
+    /* Estilos para botones OAuth */
+.oauth-providers {
+    margin: 25px 0;
+    text-align: center;
+}
+
+.oauth-divider {
+    position: relative;
+    color: #666;
+    margin: 20px 0;
+}
+
+.oauth-divider::before,
+.oauth-divider::after {
+    content: "";
+    border-top: 1px solid #ddd;
+    position: absolute;
+    top: 50%;
+    width: 30%;
+}
+
+.oauth-divider::before { right: 60%; }
+.oauth-divider::after { left: 60%; }
+
+.oauth-btn {
+    display: block;
+    padding: 10px;
+    margin: 10px auto;
+    border-radius: 5px;
+    width: 80%;
+    max-width: 250px;
+    text-align: center;
+    font-weight: bold;
+}
+
+.google-btn {
+    background: white;
+    border: 1px solid #ddd;
+    color: #757575;
+}
+
+.facebook-btn {
+    background: #1877f2;
+    color: white;
+    border: 1px solid #1877f2;
+}
+
+.oauth-btn img {
+    vertical-align: middle;
+    margin-right: 10px;
+}
 
 
 
@@ -245,3 +296,5 @@
 .register-container {
     max-width: 500px; /* Un poco más estrecho que el de artista */
 }
+
+

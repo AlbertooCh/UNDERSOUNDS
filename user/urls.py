@@ -1,4 +1,4 @@
-from django.urls import path
+from django.urls import path, include  # Añade include
 from . import views
 
 urlpatterns = [
@@ -9,4 +9,7 @@ urlpatterns = [
     path('user/configuracion/', views.configuracion, name='configuracion'),
     path('user/historial_compras/', views.historial_compras, name='historial_compras'),
     path('user/mis_obras/', views.mis_obras, name='mis_obras'),
+
+    # Añade estas líneas para OAuth (django-allauth)
+    path('accounts/', include('allauth.urls')),  # URLs para autenticación social
 ]

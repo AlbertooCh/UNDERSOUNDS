@@ -1,0 +1,18 @@
+<!-- templates/socialaccount/login.html -->
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Iniciar sesión con google - Undersounds{% endblock %}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'user/css/auth.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="social-login-container">
+    <h1 class="social-login-title">Iniciar sesión con {{ provider.name }}</h1>
+    <div class="social-login-content">
+        {% block social-login %}{% endblock %}
+    </div>
+</div>
+{% endblock %}

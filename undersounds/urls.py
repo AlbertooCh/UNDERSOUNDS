@@ -29,4 +29,5 @@ urlpatterns = [
     path('', include('music.urls')),
     path('', include('user.urls')),
     path('', include('store.urls')),
+
 ]
