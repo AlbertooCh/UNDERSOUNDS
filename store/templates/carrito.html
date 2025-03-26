@@ -2,102 +2,12 @@
 {% block title %}
     Carrito
 {% endblock %}
+{%  load static %}
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'store/css/store.css' %}">
+{% endblock %}
 {% block content %}
-    <style>
-     body {
-        font-family: Arial, sans-serif;
-        margin: 0;
-        padding: 0;
-        background-color: #f2f2f2;
-    }
 
-    .cart-container {
-        max-width: 800px;
-        margin: 20px auto;
-        padding: 20px;
-        background-color: #fff;
-        border-radius: 8px;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    }
-
-    .cart-container h1 {
-        text-align: center;
-        margin-bottom: 20px;
-        color: #333;
-    }
-
-    .cart-item {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        margin-bottom: 15px;
-        padding: 10px;
-        border-bottom: 1px solid #ddd;
-    }
-
-    .item-image {
-        width: 80px;
-        height: 80px;
-        object-fit: cover;
-        border-radius: 5px;
-        margin-right: 15px;
-    }
-
-    .item-details {
-        flex-grow: 1;
-        margin-right: 15px;
-    }
-
-    .item-details p {
-        margin: 5px 0;
-    }
-
-.remove-item {
-    color: #ff4d4d; /* Rojo */
-    text-decoration: none;
-    font-weight: bold;
-    cursor: pointer;
-}
-
-.remove-item:hover {
-    text-decoration: underline;
-}
-
-    .cart-total {
-        text-align: right;
-        margin-top: 10px;
-        font-size: 18px;
-        font-weight: bold;
-    }
-
-    .cart-buttons {
-        display: flex;
-        justify-content: space-between;
-        margin-top: 20px;
-    }
-
-    .checkout {
-        background-color: #28a745; /* Verde */
-        color: white;
-        border: none;
-        padding: 10px 20px;
-        border-radius: 5px;
-        cursor: pointer;
-    }
-
-    .continue-shopping {
-        background-color: #007bff; /* Azul */
-        color: white;
-        border: none;
-        padding: 10px 20px;
-        border-radius: 5px;
-        cursor: pointer;
-    }
-
-    button:hover {
-        opacity: 0.85;
-    }
-    </style>
 <body>
     <div class="cart-container">
         <h1>Tu Carrito</h1>
