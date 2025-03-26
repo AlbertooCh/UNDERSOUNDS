@@ -21,6 +21,15 @@
         color: #333;
     }
 
+    a {
+        color: black;
+        text-decoration: none; /* Quita el subrayado */
+    }
+
+    a:hover{
+        text-decoration-color: black;
+    }
+
     .cart-item {
         display: flex;
         align-items: center;
@@ -139,7 +148,7 @@
             text-decoration: none;
         }
         .form-group a:hover {
-            text-decoration: underline;
+            flex: 1;
         }
         .buttons {
             display: flex;
