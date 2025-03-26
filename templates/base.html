@@ -79,7 +79,7 @@
 </head>
 <body>
     <div class="wrapper">
-        {% include 'includes/header_user.html' %}
+        {% include 'includes/header_artist.html' %}
 
         <main class="main-content">
             {% block content %}
@@ -115,7 +115,7 @@
             }
         });
 
-        // Mostrar el botón después de 1 segundo si está en parte inferior
+        // Mostrar  el botón después de 1 segundo si está en parte inferior
         setTimeout(() => {
             if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight - 100) {
                 document.querySelector('.scroll-to-top').classList.add('visible');
