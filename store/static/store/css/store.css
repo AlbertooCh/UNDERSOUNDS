@@ -21,13 +21,24 @@
         color: #333;
     }
 
+    a {
+        color: black;
+        text-decoration: none; /* Quita el subrayado */
+    }
+
+    a:hover{
+        text-decoration-color: black;
+    }
+
     .cart-item {
         display: flex;
         align-items: center;
         justify-content: space-between;
         margin-bottom: 15px;
         padding: 10px;
+        background-color: rgba(236, 236, 236, 0.53);
         border-bottom: 1px solid #ddd;
+        border-radius: 8px;
     }
 
     .item-image {
@@ -63,6 +74,15 @@
         margin-top: 10px;
         font-size: 18px;
         font-weight: bold;
+    }
+
+    button{
+        cursor: pointer;
+        transition: transform 0.3s ease; /* Añade una transición suave */
+    }
+
+    button:hover {
+        transform: scale(1.03); /* Aumenta el tamaño del botón un 10% */
     }
 
     .cart-buttons {
@@ -139,7 +159,7 @@
             text-decoration: none;
         }
         .form-group a:hover {
-            text-decoration: underline;
+            flex: 1;
         }
         .buttons {
             display: flex;
