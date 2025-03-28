@@ -1,32 +1,33 @@
 {% extends 'base.html' %}
-{% block title %}Artist - Undersounds{% endblock %}
+{% block title %}{{ artist.name }} - Undersounds{% endblock %}
 {% load static %}
 {% block extra_css %}
     <link rel="stylesheet" href="{% static 'music/css/music.css' %}">
 {% endblock %}
 {% block content %}
-<body>
+<div class="profile">
+    <img src="{% static 'Photos/Cantantes/q.jpg' %}" alt="{{ artist.name }}">
+    <h1>{{ artist.name }}</h1>
+    <p>{{ artist.bio }}</p>
+    <p><strong>Edad:</strong> {{ artist.age }} años</p>
+    <p><strong>Nacionalidad:</strong> {{ artist.nationality }}</p>
+    <p><strong>Premios:</strong></p>
+    <ul>
+        {% for award in artist.awards %}
+            <li>{{ award }}</li>
+        {% endfor %}
+    </ul>
 
-    <div class="profile">
-        <img src="../static/Photos/Cantantes/q.jpg" alt="Quinn Hall">
-        <h1>Quinn Hall</h1>
-        <p>Un productor de música electrónica y DJ.</p>
-        <p><strong>Edad:</strong> 26 años</p>
-        <p><strong>Nacionalidad:</strong> Canadiense</p>
-        <p><strong>Premios:</strong></p>
-        <ul>
-            <li>Electronic Music Award</li>
-        </ul>
-        <p><strong>Álbumes:</strong></p>
-        <ul>
+    <p><strong>Álbumes:</strong></p>
+    <ul>
+        {% for song in albums %}
             <li>
-                <strong>Album_Z</strong><br>
-                Canción: Galactic Glee<br>
-                Duración: 2:17<br>
-                Género: Electrónica<br>
-                Fecha de creación: 22 de marzo de 2022
+                <strong>{{ song.album_title }}</strong><br>
+                Canción: {{ song.title }}<br>
+                Género: {{ song.genre }}<br>
+                Fecha de creación: {{ song.release_date|date:"d \d\e F \d\e Y" }}
             </li>
-        </ul>
-    </div>
-</body>
+        {% endfor %}
+    </ul>
+</div>
 {% endblock %}

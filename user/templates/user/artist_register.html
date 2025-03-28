@@ -1,0 +1,91 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Registro Artista - Undersounds{% endblock %}
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'user/css/auth.css' %}">
+{% endblock %}
+{% block content %}
+
+<div class="auth-container">
+    <h1 class="auth-title">REGISTRO PARA ARTISTAS</h1>
+
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }}">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+
+<form method="post" enctype="multipart/form-data" id="artistRegisterForm">
+    {% csrf_token %}
+
+    <div class="section-title">Información básica</div>
+
+    <div class="form-group">
+        <label for="{{ form.username.id_for_label }}">Nombre de usuario:</label>
+        {{ form.username }}
+        {{ form.username.errors }}
+    </div>
+
+    <div class="form-group">
+        <label for="{{ form.email.id_for_label }}">Email:</label>
+        {{ form.email }}
+        {{ form.email.errors }}
+    </div>
+
+    <div class="form-group">
+        <label for="{{ form.password1.id_for_label }}">Contraseña:</label>
+        {{ form.password1 }}
+        {{ form.password1.errors }}
+    </div>
+
+    <div class="form-group">
+        <label for="{{ form.password2.id_for_label }}">Confirmar contraseña:</label>
+        {{ form.password2 }}
+        {{ form.password2.errors }}
+    </div>
+
+    <div class="section-title">Perfil artístico</div>
+
+    <div class="form-group">
+        <label for="{{ form.artist_name.id_for_label }}">Nombre artístico:</label>
+        {{ form.artist_name }}
+        {{ form.artist_name.errors }}
+    </div>
+
+    <div class="form-group">
+        <label for="{{ form.artist_type.id_for_label }}">Tipo de artista:</label>
+        {{ form.artist_type }}
+        {{ form.artist_type.errors }}
+    </div>
+
+    <div class="form-group">
+        <label for="{{ form.bio.id_for_label }}">Biografía:</label>
+        {{ form.bio }}
+        {{ form.bio.errors }}
+    </div>
+
+    <div class="form-group">
+        <label for="{{ form.genre.id_for_label }}">Género principal:</label>
+        {{ form.genre }}
+        {{ form.genre.errors }}
+    </div>
+
+    <div class="form-group">
+        <label for="{{ form.country.id_for_label }}">País:</label>
+        {{ form.country }}
+        {{ form.country.errors }}
+    </div>
+
+    <button type="submit" class="submit-btn">REGISTRARME COMO ARTISTA</button>
+</form>
+
+    <div class="auth-footer">
+        ¿Ya tienes cuenta? <a href="{% url 'login' %}">Inicia sesión aquí</a><br>
+        ¿Eres fan? <a href="{% url 'register' %}">Regístrate como usuario</a>
+    </div>
+</div>
+
+<script src="{% static 'user/js/auth.js' %}"></script>
+{% endblock %}

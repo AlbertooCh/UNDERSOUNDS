@@ -9,6 +9,6 @@ urlpatterns = [
     path('catalogo/', views.catalogo, name='catalogo'),
     path('music_detail/', views.music_detail, name='music_detail'),
     path('artist_detail/', views.artist_detail, name='artist_detail'),
-
+    path('artist/<str:artist_name>/', views.artist_detail, name='artist_detail'),
 ]
 
