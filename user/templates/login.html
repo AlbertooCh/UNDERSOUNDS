@@ -34,11 +34,13 @@
 
         <button type="submit" class="submit-btn">ENTRAR</button>
     </form>
-    <div class="oauth-providers">
-        <p class="oauth-divider">O inicia sesión con:</p>
-        <a href="{% provider_login_url 'google' process='login' %}" class="btn-google">
-            <img src="{% static 'images/google-icon.png' %}"> Iniciar con Google
-        </a>
+   <div class="compact-oauth">
+    <p class="compact-divider">O inicia sesión con:</p>
+    <a href="{% provider_login_url 'google' process='login' %}" class="compact-google-btn">
+        <img src="{% static 'images/google.png' %}" alt="Google">
+        <span>Google</span>
+    </a>
+    </div>
 
     <div class="auth-footer">
         ¿No tienes cuenta? Registrate aquí

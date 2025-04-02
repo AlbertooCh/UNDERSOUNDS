@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'store',
     'music',
     'user',
+    'oauth2_provider',
 
 ]
 
@@ -151,3 +152,12 @@ AUTHENTICATION_BACKENDS = [
 ]
 LOGIN_REDIRECT_URL = 'inicio'
 ACCOUNT_LOGOUT_REDIRECT = 'inicio'
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'oauth2_provider.contrib.rest_framework.OAuth2Authentication',
+    ),
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.IsAuthenticated',
+    )
+}
