@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% load static %}
+{% load socialaccount %}
 {% block title %}Registro - Undersounds{% endblock %}
 {% block extra_css %}
     <link rel="stylesheet" href="{% static 'user/css/auth.css' %}">
@@ -16,6 +17,15 @@
             </div>
         {% endfor %}
     {% endif %}
+
+    <div class="compact-oauth">
+        <a href="{% provider_login_url 'google' process='login' %}" class="compact-google-btn">
+            <img src="{% static 'images/google.png' %}" alt="Google">
+            <span>Regístrate con Google</span>
+        </a>
+    </div>
+
+    <p class="compact-divider">o</p>
 
     <form method="post" id="registerForm">
         {% csrf_token %}
