@@ -6,16 +6,19 @@
 {% endblock %}
 {% block content %}
 
-
 <div class="profile-container">
     <h1 class="profile-title">MI PERFIL</h1>
 
     <div class="profile-header">
         <img src="{% static 'images/default-avatar.jpg' %}" alt="Avatar" class="profile-avatar">
         <div class="profile-info">
-            <div class="profile-name">María González</div>
-            <div class="profile-username">@mariamusic</div>
-            <div class="profile-bio">Cantante y compositora independiente. Amante del jazz y el soul. Nuevo álbum "Noches de verano" disponible ahora.</div>
+            <div class="profile-name">
+                {{ user.artist_name|default:user.get_full_name }}
+            </div>
+            <div class="profile-username">@{{ user.username }}</div>
+            <div class="profile-bio">
+                {{ user.bio|default:"Este usuario aún no tiene una biografía." }}
+            </div>
 
             <div class="profile-stats">
                 <div class="stat-item">
@@ -40,25 +43,23 @@
         <div class="info-grid">
             <div class="info-item">
                 <div class="info-label">Nombre completo</div>
-                <div class="info-value">María González Pérez</div>
+                <div class="info-value">{{ user.first_name }} {{ user.last_name }}</div>
             </div>
             <div class="info-item">
                 <div class="info-label">Email</div>
-                <div class="info-value">maria@example.com</div>
+                <div class="info-value">{{ user.email }}</div>
             </div>
             <div class="info-item">
                 <div class="info-label">Fecha de registro</div>
-                <div class="info-value">15/03/2022</div>
+                <div class="info-value">{{ user.created_at|date:"d/m/Y" }}</div>
             </div>
             <div class="info-item">
                 <div class="info-label">Género principal</div>
-                <div class="info-value">Jazz/Soul</div>
+                <div class="info-value">{{ user.genre|default:"No especificado" }}</div>
             </div>
             <div class="info-item">
-                <div class="info-label">Redes sociales</div>
-                <div class="info-value">
-                    <a href="#" style="color: #000; text-decoration: none;">@mariamusic</a>
-                </div>
+                <div class="info-label">País</div>
+                <div class="info-value">{{ user.country|default:"-" }}</div>
             </div>
         </div>
     </div>
@@ -66,21 +67,13 @@
     <div class="profile-section">
         <h2 class="section-title">Mis álbumes</h2>
         <div class="purchases-grid">
+            <!-- You can loop through user's albums if available -->
             <div class="purchase-card">
                 <div class="purchase-title">Noches de verano</div>
                 <div class="purchase-date">Publicado: 10/06/2023</div>
                 <div class="purchase-price">€9.99</div>
             </div>
-            <div class="purchase-card">
-                <div class="purchase-title">Esencia</div>
-                <div class="purchase-date">Publicado: 22/11/2022</div>
-                <div class="purchase-price">€8.99</div>
-            </div>
-            <div class="purchase-card">
-                <div class="purchase-title">Primeros pasos</div>
-                <div class="purchase-date">Publicado: 05/03/2021</div>
-                <div class="purchase-price">€7.99</div>
-            </div>
+            <!-- Add your own dynamic album loop here later -->
         </div>
     </div>
 
@@ -100,4 +93,5 @@
         </div>
     </div>
 </div>
+
 {% endblock %}

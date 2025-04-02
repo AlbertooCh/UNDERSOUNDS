@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load static %}
 {% block title %}Catálogo - Undersounds{% endblock %}
 {% block content %}
    <style>
@@ -149,112 +150,57 @@
         }
     }
 </style>
-<body>
-    <div id="cont" class="titulo"></div>
-    <h2 class="title">CATÁLOGO</h2>
-     <button id="lupa">🔎</button>
-    <div class="search-bar" id="search-bar">
-        <input type="text" id="nombreCancion" placeholder="Buscar por canción, artista, álbum, género ..." class="nombreCancion">
-        <input type="date" id="fechaAnt">
-        <input type="date" id="fechaPost">
-        <button id="buscarBtn">Buscar</button>
-    </div>
-
-    <div class="filter-buttons">
-        <button class="filter-btn active" onclick="filterSelection('all')">Mostrar todo</button>
-        <button class="filter-btn" onclick="filterSelection('albums')">Álbumes</button>
-        <button class="filter-btn" onclick="filterSelection('artists')">Artistas</button>
-        <button class="filter-btn" onclick="filterSelection('recent')">Recientes</button>
-        <button class="filter-btn" onclick="filterSelection('popular')">Populares</button>
-    </div>
-
-    <div id="contenedor" class="catalog"></div>
-    <script>
-        let tracksData = [];
-
-        fetch('/static/prueba5.json')
-            .then(response => response.json())
-            .then(data => {
-                tracksData = data;
-                displayTracks(tracksData);
-            })
-            .catch(error => console.error('Error al cargar el JSON:', error));
-
-        function displayTracks(tracks) {
-            const contenedor = document.getElementById('contenedor');
-            contenedor.innerHTML = '';
-            tracks.forEach((item, index) => {
-                const albumDiv = document.createElement('div');
-                albumDiv.className = 'album';
-
-                const cuadradoDiv = document.createElement('div');
-                cuadradoDiv.className = 'cuadrado';
-                cuadradoDiv.style.animationDelay = `${index * 0.1}s`;
-
-                const titleP = document.createElement('p');
-                titleP.className = 'album-title';
-                titleP.textContent = item.song_name;
-
-                const img = document.createElement('img');
-                img.src = item.album_photo;
-                img.alt = item.title;
-                img.style.width = '100%';
-                img.style.height = '100%';
-                img.style.objectFit = 'cover';
-
-                cuadradoDiv.appendChild(titleP);
-                cuadradoDiv.appendChild(img);
-                albumDiv.appendChild(cuadradoDiv);
-                albumDiv.addEventListener('click', () => {
-                    localStorage.setItem('item', JSON.stringify(item));
-                    window.location.href = `../music_detail/`;
-                });
-
-                contenedor.appendChild(albumDiv);
-            });
-        }
 
 
-        document.getElementById('buscarBtn').addEventListener('click', function() {
-            const searchText = document.getElementById('nombreCancion').value.toLowerCase();
-            const search = document.getElementById('nombreCancion');
-            search.value = "";
+<h2 class="title">CATÁLOGO</h2>
 
-            const filteredTracks = searchText ? tracksData.filter(item => {
-                const matchesTitle = item.song_name.toLowerCase().includes(searchText);
-                const matchesArtist = item.artist_name.toLowerCase().includes(searchText);
-                const matchesAlbum = item.album_name.toLowerCase().includes(searchText);
-                const matchesGenre = item.genre.toLowerCase().includes(searchText);
+<button id="lupa">🔎</button>
+<div class="search-bar" id="search-bar">
+    <input type="text" id="nombreCancion" placeholder="Buscar por canción, artista, álbum, género ..." class="nombreCancion">
+    <input type="date" id="fechaAnt">
+    <input type="date" id="fechaPost">
+    <button id="buscarBtn">Buscar</button>
+</div>
 
-                return matchesTitle || matchesArtist || matchesAlbum || matchesGenre;
-            }) : tracksData;
+<div class="filter-buttons">
+    <button class="filter-btn active" onclick="filterSelection('all')">Mostrar todo</button>
+    <button class="filter-btn" onclick="filterSelection('albums')">Álbumes</button>
+    <button class="filter-btn" onclick="filterSelection('artists')">Artistas</button>
+    <button class="filter-btn" onclick="filterSelection('recent')">Recientes</button>
+    <button class="filter-btn" onclick="filterSelection('popular')">Populares</button>
+</div>
 
-            displayTracks(filteredTracks);
-        });
+<!-- ✅ Dynamic catalog rendered by Django -->
+<div id="contenedor" class="catalog">
+    {% for song in songs %}
+        <div class="album">
+            <div class="cuadrado" style="animation-delay: {{ forloop.counter0|add:"0.1"|floatformat:1 }}s;" onclick="location.href='{% url 'music_detail' %}?id={{ song.id }}'">
+                <p class="album-title">{{ song.title }}</p>
 
-        document.getElementById('lupa').addEventListener('click', function() {
-            const nombreCancion = document.getElementById('search-bar');
-            nombreCancion.style.display = nombreCancion.style.display === 'block' ? 'none' : 'block';
-        });
+                {% if song.album_cover %}
+                    <img src="{{ song.album_cover.url }}" alt="{{ song.title }}">
+                {% else %}
+                    <img src="{% static 'images/default_album.jpg' %}" alt="Sin portada">
+                {% endif %}
+            </div>
+        </div>
+    {% empty %}
+        <p style="text-align: center;">No hay canciones disponibles.</p>
+    {% endfor %}
+</div>
 
-        document.getElementById('nombreCancion').addEventListener('keydown', function(event) {
-            if (event.key === 'Enter') {
-                const searchText = document.getElementById('nombreCancion').value.toLowerCase();
-                const search = document.getElementById('nombreCancion');
-                search.value = "";
+<!-- Optional JS for toggling search bar -->
+<script>
+    document.getElementById('lupa').addEventListener('click', function () {
+        const searchBar = document.getElementById('search-bar');
+        searchBar.style.display = searchBar.style.display === 'block' ? 'none' : 'block';
+    });
 
-                const filteredTracks = searchText ? tracksData.filter(item => {
-                    const matchesTitle = item.song_name.toLowerCase().includes(searchText);
-                    const matchesArtist = item.artist_name.toLowerCase().includes(searchText);
-                    const matchesAlbum = item.album_name.toLowerCase().includes(searchText);
-                    const matchesGenre = item.genre.toLowerCase().includes(searchText);
+    // Placeholder for future filter logic
+    function filterSelection(category) {
+        // implement filtering if needed
+        console.log('Filter by:', category);
+    }
+</script>
 
-                    return matchesTitle || matchesArtist || matchesAlbum || matchesGenre;
-                }) : tracksData;
-
-                displayTracks(filteredTracks);
-            }
-        });
-    </script>
-</body>
 {% endblock %}

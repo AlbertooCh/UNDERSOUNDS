@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Panel de Artista{% endblock %}
+{% block content %}
+<h2 style="text-align:center;">Mis Canciones</h2>
+
+<div style="text-align:center; margin-bottom: 20px;">
+    <a href="{% url 'add_song' %}" class="btn btn-success">➕ Añadir nueva canción</a>
+</div>
+
+<table style="width: 90%; margin: auto; border-collapse: collapse;">
+    <thead>
+        <tr style="background: #1db954; color: white;">
+            <th>Título</th>
+            <th>Álbum</th>
+            <th>Género</th>
+            <th>Precio</th>
+            <th>Fecha</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for song in songs %}
+        <tr style="border-bottom: 1px solid #ccc;">
+            <td>{{ song.title }}</td>
+            <td>{{ song.album_title }}</td>
+            <td>{{ song.genre }}</td>
+            <td>€{{ song.price }}</td>
+            <td>{{ song.release_date }}</td>
+            <td>
+                <a href="{% url 'edit_song' song.id %}">✏️</a>
+                <a href="{% url 'delete_song' song.id %}">🗑️</a>
+            </td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="6" style="text-align: center;">No tienes canciones aún.</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

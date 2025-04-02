@@ -312,90 +312,33 @@
     </style>
 
 <body>
-    <main>
-        <div id="overlay" class="overlay">
-        <div class="info-box">
-             <h2>Información</h2>
-            <p id="info-text">Este es un cuadro de información.</p>
-            <button onclick="window.location.href='../login/'; hideInfoBox();">Sin Usuario</button>
-            <button onclick="">Con Usuario</button>
-            <button onclick="hideInfoBox()">Cerrar</button>
+<main>
+    <div class="track-info">
+        <div class="track-details">
+            <h1>{{ song.title }}</h1>
+            <p><strong>Artista:</strong> {{ song.artist_name }}</p>
+            <p><strong>Álbum:</strong> {{ song.album_title }}</p>
+            <p><strong>Género:</strong> {{ song.genre }}</p>
+            <p><strong>Fecha de lanzamiento:</strong> {{ song.release_date }}</p>
+            <p><strong>Precio:</strong> €{{ song.price }}</p>
         </div>
+        <div class="track-cover">
+            {% if song.album_cover %}
+                <img src="{{ song.album_cover.url }}" alt="{{ song.title }}">
+            {% else %}
+                <img src="{% static 'images/default_album.jpg' %}" alt="Sin portada">
+            {% endif %}
         </div>
-        <div id="overlayDesc" class="overlay">
-        <div class="info-box">
-            <h2>Información</h2>
-            <p id="info-text">Este es un cuadro de información.</p>
-            <a href="../static/MP3.txt" download="MP3.txt">
-                <button>MP3</button>
-            </a>
-            <a href="../static/FLAC.txt" download="FLAC.txt">
-                <button>FLAC</button>
-            </a>
-            <a href="../static/WAV.txt" download="WAV.txt">
-                <button>WAV</button>
-            </a>
-            <button onclick="hideInfoBoxD()">Cerrar</button>
-        </div>
-        </div>
-        <div id="overlayComent" class="overlay">
-        <div class="info-box">
-            <h2>Información</h2>
-            <p id="info-text">Este es un cuadro de información.</p>
-            <button onclick="window.location.href='../login/'; hideInfoBoxC();">Sin Usuario</button>
-            <button onclick="addComment()">Con Usuario</button>
-            <button onclick="hideInfoBoxC()">Cerrar</button>
-        </div>
-        </div>
-        <button class="back-button" onclick="goBack()"><-</button>
-        <div class="track-info" id = "track-info">
-            <div class="track-details">
-                <h1 id="song-name"></h1>
-                <p id="artist-name"></p>
-                <div class="audio-player">
-        <audio id="audio" src="ruta/al/audio.mp3"></audio>
-        <input type="range" id="progress-bar" class="progress-bar" value="0" max="100">
-        <button class="play-button" onclick="togglePlay()">Play</button>
-                    <button id="like" >♡ ❤</button>
     </div>
+</main>
 
+{% if song.song_file %}
+  <audio controls>
+    <source src="{{ song.song_file.url }}" type="audio/mpeg">
+    Tu navegador no soporta audio.
+  </audio>
+{% endif %}
 
-                <button id="Desc-button" onclick="showInfoBoxD()" ></button>
-            </div>
-            <img id="track-cover" class="track-cover" alt="Track Cover">
-        </div>
-        <button id="Descripcion">Descripcion</button>
-        <div id="Desc" class="Desc">
-            <p>Descripcion de la cancion</p>
-        </div>
-        <div class="comments-section">
-            <div class="comments">
-                <h2>Comments</h2>
-                <div id="comments-anadir">
-                   <input type="text" id="new-comment" placeholder="Añadir un comentario..." class="new-comment"></input>
-                    <div class="star-rating">
-        <input type="radio" id="star5" name="rating" value="5"><label for="star5">★</label>
-        <input type="radio" id="star4" name="rating" value="4"><label for="star4">★</label>
-        <input type="radio" id="star3" name="rating" value="3"><label for="star3">★</label>
-        <input type="radio" id="star2" name="rating" value="2"><label for="star2">★</label>
-        <input type="radio" id="star1" name="rating" value="1"><label for="star1">★</label>
-    </div>
-                <button onclick="showInfoBoxC()">Enviar</button>
-                </div>
-                <div id="comentarios"></div>
-
-            </div>
-            <div class="author-info">
-                <h2>Author Information</h2>
-                <button id="edit-button" onclick="window.location.href='../perfil/';" >Seguir</button>
-                <img id="author-image" class="author-images" alt="../static/Photos/OIP.jpg" >
-                <p><strong>Name:</strong> <span id="author-name"></span></p>
-                <p><strong>Genre:</strong> <span id="author-genre"></span></p>
-                <h2>Canciones del mismo album</h2>
-                <div id="song-list"></div>
-            </div>
-        </div>
-    </main>
     <script>
         var audio = document.getElementById('audio');
         var progressBar = document.getElementById('progress-bar');

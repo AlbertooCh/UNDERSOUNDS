@@ -1,0 +1,72 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}{{ action }} Canción - Undersounds{% endblock %}
+{% block content %}
+
+<style>
+    body {
+        font-family: Arial, sans-serif;
+    }
+
+    .form-wrapper {
+        max-width: 600px;
+        margin: 40px auto;
+        background: #f5f5f5;
+        padding: 30px;
+        border-radius: 20px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+
+    .form-wrapper h2 {
+        text-align: center;
+        margin-bottom: 30px;
+        font-size: 30px;
+        color: #1db954;
+    }
+
+    .form-wrapper form label {
+        font-weight: bold;
+    }
+
+    .form-wrapper form input,
+    .form-wrapper form select,
+    .form-wrapper form textarea {
+        width: 100%;
+        padding: 10px;
+        margin: 10px 0 20px;
+        border: 1px solid #ccc;
+        border-radius: 10px;
+        font-size: 16px;
+    }
+
+    .form-wrapper form button {
+        width: 100%;
+        background-color: #1db954;
+        color: white;
+        border: none;
+        padding: 12px;
+        font-size: 16px;
+        border-radius: 10px;
+        cursor: pointer;
+        transition: background 0.3s ease;
+    }
+
+    .form-wrapper form button:hover {
+        background-color: #159b44;
+    }
+</style>
+
+<div class="form-wrapper">
+    <h2>{{ action }} Canción</h2>
+
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <p><strong>Artista:</strong> {{ request.user.artist_name }}</p>
+        {{ form.as_p }}
+        <button type="submit">{{ action }}</button>
+    </form>
+</div>
+
+
+
+{% endblock %}

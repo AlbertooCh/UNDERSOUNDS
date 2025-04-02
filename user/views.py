@@ -8,8 +8,29 @@ from user.models import User
 
 
 def login_view(request):
-    return render(request, 'login.html')
+    if request.method == 'POST':
+        username_or_email = request.POST.get('username')
+        password = request.POST.get('password')
 
+        # Try authenticating with username first
+        user = authenticate(request, username=username_or_email, password=password)
+
+        # If not found, try email-based login
+        if not user:
+            try:
+                user_obj = User.objects.get(email=username_or_email)
+                user = authenticate(request, username=user_obj.username, password=password)
+            except User.DoesNotExist:
+                user = None
+
+        if user is not None:
+            login(request, user)
+            messages.success(request, 'Inicio de sesión exitoso.')
+            return redirect('home')
+        else:
+            messages.error(request, 'Usuario o contraseña incorrectos.')
+
+    return render(request, 'login.html')
 def register(request):
     if request.method == "POST":
         username = request.POST["username"]
@@ -32,8 +53,9 @@ def register_artist(request):
     return render(request, 'user/artist_register.html', {'form': form})
 
 
+@login_required
 def perfil(request):
-    return render(request, 'perfil.html')
+    return render(request, 'perfil.html', {'user': request.user})
 # Create your views here.
 
 def configuracion(request):
