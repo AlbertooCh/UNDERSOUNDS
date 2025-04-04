@@ -1,7 +1,9 @@
 {% extends '../base.html' %}
+{% load static %}
 {% block title %}Novedades - Undersounds{% endblock %}
+
 {% block content %}
-   <style>
+<style>
     body {
         font-family: Arial, sans-serif;
         margin: 20px;
@@ -33,14 +35,15 @@
         animation: fadeIn 0.5s ease forwards;
         opacity: 0;
         border-radius: 15px;
+        cursor: pointer;
     }
     .cuadrado:hover {
         background-color: rgba(0, 0, 0, 0.5);
     }
-    .cuadrado:hover .album-title {
-        display: block;
+    .cuadrado:hover .song-info {
+        display: flex;
     }
-    .album-title {
+    .song-info {
         margin-top: 5px;
         font-size: 1em;
         color: #fff;
@@ -50,6 +53,9 @@
         left: 50%;
         transform: translate(-50%, -50%);
         z-index: 2;
+        flex-direction: column;
+        align-items: center;
+        width: 90%;
     }
     .catalog {
         flex: 2;
@@ -65,7 +71,7 @@
     .cuadrado img {
         width: 100%;
         height: 100%;
-        object-fit: fill;
+        object-fit: cover;
         transition: filter 0.6s ease, background-color 0.6s ease;
         z-index: 1;
         border-radius: 15px;
@@ -74,68 +80,84 @@
         filter: brightness(20%);
     }
     @keyframes fadeIn {
-        from {
-            opacity: 0;
-        }
-        to {
-            opacity: 1;
-        }
+        from { opacity: 0; }
+        to { opacity: 1; }
+    }
+    .artist-name {
+        font-size: 0.8em;
+        margin-top: 5px;
+        color: #ccc;
     }
 </style>
-<body>
-    <div id="cont" class="titulo"></div>
-    <h2 class="title">NOVEDADES</h2>
-    <div class="subtitle">Últimas canciones añadidas</div>
 
-    <div id="contenedor" class="catalog"></div>
-    <script>
-        let tracksData = [];
+<div class="titulo"></div>
+<h2 class="title">NOVEDADES</h2>
+<div class="subtitle">Últimas canciones añadidas</div>
 
-        fetch('/static/prueba5.json')
+<div id="contenedor" class="catalog"></div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        fetch('/api/songs/')  // Usamos el endpoint del SongController
             .then(response => response.json())
             .then(data => {
-                tracksData = data;
-                // Ordenar por fecha (asumiendo que hay un campo 'release_date' o similar)
-                const sortedTracks = tracksData.sort((a, b) => new Date(b.release_date) - new Date(a.release_date));
-                // Tomar solo las 15 más recientes
-                const recentTracks = sortedTracks.slice(0, 15);
-                displayTracks(recentTracks);
+                // Ordenar por fecha de lanzamiento (más recientes primero)
+                const sortedSongs = data.results.sort((a, b) =>
+                    new Date(b.release_date) - new Date(a.release_date)
+                );
+                // Tomar las 15 más recientes
+                const recentSongs = sortedSongs.slice(0, 15);
+                displaySongs(recentSongs);
             })
-            .catch(error => console.error('Error al cargar el JSON:', error));
+            .catch(error => {
+                console.error('Error:', error);
+                // Fallback por si hay error en la API
+                fetch('{% static "music/fallback_songs.json" %}')
+                    .then(response => response.json())
+                    .then(fallbackData => {
+                        const recentSongs = fallbackData.slice(0, 15);
+                        displaySongs(recentSongs);
+                    });
+            });
 
-        function displayTracks(tracks) {
+        function displaySongs(songs) {
             const contenedor = document.getElementById('contenedor');
             contenedor.innerHTML = '';
-            tracks.forEach((item, index) => {
-                const albumDiv = document.createElement('div');
-                albumDiv.className = 'album';
 
-                const cuadradoDiv = document.createElement('div');
-                cuadradoDiv.className = 'cuadrado';
-                cuadradoDiv.style.animationDelay = `${index * 0.1}s`;
+            songs.forEach((song, index) => {
+                const songDiv = document.createElement('div');
+                songDiv.className = 'cuadrado';
+                songDiv.style.animationDelay = `${index * 0.1}s`;
+
+                const infoDiv = document.createElement('div');
+                infoDiv.className = 'song-info';
 
                 const titleP = document.createElement('p');
-                titleP.className = 'album-title';
-                titleP.textContent = item.song_name;
+                titleP.textContent = song.title;
+
+                const artistP = document.createElement('p');
+                artistP.className = 'artist-name';
+                artistP.textContent = song.artist;
+
+                infoDiv.appendChild(titleP);
+                infoDiv.appendChild(artistP);
 
                 const img = document.createElement('img');
-                img.src = item.album_photo;
-                img.alt = item.title;
-                img.style.width = '100%';
-                img.style.height = '100%';
-                img.style.objectFit = 'cover';
+                // Usamos el cover del álbum o una imagen por defecto
+                img.src = song.album_cover_path || '{% static "music/images/default_cover.jpg" %}';
+                img.alt = song.title;
+                img.loading = "lazy";
 
-                cuadradoDiv.appendChild(titleP);
-                cuadradoDiv.appendChild(img);
-                albumDiv.appendChild(cuadradoDiv);
-                albumDiv.addEventListener('click', () => {
-                    localStorage.setItem('item', JSON.stringify(item));
-                    window.location.href = `../music_detail/`;
+                songDiv.appendChild(infoDiv);
+                songDiv.appendChild(img);
+
+                songDiv.addEventListener('click', () => {
+                    window.location.href = `/music_detail/${song.id}/`;
                 });
 
-                contenedor.appendChild(albumDiv);
+                contenedor.appendChild(songDiv);
             });
         }
-    </script>
-</body>
+    });
+</script>
 {% endblock %}

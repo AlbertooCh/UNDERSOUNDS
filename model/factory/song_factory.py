@@ -1,6 +1,5 @@
-from .song_dto import SongDTO
-from .music_models import Song
-
+from model.dto.song_dto import SongDTO
+from model.music.music_models import Song
 class SongFactory:
     @staticmethod
     def create_song(
