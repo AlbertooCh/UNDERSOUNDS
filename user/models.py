@@ -22,3 +22,4 @@ class User(AbstractUser):
 
     class Meta:
         app_label = 'user'  # ¡Esto es crucial!
+        db_table = 'auth_user'  # Asegúrate de que la tabla en la bas de datos sea'
