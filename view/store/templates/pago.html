@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+{% block title %}
+    Pago
+{% endblock %}
+{% load static %}
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'store/css/store.css' %}">
+{% endblock %}
+{% block content %}
+    <style>
+    </style>
+<body>
+    <div class="container">
+        <div>
+            <h1>Diva Virtual</h1>
+        </div>
+        <div class="form-group">
+            <p><strong>19.99 €</strong></p>
+        </div>
+        <div class="form-group">
+            <p>Vendido por <a href="/artist_detail/">Don Omar</a>.</p>
+            <p>UnderSounds incluye una descarga en alta calidad en MP3, FLAC y WAV.</p>
+        </div>
+        <div class="form-group">
+            <p>¿Tienes una tarjeta de regalo? <a href="#">Canjéala aquí</a></p>
+        </div>
+        <div class="buttons">
+            <a href="/user/historial_compras/">
+            <button class="buy-now">Comprar ahora</button>
+            </a>
+            <a href="/carrito/">
+            <button class="add-to-cart">Agregar al carrito</button>
+            </a>
+        </div>
+            <div class="image-container">
+                <a href="/music_detail/"><img src="/view/static/Photos/PortadaCancion.png" alt="Imagen del álbum o canción"></a>
+        </div>
+    </div>
+</body>
+{% endblock %}

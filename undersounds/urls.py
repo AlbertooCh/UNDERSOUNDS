@@ -16,21 +16,18 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-from music import urls
-from user import urls
-from store import urls
-from . import views
 from django.conf.urls.static import static
 from django.conf import settings
+from view import views
 
 urlpatterns = [
     path('', views.inicio, name='inicio'),
     path('inicio/', views.inicio, name='inicio'),
     path('contacto/', views.contacto, name='contacto'),
     path('admin/', admin.site.urls),
-    path('music/', include('music.urls')),
+    path('music/', include('controller.urls.music_urls')),
     path('novedades/', views.novedades, name='novedades'),
-    path('', include('music.urls')),
-    path('', include('user.urls')),
-    path('', include('store.urls')),
+    path('', include('controller.urls.music_urls')),
+    path('', include('controller.urls.user_urls')),
+    path('', include('controller.urls.store_urls')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

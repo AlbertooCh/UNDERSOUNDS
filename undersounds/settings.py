@@ -59,7 +59,8 @@ ROOT_URLCONF = 'undersounds.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / 'templates']
+        'DIRS': [BASE_DIR / 'view/templates', BASE_DIR / 'view/music/templates',
+                 BASE_DIR / 'view/store/templates', BASE_DIR / 'view/user/templates']
         ,
         'APP_DIRS': True,
         'OPTIONS': {
@@ -123,7 +124,10 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 # Static files (CSS, JavaScript, Images)
 STATIC_URL = 'static/'
 STATICFILES_DIRS=[
-    os.path.join(BASE_DIR, 'static')
+    os.path.join(BASE_DIR, 'view/static'),
+    os.path.join(BASE_DIR, 'view/music/static'),
+    os.path.join(BASE_DIR, 'view/store/static'),
+    os.path.join(BASE_DIR, 'view/user/static'),
 ]
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
