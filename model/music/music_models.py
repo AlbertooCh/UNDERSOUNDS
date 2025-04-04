@@ -11,5 +11,8 @@ class Song(models.Model):
     album_cover = models.ImageField(upload_to='album_covers/', blank=True, null=True)
     song_file = models.FileField(upload_to='songs/', blank=True, null=True)  # <-- New field
 
+    class Meta:
+        app_label = 'music'  # ¡Esto es crucial!
+
     def __str__(self):
         return f"{self.title} - {self.artist_name}"

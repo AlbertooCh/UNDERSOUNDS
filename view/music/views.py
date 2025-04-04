@@ -1,7 +1,7 @@
 from django.contrib.auth.decorators import login_required
 
-from music.music_models import Song
-from music.forms import SongForm
+from model.music.music_models import Song
+from model.music.forms import SongForm
 from django.contrib import messages
 from django.shortcuts import render, redirect, get_object_or_404
 

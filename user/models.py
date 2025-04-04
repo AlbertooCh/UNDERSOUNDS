@@ -1,7 +1,7 @@
 # user/music_models.py
 from django.db import models
 from django.contrib.auth.models import AbstractUser
-from music.music_models import Song  # Safe import: music doesn't depend on user
+from model.music.music_models import Song  # Safe import: music doesn't depend on user
 
 class User(AbstractUser):
     ROLE_CHOICES = (
@@ -19,3 +19,6 @@ class User(AbstractUser):
     bio = models.TextField(max_length=500, blank=True, null=True)
     genre = models.CharField(max_length=50, blank=True, null=True)
     country = models.CharField(max_length=100, blank=True, null=True)
+
+    class Meta:
+        app_label = 'user'  # ¡Esto es crucial!

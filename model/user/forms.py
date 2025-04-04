@@ -1,6 +1,6 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
-from .models import User
+from user.models import User
 
 class FanRegisterForm(UserCreationForm):
     email = forms.EmailField(required=True)

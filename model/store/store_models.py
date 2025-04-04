@@ -16,5 +16,8 @@ class PurchaseDetail(models.Model):
     song = models.ForeignKey(Song, on_delete=models.CASCADE)
     price = models.DecimalField(max_digits=8, decimal_places=2)
 
+    class Meta:
+        app_label = 'store'  # ¡Esto es crucial!
+
     def __str__(self):
         return f"{self.song.title} in Purchase #{self.purchase.id}"
