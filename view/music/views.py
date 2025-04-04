@@ -1,13 +1,7 @@
-import json
-import os
-
-
-from django.shortcuts import render, get_object_or_404
 from django.contrib.auth.decorators import login_required
 
-from undersounds import settings
-from .models import Song
-from .forms import SongForm
+from music.music_models import Song
+from music.forms import SongForm
 from django.contrib import messages
 from django.shortcuts import render, redirect, get_object_or_404
 

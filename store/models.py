@@ -1,7 +1,7 @@
-# store/models.py
+# store/music_models.py
 from django.db import models
 from user.models import User
-from music.models import Song
+from music.music_models import Song
 
 class Purchase(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)

@@ -2,7 +2,7 @@ from django.contrib.auth import logout
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 from django.contrib import messages
-from .forms import FanRegisterForm, ArtistRegisterForm
+from user.forms import FanRegisterForm, ArtistRegisterForm
 from django.contrib.auth import authenticate, login
 from user.models import User
 

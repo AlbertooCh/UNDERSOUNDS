@@ -1,4 +1,4 @@
-# music/models.py
+# music/music_models.py
 from django.db import models
 
 class Song(models.Model):

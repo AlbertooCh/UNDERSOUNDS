@@ -1,7 +1,7 @@
-# user/models.py
+# user/music_models.py
 from django.db import models
 from django.contrib.auth.models import AbstractUser
-from music.models import Song  # Safe import: music doesn't depend on user
+from music.music_models import Song  # Safe import: music doesn't depend on user
 
 class User(AbstractUser):
     ROLE_CHOICES = (
