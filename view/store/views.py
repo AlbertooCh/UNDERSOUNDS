@@ -12,7 +12,7 @@ def order_confirmation(request, order_id):
     # Obtiene el pedido del usuario autenticado; se asume que el modelo Order tiene un campo
     # de fecha de compra, id y total
     order = get_object_or_404(Order, id=order_id, user=request.user)
-    return render(request, 'store/order_confirmation.html', {'order': order})
+    return render(request, 'order_confirmation.html', {'order': order})
 
 @login_required
 def carrito(request):
@@ -26,7 +26,7 @@ def carrito(request):
         'items': cart_items,
         'total': total,
     }
-    return render(request, "store/carrito.html", context)
+    return render(request, "carrito.html", context)
 
 
 @login_required
@@ -87,6 +87,6 @@ def pago(request):
         'items': cart_items,
         'total': total,
     }
-    return render(request, 'store/pago.html', context)
+    return render(request, 'pago.html', context)
 
 

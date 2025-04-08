@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Confirmación de Pedido{% endblock %}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'store/css/order_confirmation.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="order-confirmation-container">
+    <h1>¡Gracias por tu compra!</h1>
+    <p>Se ha generado el pedido <strong>#{{ order.id }}</strong>.</p>
+    <p>Total: <strong>{{ order.total|floatformat:2 }} €</strong></p>
+    <p>Fecha: {{ order.created_at|date:"d/m/Y H:i" }}</p>
+    <p>Pronto recibirás un correo con los detalles de tu pedido.</p>
+    <a href="{% url 'catalogo' %}" class="btn">Volver al Catálogo</a>
+</div>
+{% endblock %}

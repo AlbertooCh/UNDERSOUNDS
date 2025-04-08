@@ -141,3 +141,6 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 AUTH_USER_MODEL = 'user.User' # to make django use this custom user model
+
+# URL a la que se redirige el uso de @login_required si no se encuentra autenticado
+LOGIN_URL = '/login/'
