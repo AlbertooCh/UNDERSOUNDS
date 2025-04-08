@@ -1,8 +1,8 @@
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404, redirect
-from .models import CartItem, Order
-from music.music_models import Song
+from model.store.store_models import CartItem, Order
+from model.music.music_models import Song
 
 
 # Create your views here.
