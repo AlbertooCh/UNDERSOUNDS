@@ -2,7 +2,7 @@
 {% block title %}Contacto - Undersounds{% endblock %}
 {% block content %}
     <style>
-
+        html{ height: 100%;}
         body {
             font-family: Arial, sans-serif;
             margin: 20px;
@@ -27,8 +27,12 @@
             margin-top: 30px;
             margin-bottom: 30px;
         }
-        .div1 { grid-area: 1 / 1 / 2 / 2; }
-.div2 { grid-area: 1 / 2 / 2 / 3; }
+        .div1 { grid-area: 1 / 1 / 2 / 2;}
+        .div2 { grid-area: 1 / 2 / 2 / 3; }
+
+        h2{
+            text-align: center;
+        }
 
         .info-contacto {
               background-color: #e3e3e3;
@@ -37,12 +41,12 @@
         }
         .contact-container {
             max-width: 100%;
-            min-width: 70%;
+            min-width: 80%;
             margin: 0 auto;
             padding: 30px;
             background-color: #e0e0e0;
             border-radius: 15px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
         }
 
         .form-group {
@@ -130,33 +134,52 @@
 
                 /* Contenedor general de la información en la columna derecha */
         .info-contacto {
+            min-width:50%;
+            max-width: 80%;
             display: flex;
             flex-direction: column;
-            gap: 20px;
+            gap: 10px;
             background-color: #e3e3e3;
-            padding: 40px; /* Aumenta este valor para agrandar el área gris */
+            padding-top:  10px; /* Aumenta este valor para agrandar el área gris */
+            padding-left: 30px;
+            padding-right: 30px;
+            padding-bottom: 10px;
             border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
         }
 
         /* Separación visual entre "Información adicional" y "Ubicación" */
         .datos-contacto {
-            border-bottom: 2px solid #ccc; /* Línea divisoria; puedes cambiar el grosor y color */
+            border-bottom: 2px solid #ccc; /* Línea divisoria;
             padding-bottom: 20px; /* Espacio debajo del contenido anterior a la línea */
         }
-
-        .mapa {
-            padding-top: 20px; /* Espacio para separar el mapa de la línea */
+        /* Contenedor de los iconos */
+        .social-icons {
+          display: flex;
+          align-items: center;     /* Centra los iconos verticalmente */
+          gap: 20px;               /* Espacio entre cada icono */
+          margin-top: 20px;
+        }
+        /* Estilos para cada imagen de icono */
+        .social-icons img {
+          width: 40px;
+          height: 40px;
+          transition: transform 0.3s ease; /* Efecto de animación al pasar el mouse */
+        }
+        /* Efecto hover para escalar el icono levemente */
+        .social-icons img:hover {
+          transform: scale(1.1);
         }
 
-        /* Opcional: hacer que el iframe se ajuste correctamente */
         .mapa iframe {
             width: 100%;
-            height: auto; /* O, si lo prefieres, fija una altura con, por ejemplo, height: 300px; */
+            height: 100%;
             border: 0;
         }
 
 
     </style>
+
 
     <h2 class="title">CONTACTO</h2>
 
@@ -199,6 +222,12 @@
                 <h2>Información adicional</h2>
                 <p>Teléfono: 123-456-7890</p>
                 <p>Dirección: Calle Ejemplo 123</p>
+                  <!-- Sección de contacto con iconos de redes sociales -->
+                  <p class="social-icons">
+                    <a href="https://www.whatsapp.com/tu-perfil" target="_blank">
+                      <img src="/static/images/Whatsapp.png" alt="WhatsApp">
+                    </a>
+                  </p>
             </div>
             <div class="mapa">
               <h2>Ubicación</h2>
