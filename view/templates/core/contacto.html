@@ -18,8 +18,26 @@
             text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
         }
 
+        .parent {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            grid-template-rows: 1fr;
+            grid-column-gap: 0px;
+            grid-row-gap: 0px;
+            margin-top: 30px;
+            margin-bottom: 30px;
+        }
+        .div1 { grid-area: 1 / 1 / 2 / 2; }
+.div2 { grid-area: 1 / 2 / 2 / 3; }
+
+        .info-contacto {
+              background-color: #e3e3e3;
+              padding: 20px;
+              border-radius: 10px;
+        }
         .contact-container {
-            max-width: 600px;
+            max-width: 100%;
+            min-width: 70%;
             margin: 0 auto;
             padding: 30px;
             background-color: #e0e0e0;
@@ -109,40 +127,93 @@
             from { opacity: 0; transform: translateY(10px); }
             to { opacity: 1; transform: translateY(0); }
         }
+
+                /* Contenedor general de la información en la columna derecha */
+        .info-contacto {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            background-color: #e3e3e3;
+            padding: 40px; /* Aumenta este valor para agrandar el área gris */
+            border-radius: 10px;
+        }
+
+        /* Separación visual entre "Información adicional" y "Ubicación" */
+        .datos-contacto {
+            border-bottom: 2px solid #ccc; /* Línea divisoria; puedes cambiar el grosor y color */
+            padding-bottom: 20px; /* Espacio debajo del contenido anterior a la línea */
+        }
+
+        .mapa {
+            padding-top: 20px; /* Espacio para separar el mapa de la línea */
+        }
+
+        /* Opcional: hacer que el iframe se ajuste correctamente */
+        .mapa iframe {
+            width: 100%;
+            height: auto; /* O, si lo prefieres, fija una altura con, por ejemplo, height: 300px; */
+            border: 0;
+        }
+
+
     </style>
 
     <h2 class="title">CONTACTO</h2>
 
-    <div class="contact-container">
-        <form action="#" method="post">
-            {% csrf_token %}
-            <div class="form-group">
-                <label for="name">Nombre:</label>
-                <input type="text" id="name" name="name" required>
-            </div>
-            <div class="form-group">
-                <label for="email">Correo electrónico:</label>
-                <input type="email" id="email" name="email" required>
-            </div>
-            <div class="form-group">
-                <label for="subject">Asunto:</label>
-                <input type="text" id="subject" name="subject" required>
-            </div>
-            <div class="form-group">
-                <label for="message">Mensaje:</label>
-                <textarea id="message" name="message" required></textarea>
-            </div>
-            <div class="form-group">
-                <button type="submit">ENVIAR MENSAJE</button>
-            </div>
-        </form>
-
-        {% if messages %}
-            {% for message in messages %}
-                <div class="message {% if message.tags %}{{ message.tags }}{% endif %}">
-                    {{ message }}
+    <div class="parent">
+        <div class="contact-container div1">
+            <form action="#" method="post">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="name">Nombre:</label>
+                    <input type="text" id="name" name="name" required>
                 </div>
-            {% endfor %}
-        {% endif %}
+                <div class="form-group">
+                    <label for="email">Correo electrónico:</label>
+                    <input type="email" id="email" name="email" required>
+                </div>
+                <div class="form-group">
+                    <label for="subject">Asunto:</label>
+                    <input type="text" id="subject" name="subject" required>
+                </div>
+                <div class="form-group">
+                    <label for="message">Mensaje:</label>
+                    <textarea id="message" name="message" required></textarea>
+                </div>
+                <div class="form-group">
+                    <button type="submit">ENVIAR MENSAJE</button>
+                </div>
+            </form>
+
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="message {% if message.tags %}{{ message.tags }}{% endif %}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+        </div>
+        <div class="info-contacto div2">
+            <!-- Contenido a la derecha: redes sociales, mapa, etc. -->
+            <div class="datos-contacto">
+                <h2>Información adicional</h2>
+                <p>Teléfono: 123-456-7890</p>
+                <p>Dirección: Calle Ejemplo 123</p>
+            </div>
+            <div class="mapa">
+              <h2>Ubicación</h2>
+              <p>Nuestra sede se encuentra aquí:</p>
+
+              <iframe
+                src="https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d4911.072846957981!2d-6.343397537771955!3d39.47927596120785!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!5e0!3m2!1ses!2ses!4v1744358203598!5m2!1ses!2ses"
+                width="600"
+                height="450"
+                style="border:0;"
+                allowfullscreen=""
+                loading="lazy"
+                referrerpolicy="no-referrer-when-downgrade">
+              </iframe>
+            </div>
+        </div>
     </div>
 {% endblock %}
