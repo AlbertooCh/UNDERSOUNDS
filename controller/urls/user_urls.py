@@ -10,5 +10,5 @@ urlpatterns = [
     path('user/mis_obras/', views.mis_obras, name='mis_obras'),
     path('register/artist/', views.register_artist, name='artist_register'),
     path('', lambda request: render(request, 'home.html'), name='home'),  # ✅ TEMP HOME VIEW
-
+    path('logout/', views.user_logout, name='logout'),
 ]

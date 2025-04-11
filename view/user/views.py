@@ -26,7 +26,7 @@ def login_view(request):
         if user is not None:
             login(request, user)
             messages.success(request, 'Inicio de sesión exitoso.')
-            return redirect('home')
+            return redirect('inicio')
         else:
             messages.error(request, 'Usuario o contraseña incorrectos.')
 
@@ -47,7 +47,7 @@ def register_artist(request):
             user = form.save()
             login(request, user)
             messages.success(request, '¡Registro como artista exitoso!')
-            return redirect('home')
+            return redirect('inicio')
     else:
         form = ArtistRegisterForm()
     return render(request, 'user/artist_register.html', {'form': form})
@@ -69,7 +69,7 @@ def mis_obras(request):
 @login_required
 def user_logout(request):
     logout(request)
-    return redirect("home")
+    return redirect("inicio")
 
 
 def register_fan(request):
@@ -79,7 +79,7 @@ def register_fan(request):
             user = form.save()
             login(request, user)
             messages.success(request, '¡Registro exitoso! Bienvenido.')
-            return redirect('home')  # change to your homepage
+            return redirect('inicio')  # change to your iniciopage
     else:
         form = FanRegisterForm()
     return render(request, 'user/register.html', {'form': form})
@@ -92,7 +92,12 @@ def register_artist(request):
             user = form.save()
             login(request, user)
             messages.success(request, '¡Registro como artista exitoso!')
-            return redirect('home')
+            return redirect('inicio')
     else:
         form = ArtistRegisterForm()
     return render(request, 'user/artist_register.html', {'form': form})
+
+def logout_view(request):
+    logout(request)
+    messages.success(request, "Has cerrado sesión correctamente.")
+    return redirect('inicio')  # Redirige a la página principal o donde prefieras
