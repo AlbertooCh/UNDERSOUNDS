@@ -9,7 +9,6 @@
 
     {% block extra_css %} {% endblock %}
     <style>
-
         * {
             box-sizing: border-box;
         }
@@ -34,7 +33,6 @@
         .main-content {
             flex: 1;
         }
-
 
         .scroll-to-top {
             position: fixed;
@@ -79,7 +77,15 @@
 </head>
 <body>
     <div class="wrapper">
-        {% include 'includes/header_artist.html' %}
+        {% if user.is_authenticated %}
+            {% if user.role == 'artist' %}
+                {% include 'includes/header_artist.html' %}
+            {% else %}
+                {% include 'includes/header_user.html' %}
+            {% endif %}
+        {% else %}
+            {% include 'includes/header_guest.html' %}
+        {% endif %}
 
         <main class="main-content">
             {% block content %}
@@ -115,7 +121,7 @@
             }
         });
 
-        // Mostrar  el botón después de 1 segundo si está en parte inferior
+        // Mostrar el botón después de 1 segundo si está en parte inferior
         setTimeout(() => {
             if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight - 100) {
                 document.querySelector('.scroll-to-top').classList.add('visible');
