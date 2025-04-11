@@ -1,0 +1,87 @@
+# music/dao/song_dao.py
+from django.core.exceptions import ObjectDoesNotExist
+from model.music.music_models import Song
+from django.db import models
+from model.Dto.music_dto import SongDTO
+from model.Factory.music_factory import SongFactory
+
+class SongDAO:
+    @staticmethod
+    def create(song_dto):
+        """Crea una nueva canción en la base de datos"""
+        song = SongFactory.create_from_dto(song_dto)
+        song.save()
+        return song.id
+
+    @staticmethod
+    def get_by_id(song_id):
+        """Obtiene una canción por su ID"""
+        try:
+            song = Song.objects.get(id=song_id)
+            return SongFactory.create_dto_from_model(song)
+        except ObjectDoesNotExist:
+            return None
+
+    @staticmethod
+    def get_all():
+        """Obtiene todas las canciones"""
+        songs = Song.objects.all()
+        return [SongFactory.create_dto_from_model(song) for song in songs]
+
+    @staticmethod
+    def update(song_dto):
+        """Actualiza una canción existente"""
+        try:
+            song = Song.objects.get(id=song_dto.id)
+            song.title = song_dto.title
+            song.artist_name = song_dto.artist_name
+            song.album_title = song_dto.album_title
+            song.genre = song_dto.genre
+            song.price = song_dto.price
+            song.release_date = song_dto.release_date
+            if song_dto.album_cover:
+                song.album_cover = song_dto.album_cover
+            if song_dto.song_file:
+                song.song_file = song_dto.song_file
+            song.save()
+            return True
+        except ObjectDoesNotExist:
+            return False
+
+    @staticmethod
+    def delete(song_id):
+        """Elimina una canción por su ID"""
+        try:
+            song = Song.objects.get(id=song_id)
+            song.delete()
+            return True
+        except ObjectDoesNotExist:
+            return False
+
+    @staticmethod
+    def filter_by_artist(artist_name):
+        """Filtra canciones por nombre de artista"""
+        songs = Song.objects.filter(artist_name__icontains=artist_name)
+        return [SongFactory.create_dto_from_model(song) for song in songs]
+
+    @staticmethod
+    def filter_by_genre(genre):
+        """Filtra canciones por género"""
+        songs = Song.objects.filter(genre__iexact=genre)
+        return [SongFactory.create_dto_from_model(song) for song in songs]
+
+    @staticmethod
+    def filter_by_album(album_title):
+        """Filtra canciones por álbum"""
+        songs = Song.objects.filter(album_title__icontains=album_title)
+        return [SongFactory.create_dto_from_model(song) for song in songs]
+
+    @staticmethod
+    def search(query):
+        """Busca canciones por título, artista o álbum"""
+        songs = Song.objects.filter(
+            models.Q(tittle__icontains=query) |
+            models.Q(artist_name__icontains=query) |
+            models.Q(album_title__icontains=query)
+        )
+        return [SongFactory.create_dto_from_model(song) for song in songs]

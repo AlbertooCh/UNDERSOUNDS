@@ -1,97 +1,207 @@
+# views.py
 from django.contrib.auth.decorators import login_required
-
-from model.music.music_models import Song
-from model.music.forms import SongForm
 from django.contrib import messages
 from django.shortcuts import render, redirect, get_object_or_404
+from controller.music_controller import SongController
+from model.Dto.music_dto import SongDTO
+from model.music.forms import SongForm
 
 
 def music_detail_redirect(request):
     song_id = request.GET.get("id")
     return redirect("music_detail_id", id=song_id)
 
+
 def music_detail(request, id):
-    song = get_object_or_404(Song, id=id)
+    song_dto = SongController.get_song(id)
+    if not song_dto:
+        return render(request, '404.html', status=404)
+
+    # Convertimos el DTO a un diccionario para la plantilla
+    song = {
+        'id': song_dto.id,
+        'title': song_dto.title,
+        'artist_name': song_dto.artist_name,
+        'album_title': song_dto.album_title,
+        'genre': song_dto.genre,
+        'price': song_dto.price,
+        'release_date': song_dto.release_date,
+        'album_cover': song_dto.album_cover,
+        'song_file': song_dto.song_file
+    }
     return render(request, 'music/music_detail.html', {'song': song})
 
+
 def catalogo(request):
-    songs = Song.objects.all()
+    query = request.GET.get('q')
+    genre = request.GET.get('genre')
+    artist = request.GET.get('artist')
+
+    if query:
+        songs = SongController.search_songs(query)
+    elif genre:
+        songs = SongController.filter_songs_by_genre(genre)
+    elif artist:
+        songs = SongController.filter_songs_by_artist(artist)
+    else:
+        songs = SongController.get_all_songs()
+
     return render(request, "catalogo.html", {"songs": songs})
+
 
 @login_required
 def add_song(request):
     if request.user.role != 'artist':
-        return redirect('home')  # Prevent fans/admins from adding songs
+        return redirect('home')
 
     if request.method == 'POST':
         form = SongForm(request.POST, request.FILES)
         if form.is_valid():
-            song = form.save(commit=False)
-            song.artist_name = request.user.artist_name  # Set artist automatically
-            song.save()
-            messages.success(request, "Canción añadida exitosamente.")
-            return redirect('artist_panel')
+            # Creamos el DTO desde el formulario
+            song_dto = SongDTO(
+                title=form.cleaned_data['title'],
+                artist_name=request.user.artist_name,
+                album_title=form.cleaned_data['album_title'],
+                genre=form.cleaned_data['genre'],
+                price=form.cleaned_data['price'],
+                release_date=form.cleaned_data['release_date'],
+                album_cover=request.FILES.get('album_cover'),
+                song_file=request.FILES.get('song_file')
+            )
+
+            # Usamos el controller para crear la canción
+            song_id = SongController.create_song(
+                title=song_dto.title,
+                artist_name=song_dto.artist_name,
+                album_title=song_dto.album_title,
+                genre=song_dto.genre,
+                price=song_dto.price,
+                release_date=song_dto.release_date,
+                album_cover=song_dto.album_cover,
+                song_file=song_dto.song_file
+            )
+
+            if song_id:
+                messages.success(request, "Canción añadida exitosamente.")
+                return redirect('artist_panel')
+            else:
+                messages.error(request, "Error al añadir la canción.")
     else:
         form = SongForm()
-    return render(request, 'music/song_form.html', {'form': form, 'action': 'Añadir'})
 
+    return render(request, 'music/song_form.html', {
+        'form': form,
+        'action': 'Añadir'
+    })
+
+
+@login_required
 def edit_song(request, song_id):
-    song = get_object_or_404(Song, id=song_id)
-    if song.artist_name != request.user.artist_name:
+    song_dto = SongController.get_song(song_id)
+    if not song_dto:
+        return render(request, '404.html', status=404)
+
+    if song_dto.artist_name != request.user.artist_name:
         return redirect('artist_panel')
+
     if request.method == 'POST':
-        form = SongForm(request.POST, request.FILES, instance=song)
+        form = SongForm(request.POST, request.FILES)
         if form.is_valid():
-            form.save()
-            messages.success(request, "Canción actualizada.")
-            return redirect('catalogo')
+            # Actualizamos el DTO con los datos del formulario
+            updated_dto = SongDTO(
+                id=song_id,
+                title=form.cleaned_data['title'],
+                artist_name=request.user.artist_name,
+                album_title=form.cleaned_data['album_title'],
+                genre=form.cleaned_data['genre'],
+                price=form.cleaned_data['price'],
+                release_date=form.cleaned_data['release_date'],
+                album_cover=request.FILES.get('album_cover') or song_dto.album_cover,
+                song_file=request.FILES.get('song_file') or song_dto.song_file
+            )
+
+            # Usamos el controller para actualizar
+            success = SongController.update_song(updated_dto)
+
+            if success:
+                messages.success(request, "Canción actualizada.")
+                return redirect('catalogo')
+            else:
+                messages.error(request, "Error al actualizar la canción.")
     else:
-        form = SongForm(instance=song)
-    return render(request, 'music/song_form.html', {'form': form, 'action': 'Editar'})
+        # Prellenamos el formulario con los datos actuales
+        initial_data = {
+            'title': song_dto.title,
+            'album_title': song_dto.album_title,
+            'genre': song_dto.genre,
+            'price': song_dto.price,
+            'release_date': song_dto.release_date,
+        }
+        form = SongForm(initial=initial_data)
 
+    return render(request, 'music/song_form.html', {
+        'form': form,
+        'action': 'Editar',
+        'song': song_dto
+    })
+
+
+@login_required
 def delete_song(request, song_id):
-    song = get_object_or_404(Song, id=song_id)
-    if request.method == 'POST':
-        song.delete()
-        messages.success(request, "Canción eliminada.")
-        return redirect('catalogo')
-    return render(request, 'music/song_confirm_delete.html', {'song': song})
+    song_dto = SongController.get_song(song_id)
+    if not song_dto:
+        return render(request, '404.html', status=404)
 
-def artist_detail(request):
-    song = Music.objects.all()
-    return render(request, 'artist_detail.html', {'song': song})
+    if song_dto.artist_name != request.user.artist_name:
+        return redirect('artist_panel')
+
+    if request.method == 'POST':
+        success = SongController.delete_song(song_id)
+        if success:
+            messages.success(request, "Canción eliminada.")
+            return redirect('catalogo')
+        else:
+            messages.error(request, "Error al eliminar la canción.")
+
+    return render(request, 'music/song_confirm_delete.html', {
+        'song': song_dto
+    })
+
 
 @login_required
 def artist_panel(request):
     if request.user.role != 'artist':
-        return redirect('home')  # or show error
+        return redirect('home')
 
-    songs = Song.objects.filter(artist_name=request.user.artist_name)
-    return render(request, 'music/artist_panel.html', {'songs': songs})
+    songs = SongController.filter_songs_by_artist(request.user.artist_name)
+    return render(request, 'music/artist_panel.html', {
+        'songs': songs
+    })
 
 
 @login_required
 def artist_detail(request):
     if request.user.role != 'artist':
-        return render(request, 'music/artist_not_found.html', {'artist_name': request.user.username})
+        return render(request, 'music/artist_not_found.html', {
+            'artist_name': request.user.username
+        })
 
-    # Filter songs by the logged-in artist's name
-    songs = Song.objects.filter(artist_name=request.user.artist_name)
+    songs = SongController.filter_songs_by_artist(request.user.artist_name)
 
-    if not songs.exists():
-        return render(request, 'music/artist_not_found.html', {'artist_name': request.user.artist_name})
+    if not songs:
+        return render(request, 'music/artist_not_found.html', {
+            'artist_name': request.user.artist_name
+        })
 
     artist = {
         'name': request.user.artist_name,
-        'age': 26,  # optional or fetch dynamically if you store it
-        'nationality': request.user.country or 'Desconocido',
-        'bio': request.user.bio or '',
-        'awards': ['Electronic Music Award']  # optional static content
+        'age': 26,  # Puedes obtener esto de tu modelo de usuario
+        'nationality': getattr(request.user, 'country', 'Desconocido'),
+        'bio': getattr(request.user, 'bio', ''),
+        'awards': ['Electronic Music Award']  # Datos de ejemplo
     }
 
-    context = {
+    return render(request, 'music/artist_detail.html', {
         'artist': artist,
         'albums': songs,
-    }
-    return render(request, 'music/artist_detail.html', context)
-
+    })
