@@ -30,11 +30,15 @@ class SongController:
         return SongDAO.get_by_id(song_id)
 
     @staticmethod
-    def get_all_songs():
+    def get_all_songs(ordered=False):
         """
         Obtiene todas las canciones
+        :param ordered: Si True, devuelve ordenado por fecha descendente
         """
-        return SongDAO.get_all()
+        songs = SongDAO.get_all()
+        if ordered:
+            return sorted(songs, key=lambda x: x.release_date, reverse=True)
+        return songs
 
     @staticmethod
     def update_song(song_id, **kwargs):

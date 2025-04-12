@@ -1,0 +1,353 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}{{ action }} Álbum - Undersounds{% endblock %}
+{% block content %}
+
+<style>
+    body {
+        font-family: Arial, sans-serif;
+    }
+
+    .form-wrapper {
+        max-width: 600px;
+        margin: 40px auto;
+        background: #f5f5f5;
+        padding: 30px;
+        border-radius: 20px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+
+    .form-wrapper h2 {
+        text-align: center;
+        margin-bottom: 30px;
+        font-size: 30px;
+        color: #1db954;
+    }
+
+    .form-group {
+        margin-bottom: 20px;
+    }
+
+    .form-group label {
+        display: block;
+        font-weight: bold;
+        margin-bottom: 5px;
+    }
+
+    .form-control {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 10px;
+        font-size: 16px;
+    }
+
+    .file-input {
+        margin-top: 5px;
+    }
+
+    .btn-submit {
+        width: 100%;
+        background-color: #1db954;
+        color: white;
+        border: none;
+        padding: 12px;
+        font-size: 16px;
+        border-radius: 10px;
+        cursor: pointer;
+        transition: background 0.3s ease;
+        margin-top: 20px;
+    }
+
+    .btn-submit:hover {
+        background-color: #159b44;
+    }
+
+    .btn-cancel {
+        width: 100%;
+        background-color: #6c757d;
+        color: white;
+        border: none;
+        padding: 12px;
+        font-size: 16px;
+        border-radius: 10px;
+        cursor: pointer;
+        transition: background 0.3s ease;
+        margin-top: 10px;
+        text-align: center;
+        display: inline-block;
+    }
+
+    .btn-cancel:hover {
+        background-color: #5a6268;
+    }
+
+    .artist-name {
+        font-weight: bold;
+        padding: 10px;
+        background-color: #e9ecef;
+        border-radius: 10px;
+        margin-bottom: 20px;
+    }
+
+    .error-message {
+        color: #dc3545;
+        font-size: 0.9em;
+        margin-top: 5px;
+    }
+
+    .current-file {
+        font-size: 0.9em;
+        color: #6c757d;
+        margin-top: 5px;
+    }
+
+    /* Estilos específicos para las canciones */
+    .track-item {
+        background: white;
+        padding: 15px;
+        border-radius: 10px;
+        margin-bottom: 15px;
+        border: 1px solid #ddd;
+    }
+
+    .track-header {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 10px;
+    }
+
+    .track-title {
+        font-weight: bold;
+    }
+
+    .track-actions {
+        display: flex;
+        gap: 10px;
+    }
+
+    .btn-remove-track {
+        background-color: #dc3545;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        padding: 2px 8px;
+        cursor: pointer;
+    }
+
+    .btn-add-track {
+        background-color: #17a2b8;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        padding: 8px 15px;
+        cursor: pointer;
+        margin-top: 10px;
+    }
+</style>
+
+<div class="form-wrapper">
+    <h2>{{ action }} Álbum</h2>
+
+    <form method="post" enctype="multipart/form-data" id="albumForm">
+        {% csrf_token %}
+
+        <div class="artist-name">
+            Artista: {{ request.user.artist_name }}
+        </div>
+
+        <!-- Campos del formulario manuales -->
+        <div class="form-group">
+            <label for="id_title">Título del Álbum*</label>
+            <input type="text" name="title" id="id_title" class="form-control"
+                   value="{{ form.title.value|default_if_none:'' }}" required>
+            {% if form.title.errors %}
+                <div class="error-message">{{ form.title.errors }}</div>
+            {% endif %}
+        </div>
+
+        <div class="form-group">
+            <label for="id_price">Precio (€)*</label>
+            <input type="number" name="price" id="id_price" class="form-control"
+                   value="{{ form.price.value|default_if_none:'' }}" step="0.01" min="0" required>
+            {% if form.price.errors %}
+                <div class="error-message">{{ form.price.errors }}</div>
+            {% endif %}
+        </div>
+
+        <div class="form-group">
+            <label for="id_release_date">Fecha de lanzamiento*</label>
+            <input type="date" name="release_date" id="id_release_date" class="form-control"
+                   value="{{ form.release_date.value|date:'Y-m-d'|default_if_none:'' }}" required>
+            {% if form.release_date.errors %}
+                <div class="error-message">{{ form.release_date.errors }}</div>
+            {% endif %}
+        </div>
+
+        <div class="form-group">
+            <label for="id_genre">Género*</label>
+            <input type="text" name="genre" id="id_genre" class="form-control"
+                   value="{{ form.genre.value|default_if_none:'' }}" required>
+            {% if form.genre.errors %}
+                <div class="error-message">{{ form.genre.errors }}</div>
+            {% endif %}
+        </div>
+
+        <div class="form-group">
+            <label for="id_description">Descripción</label>
+            <textarea name="description" id="id_description" class="form-control" rows="3">{{ form.description.value|default_if_none:'' }}</textarea>
+        </div>
+
+        <div class="form-group">
+            <label for="id_cover_image">Portada del Álbum*</label>
+            <input type="file" name="cover_image" id="id_cover_image" class="form-control file-input"
+                   accept="image/*" {% if action != 'Editar' %}required{% endif %}>
+            {% if action == 'Editar' and album.cover_image %}
+                <div class="current-file">
+                    Actual: <a href="{{ album.cover_image.url }}" target="_blank">{{ album.cover_image.name }}</a>
+                </div>
+            {% endif %}
+            {% if form.cover_image.errors %}
+                <div class="error-message">{{ form.cover_image.errors }}</div>
+            {% endif %}
+        </div>
+
+        <!-- Sección de canciones -->
+        <h3>Canciones</h3>
+        <div id="tracks-container">
+            {% for track in form.tracks %}
+            <div class="track-item" data-track-id="{{ track.id.value|default_if_none:'' }}">
+                <div class="track-header">
+                    <span class="track-title">Canción #{{ forloop.counter }}</span>
+                    <div class="track-actions">
+                        <button type="button" class="btn-remove-track">Eliminar</button>
+                    </div>
+                </div>
+                
+                <input type="hidden" name="track_id" value="{{ track.id.value|default_if_none:'' }}">
+                
+                <div class="form-group">
+                    <label for="id_track_title_{{ forloop.counter }}">Título*</label>
+                    <input type="text" name="track_title" id="id_track_title_{{ forloop.counter }}" 
+                           class="form-control" value="{{ track.title.value|default_if_none:'' }}" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="id_track_duration_{{ forloop.counter }}">Duración (mm:ss)*</label>
+                    <input type="text" name="track_duration" id="id_track_duration_{{ forloop.counter }}" 
+                           class="form-control" value="{{ track.duration.value|default_if_none:'' }}" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="id_track_price_{{ forloop.counter }}">Precio (€)*</label>
+                    <input type="number" name="track_price" id="id_track_price_{{ forloop.counter }}" 
+                           class="form-control" value="{{ track.price.value|default_if_none:'' }}" step="0.01" min="0" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="id_track_file_{{ forloop.counter }}">Archivo de audio*</label>
+                    <input type="file" name="track_file" id="id_track_file_{{ forloop.counter }}" 
+                           class="form-control file-input" accept="audio/*" {% if action != 'Editar' %}required{% endif %}>
+                    {% if action == 'Editar' and track.song_file.value %}
+                        <div class="current-file">
+                            Actual: {{ track.song_file.value.name }}
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <button type="button" id="add-track-btn" class="btn-add-track">+ Añadir Canción</button>
+
+        <button type="submit" class="btn-submit">{{ action }}</button>
+        <a href="{% if action == 'Editar' %}{% url 'album_detail' album.id %}{% else %}{% url 'mis_obras' %}{% endif %}"
+           class="btn-cancel">Cancelar</a>
+    </form>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const tracksContainer = document.getElementById('tracks-container');
+        const addTrackBtn = document.getElementById('add-track-btn');
+        let trackCount = {{ form.tracks|length|default:0 }};
+        
+        // Función para añadir una nueva canción
+        function addTrack() {
+            trackCount++;
+            const trackDiv = document.createElement('div');
+            trackDiv.className = 'track-item';
+            trackDiv.innerHTML = `
+                <div class="track-header">
+                    <span class="track-title">Canción #${trackCount}</span>
+                    <div class="track-actions">
+                        <button type="button" class="btn-remove-track">Eliminar</button>
+                    </div>
+                </div>
+                
+                <input type="hidden" name="track_id" value="">
+                
+                <div class="form-group">
+                    <label for="id_track_title_${trackCount}">Título*</label>
+                    <input type="text" name="track_title" id="id_track_title_${trackCount}" 
+                           class="form-control" value="" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="id_track_duration_${trackCount}">Duración (mm:ss)*</label>
+                    <input type="text" name="track_duration" id="id_track_duration_${trackCount}" 
+                           class="form-control" value="" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="id_track_price_${trackCount}">Precio (€)*</label>
+                    <input type="number" name="track_price" id="id_track_price_${trackCount}" 
+                           class="form-control" value="" step="0.01" min="0" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="id_track_file_${trackCount}">Archivo de audio*</label>
+                    <input type="file" name="track_file" id="id_track_file_${trackCount}" 
+                           class="form-control file-input" accept="audio/*" required>
+                </div>
+            `;
+            
+            tracksContainer.appendChild(trackDiv);
+            
+            // Añadir evento al botón de eliminar
+            trackDiv.querySelector('.btn-remove-track').addEventListener('click', function() {
+                if (confirm('¿Estás seguro de que quieres eliminar esta canción?')) {
+                    tracksContainer.removeChild(trackDiv);
+                    // Reorganizar los números de las canciones
+                    updateTrackNumbers();
+                }
+            });
+        }
+        
+        // Función para actualizar los números de las canciones
+        function updateTrackNumbers() {
+            const trackItems = tracksContainer.querySelectorAll('.track-item');
+            trackCount = trackItems.length;
+            
+            trackItems.forEach((item, index) => {
+                item.querySelector('.track-title').textContent = `Canción #${index + 1}`;
+            });
+        }
+        
+        // Añadir evento al botón de añadir canción
+        addTrackBtn.addEventListener('click', addTrack);
+        
+        // Añadir eventos a los botones de eliminar existentes
+        document.querySelectorAll('.btn-remove-track').forEach(btn => {
+            btn.addEventListener('click', function() {
+                if (confirm('¿Estás seguro de que quieres eliminar esta canción?')) {
+                    const trackItem = this.closest('.track-item');
+                    tracksContainer.removeChild(trackItem);
+                    updateTrackNumbers();
+                }
+            });
+        });
+    });
+</script>
+
+{% endblock %}

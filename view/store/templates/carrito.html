@@ -2,43 +2,177 @@
 {% load static %}
 
 {% block title %}
-    Carrito
+    Carrito - Undersounds
 {% endblock %}
 
 {% block extra_css %}
     <link rel="stylesheet" href="{% static 'store/css/store.css' %}">
+    <style>
+        .cart-container {
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 20px;
+            background-color: #f8f9fa;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .cart-container h1 {
+            text-align: center;
+            color: #1db954;
+            margin-bottom: 30px;
+        }
+
+        .cart-item {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            margin-bottom: 15px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            position: relative;
+        }
+
+        .item-image {
+            width: 100px;
+            height: 100px;
+            object-fit: cover;
+            border-radius: 5px;
+            margin-right: 20px;
+        }
+
+        .item-details {
+            flex-grow: 1;
+        }
+
+        .item-details p {
+            margin: 5px 0;
+            color: #333;
+        }
+
+        .item-details a {
+            color: #1db954;
+            text-decoration: none;
+        }
+
+        .item-details a:hover {
+            text-decoration: underline;
+        }
+
+        .remove-item {
+            background-color: #ff4d4d;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .remove-item:hover {
+            background-color: #ff1a1a;
+        }
+
+        .cart-total {
+            text-align: right;
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin: 20px 0;
+            padding-top: 10px;
+            border-top: 1px solid #ddd;
+        }
+
+        .cart-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+        }
+
+        .cart-buttons button {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 5px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .checkout {
+            background-color: #1db954;
+            color: white;
+        }
+
+        .checkout:hover {
+            background-color: #17a84b;
+            transform: translateY(-2px);
+        }
+
+        .continue-shopping {
+            background-color: #6c757d;
+            color: white;
+        }
+
+        .continue-shopping:hover {
+            background-color: #5a6268;
+            transform: translateY(-2px);
+        }
+
+        .empty-cart {
+            text-align: center;
+            padding: 30px;
+            color: #666;
+        }
+    </style>
 {% endblock %}
 
 {% block content %}
 <div class="cart-container">
-    <h1>Tu Carrito</h1>
-    {% for item in items %}
-        <div class="cart-item">
-            <a href="/music_detail/">
-                <img src="{{ item.imagen|default:'/static/photos/PortadaCancion.png' }}" alt="Portada" class="item-image">
-            </a>
-            <div class="item-details">
-                <p>Canción: <strong><a href="/music_detail/">{{ item.titulo }}</a></strong></p>
-                <p>Artista: <strong><a href="/artist_detail/">{{ item.artista|default:"Don Omar" }}</a></strong></p>
-                <p>Cantidad: {{ item.quantity }}</p>
-                <p>Precio: {{ item.precio|floatformat:2 }} €</p>
-                <p>Subtotal: {{ item.subtotal|floatformat:2 }} €</p>
+    <h1><i class="fas fa-shopping-cart"></i> Tu Carrito</h1>
+
+    {% if items %}
+        {% for item in items %}
+            <div class="cart-item">
+                <a href="{% url 'music_detail_id' item.song.id %}">
+                    {% if item.song.album_cover %}
+                        <img src="{{ item.song.album_cover.url }}" alt="{{ item.song.title }}" class="item-image">
+                    {% else %}
+                        <img src="{% static 'images/default_album.jpg' %}" alt="Portada" class="item-image">
+                    {% endif %}
+                </a>
+
+                <div class="item-details">
+                    <p>Canción: <strong><a href="{% url 'music_detail_id' item.song.id %}">{{ item.song.title }}</a></strong></p>
+                    <p>Total: {{ item.subtotal|floatformat:2 }} €</p>
+                </div>
+
+                <form action="{% url 'remove_from_cart' item.song.id %}" method="post" style="margin-left: auto;">
+                    {% csrf_token %}
+                    <button type="submit" class="remove-item">
+                        <i class="fas fa-trash-alt"></i> Eliminar
+                    </button>
+                </form>
             </div>
-            <!-- Link or form can be added here to remove the item -->
-            <a href="{% url 'remove_from_cart' item.song_id %}">
-                <button class="remove-item">Eliminar</button>
-            </a>
+        {% endfor %}
+
+        <div class="cart-total">
+            <p>Total: {{ total|floatformat:2 }} €</p>
         </div>
-    {% empty %}
-        <p>No hay artículos en el carrito.</p>
-    {% endfor %}
-    <hr>
-    <div class="cart-total">
-        <p>Total: {{ total }}</p>
-    </div>
-    <div class="cart-buttons">
-        <a href="/user/historial_compras/"><button class="checkout">Ir a Pagar</button></a>
-        <a href="/catalogo/"><button class="continue-shopping">Seguir Comprando</button></a>
-    </div>
+
+        <div class="cart-buttons">
+            <a href="{% url 'pago' %}"><button class="checkout"><i class="fas fa-credit-card"></i> Proceder al Pago</button></a>
+            <a href="{% url 'catalogo' %}"><button class="continue-shopping"><i class="fas fa-arrow-left"></i> Seguir Comprando</button></a>
+        </div>
+    {% else %}
+        <div class="empty-cart">
+            <i class="fas fa-cart-arrow-down" style="font-size: 3rem; color: #ccc; margin-bottom: 15px;"></i>
+            <h3>Tu carrito está vacío</h3>
+            <p>¿No sabes qué añadir? ¡Echa un vistazo a nuestro catálogo!</p>
+            <a href="{% url 'catalogo' %}"><button class="continue-shopping">Explorar Canciones</button></a>
+        </div>
+    {% endif %}
 </div>
+
+<!-- Incluye Font Awesome para los iconos -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 {% endblock %}

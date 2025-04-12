@@ -8,9 +8,9 @@
 
 <div class="works-container">
     <h1 class="works-title">MIS OBRAS</h1>
-    
+
     <button class="btn btn-add" id="addAlbumBtn">+ Añadir Nuevo Álbum</button>
-    
+
     <!-- Álbum Ejemplo 1 -->
     <div class="album-card">
         <div class="album-header">
@@ -20,7 +20,7 @@
                 <button class="btn btn-delete">Eliminar</button>
             </div>
         </div>
-        
+
         <div class="album-details">
             <img src="{% static 'images/album1.jpg' %}" alt="Portada del álbum" class="album-cover">
             <div class="album-meta">
@@ -32,10 +32,10 @@
                 </div>
             </div>
         </div>
-        
+
         <div class="tracks-list">
             <h3 style="margin-bottom: 15px;">Canciones</h3>
-            
+
             <div class="track-item">
                 <div class="track-info">
                     <div class="track-name">Lavender Haze</div>
@@ -43,7 +43,7 @@
                 </div>
                 <div class="track-price">€1.29</div>
             </div>
-            
+
             <div class="track-item">
                 <div class="track-info">
                     <div class="track-name">Maroon</div>
@@ -53,7 +53,7 @@
             </div>
         </div>
     </div>
-    
+
     <!-- Álbum Ejedmplo 2 -->
     <div class="album-card">
         <div class="album-header">
@@ -63,7 +63,7 @@
                 <button class="btn btn-delete">Eliminar</button>
             </div>
         </div>
-        
+
         <div class="album-details">
             <img src="{% static 'images/album2.jpg' %}" alt="Portada del álbum" class="album-cover">
             <div class="album-meta">
@@ -75,10 +75,10 @@
                 </div>
             </div>
         </div>
-        
+
         <div class="tracks-list">
             <h3 style="margin-bottom: 15px;">Canciones</h3>
-            
+
             <div class="track-item">
                 <div class="track-info">
                     <div class="track-name">The 1</div>
@@ -94,7 +94,7 @@
 <div id="albumModal" class="modal">
     <div class="modal-content">
         <h2 style="margin-bottom: 20px;" id="modalTitle">Editar Álbum</h2>
-        
+
         <form id="albumForm">
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
                 <div class="form-group">
@@ -123,11 +123,11 @@
             <div class="tracks-scroll-container" id="tracksContainer">
                 <!-- Las canciones se añadirán aquí dinámicamente -->
             </div>
-            
+
             <button type="button" class="btn" style="background-color: #007bff; margin-top: 10px;" id="addNewTrackBtn">
                 + Añadir Canción
             </button>
-            
+
             <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 30px;">
                 <button type="button" class="btn" id="cancelBtn">Cancelar</button>
                 <button type="submit" class="btn btn-edit">Guardar Cambios</button>
@@ -180,7 +180,7 @@
             </div>
         `;
         tracksContainer.appendChild(trackDiv);
-        
+
         // Eliminar canción
         trackDiv.querySelector('.btn-delete').addEventListener('click', function() {
             tracksContainer.removeChild(trackDiv);
@@ -191,36 +191,36 @@
     function openEditModal(albumId) {
         const album = albumsData[albumId];
         if (!album) return;
-        
+
         // Configurar el modal para edición
         modalTitle.textContent = "Editar Álbum";
         document.getElementById('albumTitle').value = album.title;
         document.getElementById('albumPrice').value = album.price;
         document.getElementById('albumDescription').value = album.description;
-        
+
         // Limpiar canciones existentes
         const tracksContainer = document.getElementById('tracksContainer');
         tracksContainer.innerHTML = '';
-        
+
         // Añadir canciones existentes
         album.tracks.forEach(track => {
             addTrackToModal(track.name, track.duration, track.price);
         });
-        
+
         modal.style.display = 'block';
     }
 
     // Abrir modal para añadir nuevo álbum
     addAlbumBtn.addEventListener('click', function() {
         modalTitle.textContent = "Añadir Nuevo Álbum";
-        
+
         // Limpiar formulario
         albumForm.reset();
         document.getElementById('tracksContainer').innerHTML = '';
-        
+
         modal.style.display = 'block';
     });
-    
+
     // Asignar eventos a los botones de editar
     document.querySelectorAll('.edit-album-btn').forEach(btn => {
         btn.addEventListener('click', function() {
@@ -228,24 +228,24 @@
             openEditModal(albumId);
         });
     });
-    
+
     // Cancelar y cerrar modal
     cancelBtn.addEventListener('click', function() {
         modal.style.display = 'none';
     });
-    
+
     // Cerrar modal al hacer clic fuera
     window.addEventListener('click', function(event) {
         if (event.target == modal) {
             modal.style.display = 'none';
         }
     });
-    
+
     // Añadir nueva canción
     addNewTrackBtn.addEventListener('click', function() {
         addTrackToModal();
     });
-    
+
     // Manejar envío del formulario
     albumForm.addEventListener('submit', function(e) {
         e.preventDefault();

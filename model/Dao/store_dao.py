@@ -14,6 +14,26 @@ class CartDAO:
     @staticmethod
     def add_to_cart(user_id, song_id, quantity=1):
         try:
+            # Intenta obtener el item existente
+            item = CartItem.objects.get(user_id=user_id, song_id=song_id)
+            # Si existe, actualiza la cantidad
+            item.quantity += quantity
+            item.save()
+            return (False, "La canción ya estaba en tu carrito. Se ha actualizado la cantidad.")
+        except CartItem.DoesNotExist:
+            # Si no existe, créalo
+            CartItem.objects.create(
+                user_id=user_id,
+                song_id=song_id,
+                quantity=quantity
+            )
+            return (True, "Canción añadida al carrito")
+        except Exception as e:
+            return (False, str(e))
+
+    @staticmethod
+    def add_to_cart(user_id, song_id, quantity=1):
+        try:
             item = CartItem.objects.get(user_id=user_id, song_id=song_id)
             item.quantity += quantity
             item.save()

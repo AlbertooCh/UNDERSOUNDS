@@ -1,4 +1,6 @@
 # model/store/store_models.py
+from django.utils import timezone
+
 from django.db import models
 from django.conf import settings
 from user.models import User
@@ -9,11 +11,11 @@ class CartItem(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='cart_items')
     song = models.ForeignKey(Song, on_delete=models.CASCADE, related_name='in_carts')
     quantity = models.PositiveIntegerField(default=1)
-    added_at = models.DateTimeField(auto_now_add=True)
+    added_at = models.DateTimeField(default=timezone.now)
 
     class Meta:
         app_label = 'store'
-        unique_together = ('user', 'song')  # Evita duplicados
+        unique_together = ('user', 'song')  # Esto evita duplicados
 
     def subtotal(self):
         return self.quantity * self.song.price
