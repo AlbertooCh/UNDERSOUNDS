@@ -51,7 +51,9 @@ def catalogo(request):
 
 @login_required
 def add_song(request):
-    if request.user.role != 'artist':
+    # Verificar que el usuario es artista
+    if not request.user.is_authenticated or request.user.role != 'artist':
+        messages.error(request, "Solo los artistas pueden añadir canciones")
         return redirect('home')
 
     if request.method == 'POST':
@@ -63,25 +65,20 @@ def add_song(request):
                 artist_name=request.user.artist_name,
                 album_title=form.cleaned_data['album_title'],
                 genre=form.cleaned_data['genre'],
-                price=form.cleaned_data['price'],
+                price=float(form.cleaned_data['price']),
                 release_date=form.cleaned_data['release_date'],
                 album_cover=request.FILES.get('album_cover'),
-                song_file=request.FILES.get('song_file')
+                song_file=request.FILES.get('song_file'),
+                artist_id=request.user.id  # Nuevo campo para asociación
             )
 
             # Usamos el controller para crear la canción
-            song_id = SongController.create_song(
-                title=song_dto.title,
-                artist_name=song_dto.artist_name,
-                album_title=song_dto.album_title,
-                genre=song_dto.genre,
-                price=song_dto.price,
-                release_date=song_dto.release_date,
-                album_cover=song_dto.album_cover,
-                song_file=song_dto.song_file
+            song = SongController.create_song_with_artist(
+                song_dto=song_dto,
+                artist_id=request.user.id
             )
 
-            if song_id:
+            if song:
                 messages.success(request, "Canción añadida exitosamente.")
                 return redirect('artist_panel')
             else:
@@ -91,7 +88,8 @@ def add_song(request):
 
     return render(request, 'music/song_form.html', {
         'form': form,
-        'action': 'Añadir'
+        'action': 'Añadir',
+        'user': request.user
     })
 
 

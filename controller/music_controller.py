@@ -2,25 +2,29 @@
 from model.Dao.music_dao import SongDAO
 from model.Dto.music_dto import SongDTO
 from django.core.files.uploadedfile import InMemoryUploadedFile
+from model.Dao.user_dao import UserDAO
+from controller.user_controller import UserController
+from model.Factory.music_factory import SongFactory
+from model.music.music_models import Song
 
 class SongController:
     @staticmethod
-    def create_song(title, artist_name, album_title, genre, price, release_date,
-                   album_cover=None, song_file=None):
-        """
-        Crea una nueva canción
-        """
-        song_dto = SongDTO(
-            title=title,
-            artist_name=artist_name,
-            album_title=album_title,
-            genre=genre,
-            price=price,
-            release_date=release_date,
-            album_cover=album_cover,
-            song_file=song_file
-        )
-        return SongDAO.create(song_dto)
+    def create_song(title, artist_id, **kwargs):
+        artist = UserDAO.get_by_id(artist_id)
+        if not artist or artist.role != 'artist':
+            return None
+
+        song_dto = SongDTO(title=title, artist_name=artist.artist_name, **kwargs)
+        created_song = SongDAO.create(song_dto)
+
+        if created_song and created_song.id:  # Ahora created_song es un DTO con ID
+            # Asocia la canción al artista
+            if UserController.add_song_to_artist(artist_id, created_song.id):
+                return created_song
+            else:
+                # Si falla la asociación, borra la canción
+                SongDAO.delete(created_song.id)
+        return None
 
     @staticmethod
     def get_song(song_id):
@@ -107,3 +111,27 @@ class SongController:
 
         song_dto.album_cover = cover_image
         return SongDAO.update(song_dto)
+
+    @staticmethod
+    def create_song_with_artist(song_dto, artist_id):
+        """
+        Crea una canción y la asocia al artista automáticamente
+        Devuelve la canción creada o None si falla
+        """
+        # Primero creamos la canción
+        song = SongDAO.create(song_dto)
+        if not song:
+            return None
+
+        # Luego la asociamos al artista
+        if not UserController.add_song_to_artist(artist_id, song.id):
+            # Si falla la asociación, borramos la canción creada
+            SongDAO.delete(song.id)
+            return None
+
+        return song
+
+    @staticmethod
+    def get_songs_by_artist(artist_id):
+        songs = Song.objects.filter(artist_id=artist_id)  # Asegúrate de usar el campo correcto
+        return [SongFactory.create_from_model(song) for song in songs]
