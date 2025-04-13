@@ -1,124 +1,91 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    {% load static %}
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Registro Artista - Undersounds</title>
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Registro Artista - Undersounds{% endblock %}
+{% block extra_css %}
     <link rel="stylesheet" href="{% static 'user/css/auth.css' %}">
-</head>
-<body>
-    <div class="auth-container">
-        <h1 class="auth-title">REGISTRO PARA ARTISTAS</h1>
+{% endblock %}
+{% block content %}
 
-        {% if messages %}
-            {% for message in messages %}
-                <div class="alert alert-{{ message.tags }}">
-                    {{ message }}
-                </div>
-            {% endfor %}
-        {% endif %}
+<div class="auth-container">
+    <h1 class="auth-title">REGISTRO PARA ARTISTAS</h1>
 
-        <form method="post" enctype="multipart/form-data" id="artistRegisterForm">
-            {% csrf_token %}
-
-            <div class="section-title">Información básica</div>
-
-            <div class="form-group">
-                <label for="id_username">Nombre de usuario:</label>
-                <input type="text" id="id_username" name="username" class="form-control" required value="{{ form.username.value|default_if_none:'' }}">
-                {% if form.username.errors %}
-                    <div class="error">{{ form.username.errors }}</div>
-                {% endif %}
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }}">
+                {{ message }}
             </div>
+        {% endfor %}
+    {% endif %}
 
-            <div class="form-group">
-                <label for="id_email">Email:</label>
-                <input type="email" id="id_email" name="email" class="form-control" required value="{{ form.email.value|default_if_none:'' }}">
-                {% if form.email.errors %}
-                    <div class="error">{{ form.email.errors }}</div>
-                {% endif %}
-            </div>
+<form method="post" enctype="multipart/form-data" id="artistRegisterForm">
+    {% csrf_token %}
 
-            <div class="form-group">
-                <label for="password1">Contraseña:</label>
-                <input type="password" id="password1" name="password1" class="form-control" required>
-                {% if form.password1.errors %}
-                    <div class="error">{{ form.password1.errors }}</div>
-                {% endif %}
-            </div>
+    <div class="section-title">Información básica</div>
 
-            <div class="form-group">
-                <label for="password2">Confirmar contraseña:</label>
-                <input type="password" id="password2" name="password2" class="form-control" required>
-                {% if form.password2.errors %}
-                    <div class="error">{{ form.password2.errors }}</div>
-                {% endif %}
-            </div>
-
-            <div class="section-title">Perfil artístico</div>
-
-            <div class="form-group">
-                <label for="id_artist_name">Nombre artístico:</label>
-                <input type="text" id="id_artist_name" name="artist_name" class="form-control" required value="{{ form.artist_name.value|default_if_none:'' }}">
-                {% if form.artist_name.errors %}
-                    <div class="error">{{ form.artist_name.errors }}</div>
-                {% endif %}
-            </div>
-
-            <div class="form-group">
-                <label for="id_artist_type">Tipo de artista:</label>
-                <select id="id_artist_type" name="artist_type" class="form-control" required>
-                    {% for value, label in form.artist_type.field.choices %}
-                        <option value="{{ value }}" {% if form.artist_type.value == value %}selected{% endif %}>{{ label }}</option>
-                    {% endfor %}
-                </select>
-                {% if form.artist_type.errors %}
-                    <div class="error">{{ form.artist_type.errors }}</div>
-                {% endif %}
-            </div>
-
-            <div class="form-group">
-                <label for="id_bio">Biografía:</label>
-                <textarea id="id_bio" name="bio" class="form-control">{{ form.bio.value|default_if_none:'' }}</textarea>
-                {% if form.bio.errors %}
-                    <div class="error">{{ form.bio.errors }}</div>
-                {% endif %}
-            </div>
-
-            <div class="form-group">
-                <label for="id_genre">Género principal:</label>
-                <select id="id_genre" name="genre" class="form-control" required>
-                    {% for value, label in form.genre.field.choices %}
-                        <option value="{{ value }}" {% if form.genre.value == value %}selected{% endif %}>{{ label }}</option>
-                    {% endfor %}
-                </select>
-                {% if form.genre.errors %}
-                    <div class="error">{{ form.genre.errors }}</div>
-                {% endif %}
-            </div>
-
-            <div class="form-group">
-                <label for="id_country">País:</label>
-                <select id="id_country" name="country" class="form-control" required>
-                    {% for value, label in form.country.field.choices %}
-                        <option value="{{ value }}" {% if form.country.value == value %}selected{% endif %}>{{ label }}</option>
-                    {% endfor %}
-                </select>
-                {% if form.country.errors %}
-                    <div class="error">{{ form.country.errors }}</div>
-                {% endif %}
-            </div>
-
-            <button type="submit" class="submit-btn">REGISTRARME COMO ARTISTA</button>
-        </form>
-
-        <div class="auth-footer">
-            ¿Ya tienes cuenta? <a href="{% url 'login' %}">Inicia sesión aquí</a><br>
-            ¿Eres fan? <a href="{% url 'register' %}">Regístrate como usuario</a>
-        </div>
+    <div class="form-group">
+        <label for="{{ form.username.id_for_label }}">Nombre de usuario:</label>
+        {{ form.username }}
+        {{ form.username.errors }}
     </div>
 
-    <script src="{% static 'user/js/auth.js' %}"></script>
-</body>
-</html>
+    <div class="form-group">
+        <label for="{{ form.email.id_for_label }}">Email:</label>
+        {{ form.email }}
+        {{ form.email.errors }}
+    </div>
+
+    <div class="form-group">
+        <label for="{{ form.password1.id_for_label }}">Contraseña:</label>
+        {{ form.password1 }}
+        {{ form.password1.errors }}
+    </div>
+
+    <div class="form-group">
+        <label for="{{ form.password2.id_for_label }}">Confirmar contraseña:</label>
+        {{ form.password2 }}
+        {{ form.password2.errors }}
+    </div>
+
+    <div class="section-title">Perfil artístico</div>
+
+    <div class="form-group">
+        <label for="{{ form.artist_name.id_for_label }}">Nombre artístico:</label>
+        {{ form.artist_name }}
+        {{ form.artist_name.errors }}
+    </div>
+
+    <div class="form-group">
+        <label for="{{ form.artist_type.id_for_label }}">Tipo de artista:</label>
+        {{ form.artist_type }}
+        {{ form.artist_type.errors }}
+    </div>
+
+    <div class="form-group">
+        <label for="{{ form.bio.id_for_label }}">Biografía:</label>
+        {{ form.bio }}
+        {{ form.bio.errors }}
+    </div>
+
+    <div class="form-group">
+        <label for="{{ form.genre.id_for_label }}">Género principal:</label>
+        {{ form.genre }}
+        {{ form.genre.errors }}
+    </div>
+
+    <div class="form-group">
+        <label for="{{ form.country.id_for_label }}">País:</label>
+        {{ form.country }}
+        {{ form.country.errors }}
+    </div>
+
+    <button type="submit" class="submit-btn">REGISTRARME COMO ARTISTA</button>
+</form>
+
+    <div class="auth-footer">
+        ¿Ya tienes cuenta? <a href="{% url 'login' %}">Inicia sesión aquí</a><br>
+        ¿Eres fan? <a href="{% url 'register' %}">Regístrate como usuario</a>
+    </div>
+</div>
+
+<script src="{% static 'user/js/auth.js' %}"></script>
+{% endblock %}
