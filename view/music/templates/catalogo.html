@@ -1,6 +1,9 @@
 {% extends 'base.html' %}
 {% load static %}
 {% block title %}Catálogo - Undersounds{% endblock %}
+{% block styles %}
+    <link rel="stylesheet" href="{% static 'music/css/catalogo.css' %}">
+{% endblock %}
 {% block content %}
    <style>
     body {
@@ -38,7 +41,7 @@
     .album-title {
         margin-top: 5px;
         font-size: 1em;
-        color: #1db954;
+        color: #ffffff;
         display: none;
         position: absolute;
         top: 50%;
@@ -174,7 +177,7 @@
     {% for song in songs %}
         <div class="album">
             <div class="cuadrado" style="animation-delay: {{ forloop.counter0|add:"0.1"|floatformat:1 }}s;" onclick="location.href='{% url 'music_detail_id' song.id %}'">
-                <p class="album-title">{{ song.title }} - {{ song.artist_name }}</p>
+                <p class="album-title">{{ song.title }}</p>
                 {% if song.album_cover %}
                     <img src="{{ song.album_cover.url }}" alt="{{ song.title }}">
                 {% else %}

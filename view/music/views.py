@@ -5,7 +5,8 @@ from django.shortcuts import render, redirect, get_object_or_404
 from controller.music_controller import SongController
 from model.Dto.music_dto import SongDTO
 from model.music.forms import SongForm
-
+from django.http import JsonResponse
+from model.music.music_models import Song
 
 def music_detail_redirect(request):
     song_id = request.GET.get("id")
@@ -51,7 +52,9 @@ def catalogo(request):
 
 @login_required
 def add_song(request):
-    if request.user.role != 'artist':
+    # Verificar que el usuario es artista
+    if not request.user.is_authenticated or request.user.role != 'artist':
+        messages.error(request, "Solo los artistas pueden añadir canciones")
         return redirect('home')
 
     if request.method == 'POST':
@@ -63,25 +66,20 @@ def add_song(request):
                 artist_name=request.user.artist_name,
                 album_title=form.cleaned_data['album_title'],
                 genre=form.cleaned_data['genre'],
-                price=form.cleaned_data['price'],
+                price=float(form.cleaned_data['price']),
                 release_date=form.cleaned_data['release_date'],
                 album_cover=request.FILES.get('album_cover'),
-                song_file=request.FILES.get('song_file')
+                song_file=request.FILES.get('song_file'),
+                artist_id=request.user.id  # Nuevo campo para asociación
             )
 
             # Usamos el controller para crear la canción
-            song_id = SongController.create_song(
-                title=song_dto.title,
-                artist_name=song_dto.artist_name,
-                album_title=song_dto.album_title,
-                genre=song_dto.genre,
-                price=song_dto.price,
-                release_date=song_dto.release_date,
-                album_cover=song_dto.album_cover,
-                song_file=song_dto.song_file
+            song = SongController.create_song_with_artist(
+                song_dto=song_dto,
+                artist_id=request.user.id
             )
 
-            if song_id:
+            if song:
                 messages.success(request, "Canción añadida exitosamente.")
                 return redirect('artist_panel')
             else:
@@ -91,7 +89,8 @@ def add_song(request):
 
     return render(request, 'music/song_form.html', {
         'form': form,
-        'action': 'Añadir'
+        'action': 'Añadir',
+        'user': request.user
     })
 
 
@@ -205,3 +204,31 @@ def artist_detail(request):
         'artist': artist,
         'albums': songs,
     })
+
+
+@login_required
+def save_song(request):
+    if request.method == 'POST':
+        song_id = request.POST.get('song_id')
+        try:
+            if song_id:
+                song = Song.objects.get(id=song_id, artist=request.user)
+            else:
+                song = Song(artist=request.user)
+
+            song.title = request.POST.get('title')
+            song.price = request.POST.get('price')
+            song.duration = request.POST.get('duration')
+            song.genre = request.POST.get('genre')
+            song.description = request.POST.get('description')
+
+            if 'cover_image' in request.FILES:
+                song.cover_image = request.FILES['cover_image']
+            if 'audio_file' in request.FILES:
+                song.audio_file = request.FILES['audio_file']
+
+            song.save()
+            return JsonResponse({'success': True, 'message': 'Canción guardada correctamente'})
+        except Exception as e:
+            return JsonResponse({'success': False, 'message': str(e)})
+    return JsonResponse({'success': False, 'message': 'Método no permitido'}, status=405)

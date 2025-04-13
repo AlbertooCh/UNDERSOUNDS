@@ -8,10 +8,23 @@ from model.Factory.music_factory import SongFactory
 class SongDAO:
     @staticmethod
     def create(song_dto):
-        """Crea una nueva canción en la base de datos"""
-        song = SongFactory.create_from_dto(song_dto)
-        song.save()
-        return song.id
+        try:
+            song = Song(
+                title=song_dto.title,
+                artist_name=song_dto.artist_name,
+                album_title=song_dto.album_title,
+                genre=song_dto.genre,
+                price=song_dto.price,
+                release_date=song_dto.release_date,
+                album_cover=song_dto.album_cover,
+                song_file=song_dto.song_file
+            )
+            song.save()
+            # Devuelve el DTO con el ID actualizado
+            return SongFactory.create_dto_from_model(song)  # <-- Esta es la clave
+        except Exception as e:
+            print(f"Error creating song: {e}")
+            return None
 
     @staticmethod
     def get_by_id(song_id):

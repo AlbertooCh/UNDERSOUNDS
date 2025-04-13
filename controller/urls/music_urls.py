@@ -16,4 +16,6 @@ urlpatterns = [
     path('music/add/', login_required(views.add_song), name='add_song'),
     path('music/edit/<int:song_id>/', login_required(views.edit_song), name='edit_song'),
     path('music/delete/<int:song_id>/', login_required(views.delete_song), name='delete_song'),
+    path('save-song/', views.save_song, name='save_song'),
+    path('delete-song/', views.delete_song, name='delete_song'),
 ]

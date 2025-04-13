@@ -1,14 +1,38 @@
 from django.urls import path
-from view.user import views
+from view.user.views import (
+    login_view,
+    logout_view,
+    register_fan,
+    register_artist,
+    perfil,
+    configuracion,
+    historial_compras,
+    mis_obras,
+    upload_avatar,
+    update_profile,
+    delete_account,
+    deactivate_account,
+    change_password
+)
+from django.shortcuts import render
 
 urlpatterns = [
-    path('login/', views.login_view, name='login'),
-    path('register/', views.register_fan, name='register'),
-    path('perfil/', views.perfil, name='perfil'),
-    path('user/configuracion/', views.configuracion, name='configuracion'),
-    path('user/historial_compras/', views.historial_compras, name='historial_compras'),
-    path('user/mis_obras/', views.mis_obras, name='mis_obras'),
-    path('register/artist/', views.register_artist, name='artist_register'),
-    path('', lambda request: render(request, 'home.html'), name='home'),  # ✅ TEMP HOME VIEW
-    path('logout/', views.user_logout, name='logout'),
+    # Autenticación
+    path('login/', login_view, name='login'),
+    path('logout/', logout_view, name='logout'),
+
+    # Registros
+    path('register/', register_fan, name='register'),
+    path('register/artist/', register_artist, name='artist_register'),
+
+    # Perfil y áreas privadas
+    path('perfil/', perfil, name='perfil'),
+    path('user/configuracion/', configuracion, name='configuracion'),
+    path('user/historial_compras/', historial_compras, name='historial_compras'),
+    path('upload-avatar/', upload_avatar, name='upload_avatar'),
+    path('update_profile/', update_profile, name='update_profile'),
+    path('delete_account/', delete_account, name='delete_account'),
+    path('deactivate_account/', deactivate_account, name='deactivate_account'),
+    path('change_password/', change_password, name='change_password'),
+
 ]

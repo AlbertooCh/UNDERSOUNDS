@@ -77,8 +77,8 @@
 </head>
 <body>
     <div class="wrapper">
-        {% if user.is_authenticated %}
-            {% if user.role == 'artist' %}
+        {% if request.user.is_authenticated %}
+            {% if request.user.role == 'artist' %}
                 {% include 'includes/header_artist.html' %}
             {% else %}
                 {% include 'includes/header_user.html' %}
@@ -129,5 +129,14 @@
         }, 1000);
     </script>
     {% block extra_js %} {% endblock %}
+    {% if messages %}
+        <div class="messages">
+            {% for message in messages %}
+            <div class="alert alert-{{ message.tags }}">
+                {{ message }}
+            </div>
+            {% endfor %}
+        </div>
+    {% endif %}
 </body>
 </html>

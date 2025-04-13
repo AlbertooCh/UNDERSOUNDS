@@ -1,315 +1,11 @@
 {% extends 'base.html' %}
 {% load static %}
 {% block title %}Cancion - Undersounds{% endblock %}
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'music/css/musicdetail.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+{% endblock %}
 {% block content %}
-    <style>
-        body {
-        font-family: Arial, sans-serif;
-        margin: 20px;
-    }
-    .title {
-        font-size: 40px;
-        font-weight: bold;
-        text-align: center;
-    }
-    .new-comment {
-             flex: 1;
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: space-between;
-            padding: 10px;
-        height: 5vw;
-        width: 25vw;
-            margin: 0 auto;
-            background: white;
-            border-radius: 15px;
-        }
-
-        header {
-            background-color: #333;
-            color: white;
-            padding: 10px 0;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        header .logo img {
-            height: 40px;
-        }
-
-        nav ul {
-            list-style: none;
-            display: flex;
-            gap: 20px;
-        }
-
-        nav ul li a {
-            color: white;
-            text-decoration: none;
-        }
-
-        main {
-            padding: 20px;
-        }
-
-        .track-info {
-            background-color: #e0e0e0;
-            padding: 10px;
-            border-radius: 15px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 20px;
-            margin-right: 40px;
-        }
-        .track-info img {
-            height: 20vw;
-            margin: 15px;
-            border-radius: 15px;
-        }
-
-.track-details {
-    flex: 1;
-    text-align: left;
-}
-
-.track-details h1,
-.track-details p {
-    margin: 5px 0;
-}
-
-.track-buttons {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-
-.track-buttons button {
-    margin: 5px 0;
-}
-        .play-button {
-            background-color: #1db954;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            cursor: pointer;
-        }
-
-        .comments-section {
-            margin-top: 20px;
-            display: flex;
-            justify-content: space-between;
-        }
-
-        .comments-section h2 {
-            margin-bottom: 10px;
-        }
-
-.comment {
-    background-color: lightgray;
-    padding: 10px;
-    margin-bottom: 10px;
-    border-radius: 15px;
-    width: 40vw;
-    height: auto;
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    margin-right: 20px;
-}
-
-.user {
-    display: flex;
-    align-items: center;
-    margin-bottom: 10px; /* Espacio entre la información del usuario y el comentario */
-}
-
-.user img {
-    width: 50px;
-    height: 50px;
-    border-radius: 50%;
-    margin-right: 40px;
-}
-
-.come {
-    display: flex;
-    flex-direction: column; /* Alinea los detalles del comentario verticalmente */
-}
-
-.comment p {
-    margin: 5px 0;
-}
-
-.rating {
-    display: flex;
-}
-
-.star {
-    font-size: 20px;
-    color: orange;
-    margin-right: 5px;
-}
-
-        .author-info, .track-list {
-            width: 45%;
-        }
-
-        .author-info {
-            background-color: #e0e0e0;
-            padding: 10px;
-            border-radius: 15px;
-            margin-right: 40px;
-        }
-
-        .track-list {
-            background-color: #e0e0e0;
-            padding: 10px;
-            border-radius: 5px;
-        }
-
-        footer {
-            background-color: #333;
-            color: white;
-            text-align: center;
-            padding: 10px 0;
-            position: fixed;
-            width: 100%;
-            bottom: 0;
-        }
-
-        textarea {
-            width: 70%;
-            padding: 10px;
-            margin-top: 10px;
-            border-radius: 5px;
-            border: 1px solid #ccc;
-        }
-
-        button {
-            padding: 10px 20px;
-            margin-top: 10px;
-            border: none;
-            background-color: #1db954;
-            color: white;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-
-        button:hover {
-            background-color: #1db954;
-        }
-
-        .overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.5);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            visibility: hidden;
-        }
-
-        .overlay.active {
-            visibility: visible;
-        }
-
-        .info-box {
-            background-color: white;
-            padding: 20px;
-            border-radius: 10px;
-            text-align: center;
-            width: 300px;
-        }
-
-        .info-box h2 {
-            margin-top: 0;
-        }
-
-        .info-box button {
-            padding: 10px 20px;
-            margin: 10px;
-            border: none;
-            background-color: #1db954;
-            color: white;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-
-        .info-box button:hover {
-            background-color: #1db954;
-        }
-
-
-        .star-rating {
-            direction: rtl;
-            display: inline-block;
-            padding: 20px;
-        }
-        .star-rating input[type="radio"] {
-            display: none;
-        }
-        .star-rating label {
-            color: #bbb;
-            font-size: 30px;
-            padding: 0;
-            cursor: pointer;
-        }
-        .star-rating input[type="radio"]:checked ~ label,
-        .star-rating label:hover,
-        .star-rating label:hover ~ label {
-            color: #f2b600;
-        }
-        .Desc {
-            display: none;
-        }
-
-         .audio-player {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            width: 300px;
-            border: 1px solid #ccc;
-            padding: 10px;
-            border-radius: 5px;
-        }
-        .play-button {
-            cursor: pointer;
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            padding: 10px;
-            border-radius: 5px;
-        }
-        .progress-bar {
-            flex-grow: 1;
-            margin: 0 10px;
-        }
-        .linfo {
-            display: inline-block;
-            position: relative;
-        }
-        .linfo:hover {
-            color: #1db954;
-        }
-        .linfo:hover .barra {
-            width: 100%;
-        }
-
-        .barra {
-            position: absolute;
-            bottom: -5px;
-            left: 0;
-            width: 0;
-            height: 1px;
-            background-color: #1db954;
-            transition: width 0.2s ease;
-        }
-
-    </style>
 
 <body>
 <main>
@@ -321,6 +17,13 @@
             <p><strong>Género:</strong> {{ song.genre }}</p>
             <p><strong>Fecha de lanzamiento:</strong> {{ song.release_date }}</p>
             <p><strong>Precio:</strong> €{{ song.price }}</p>
+            <form action="{% url 'add_to_cart' song.id %}" method="post" class="add-to-cart-form">
+                {% csrf_token %}
+                <input type="hidden" name="quantity" value="1">
+                <button type="submit" class="add-to-cart-btn">
+                 <i class="fas fa-cart-plus"></i> Añadir al carrito
+                 </button>
+            </form>
         </div>
         <div class="track-cover">
             {% if song.album_cover %}
@@ -339,6 +42,25 @@
   </audio>
 {% endif %}
 
+{% if messages %}
+  <div id="flash-message" style="
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  background-color: #333;
+  color: white;
+  padding: 15px 20px;
+  border-radius: 8px;
+  z-index: 9999;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  font-family: sans-serif;
+  opacity: 1; /* ¡importante! */
+">
+    {% for message in messages %}
+      {{ message }}
+    {% endfor %}
+  </div>
+{% endif %}
     <script>
         var audio = document.getElementById('audio');
         var progressBar = document.getElementById('progress-bar');
@@ -536,6 +258,23 @@
             }
             hideInfoBoxC();
         }
+
+  // Cierra el mensaje automáticamente después de 1 segundo
+        window.addEventListener('DOMContentLoaded', () => {
+    const msg = document.getElementById('flash-message');
+    if (msg) {
+      // Espera 1 segundo y luego hace fade out en 0.5s
+      setTimeout(() => {
+        msg.style.transition = 'opacity 0.5s ease';
+        msg.style.opacity = '0';
+
+        // Espera 0.5s más para eliminarlo del DOM
+        setTimeout(() => {
+          msg.remove();
+        }, 500);
+      }, 1000); // 1 segundo visible
+    }
+  });// 1000 milisegundos = 1 segundo
 
     </script>
 {% endblock %}
