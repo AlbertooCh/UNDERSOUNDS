@@ -7,7 +7,12 @@ from view.user.views import (
     perfil,
     configuracion,
     historial_compras,
-    mis_obras
+    mis_obras,
+    upload_avatar,
+    update_profile,
+    delete_account,
+    deactivate_account,
+    change_password
 )
 from django.shortcuts import render
 
@@ -24,8 +29,10 @@ urlpatterns = [
     path('perfil/', perfil, name='perfil'),
     path('user/configuracion/', configuracion, name='configuracion'),
     path('user/historial_compras/', historial_compras, name='historial_compras'),
-    path('user/mis_obras/', mis_obras, name='mis_obras'),
+    path('upload-avatar/', upload_avatar, name='upload_avatar'),
+    path('update_profile/', update_profile, name='update_profile'),
+    path('delete_account/', delete_account, name='delete_account'),
+    path('deactivate_account/', deactivate_account, name='deactivate_account'),
+    path('change_password/', change_password, name='change_password'),
 
-    # Home temporal (puedes cambiarlo luego por una vista específica)
-    path('', lambda request: render(request, 'home.html'), name='home'),
 ]

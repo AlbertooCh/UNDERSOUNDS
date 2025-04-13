@@ -60,11 +60,10 @@ class UserDAO:
     def update(user_dto):
         user = UserDAO.get_by_id(user_dto.id)
         if user:
-            for field, value in user_dto.to_dict().items():
-                if field == 'password' and value:
-                    user.password = make_password(value)
-                elif field != 'created_at' and hasattr(user, field):
-                    setattr(user, field, value)
+            # Actualiza solo los campos permitidos (excluyendo password y campos sensibles)
+            for field in ['username', 'email', 'avatar', 'bio', 'genre', 'country', 'artist_name', 'artist_type']:
+                if hasattr(user_dto, field):
+                    setattr(user, field, getattr(user_dto, field))
             user.save()
             return user
         return None
@@ -76,3 +75,34 @@ class UserDAO:
             user.delete()
             return True
         return False
+
+    @staticmethod
+    def update_profile(user_id, **kwargs):
+        try:
+            user = User.objects.get(pk=user_id)
+            for field, value in kwargs.items():
+                if hasattr(user, field):
+                    setattr(user, field, value)
+            user.save()
+            return True
+        except User.DoesNotExist:
+            return False
+
+    @staticmethod
+    def change_password(user_id, current_password, new_password):
+        user = User.objects.get(pk=user_id)
+        if user.check_password(current_password):
+            user.set_password(new_password)
+            user.save()
+            return True
+        return False
+
+    @staticmethod
+    def upload_avatar(user_id, avatar_file):
+        try:
+            user = User.objects.get(pk=user_id)
+            user.avatar = avatar_file
+            user.save()
+            return True
+        except User.DoesNotExist:
+            return False

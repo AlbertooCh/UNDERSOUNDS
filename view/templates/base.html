@@ -77,8 +77,8 @@
 </head>
 <body>
     <div class="wrapper">
-        {% if user.is_authenticated %}
-            {% if user.role == 'artist' %}
+        {% if request.user.is_authenticated %}
+            {% if request.user.role == 'artist' %}
                 {% include 'includes/header_artist.html' %}
             {% else %}
                 {% include 'includes/header_user.html' %}

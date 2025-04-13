@@ -8,15 +8,14 @@ class UserFactory:
             id=user_model.id,
             username=user_model.username,
             email=user_model.email,
-            role=user_model.role,
-            credit_card_number=user_model.credit_card_number,
-            credit_card_expiry=user_model.credit_card_expiry,
-            artist_name=user_model.artist_name,
-            artist_type=user_model.artist_type,
+            avatar=user_model.avatar.url if user_model.avatar else None,
             bio=user_model.bio,
             genre=user_model.genre,
             country=user_model.country,
-            created_at=user_model.created_at
+            created_at=user_model.created_at,
+            role=user_model.role,
+            artist_name=user_model.artist_name,
+            artist_type=user_model.artist_type
         )
 
     @staticmethod

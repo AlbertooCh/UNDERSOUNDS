@@ -4,6 +4,7 @@ from django.contrib.auth.decorators import login_required
 from model.Dao.user_dao import UserDAO
 from model.Factory.user_factory import UserFactory
 from model.Dto.user_dto import UserDTO
+from user.models import User
 
 class UserController:
     @staticmethod
@@ -67,5 +68,31 @@ class UserController:
         artist = UserDAO.get_by_id(artist_id)
         if artist and artist.role == 'artist':
             artist.songs.add(song_id)
+            return True
+        return False
+
+    @staticmethod
+    def get_user_settings(user_id):
+        user = UserDAO.get_by_id(user_id)
+        return UserFactory.create_from_model(user) if user else None
+
+    @staticmethod
+    def update_user_profile(user_id, **kwargs):
+        return UserDAO.update_profile(user_id, **kwargs)
+
+    @staticmethod
+    def update_user_password(user_id, current_password, new_password):
+        return UserDAO.change_password(user_id, current_password, new_password)
+
+    @staticmethod
+    def upload_avatar(user_id, avatar_file):
+        return UserDAO.update_profile(user_id, avatar=avatar_file)
+
+    @staticmethod
+    def change_password(user_id, current_password, new_password):
+        user = UserDAO.get_by_id(user_id)
+        if user and user.check_password(current_password):  # Verifica la contraseña actual
+            user.set_password(new_password)  # Hashea la nueva contraseña automáticamente
+            user.save()
             return True
         return False

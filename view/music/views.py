@@ -5,7 +5,8 @@ from django.shortcuts import render, redirect, get_object_or_404
 from controller.music_controller import SongController
 from model.Dto.music_dto import SongDTO
 from model.music.forms import SongForm
-
+from django.http import JsonResponse
+from model.music.music_models import Song
 
 def music_detail_redirect(request):
     song_id = request.GET.get("id")
@@ -203,3 +204,31 @@ def artist_detail(request):
         'artist': artist,
         'albums': songs,
     })
+
+
+@login_required
+def save_song(request):
+    if request.method == 'POST':
+        song_id = request.POST.get('song_id')
+        try:
+            if song_id:
+                song = Song.objects.get(id=song_id, artist=request.user)
+            else:
+                song = Song(artist=request.user)
+
+            song.title = request.POST.get('title')
+            song.price = request.POST.get('price')
+            song.duration = request.POST.get('duration')
+            song.genre = request.POST.get('genre')
+            song.description = request.POST.get('description')
+
+            if 'cover_image' in request.FILES:
+                song.cover_image = request.FILES['cover_image']
+            if 'audio_file' in request.FILES:
+                song.audio_file = request.FILES['audio_file']
+
+            song.save()
+            return JsonResponse({'success': True, 'message': 'Canción guardada correctamente'})
+        except Exception as e:
+            return JsonResponse({'success': False, 'message': str(e)})
+    return JsonResponse({'success': False, 'message': 'Método no permitido'}, status=405)
