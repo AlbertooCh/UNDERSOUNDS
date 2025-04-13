@@ -24,6 +24,22 @@ class CartItem(models.Model):
         return f"{self.song.title} ({self.quantity})"
 
 
+# Añadir relación entre Order y sus items
+class OrderItem(models.Model):
+    order = models.ForeignKey('Order', on_delete=models.CASCADE, related_name='items')
+    song = models.ForeignKey(Song, on_delete=models.PROTECT)
+    price = models.DecimalField(max_digits=8, decimal_places=2)
+    quantity = models.PositiveIntegerField(default=1)
+
+    class Meta:
+        app_label = 'store'  # Asegúrate que coincida con tu aplicación
+
+    def subtotal(self):
+        return self.price * self.quantity
+
+    def __str__(self):
+        return f"{self.song.title} (x{self.quantity}) in Order #{self.order.id}"
+
 class Order(models.Model):
     STATUS_CHOICES = [
         ('pending', 'Pending'),
@@ -32,10 +48,13 @@ class Order(models.Model):
     ]
 
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='orders')
-    total = models.DecimalField(max_digits=10, decimal_places=2)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+    @property
+    def total(self):
+        return sum(item.subtotal() for item in self.items.all())
 
     class Meta:
         app_label = 'store'
@@ -47,6 +66,7 @@ class Order(models.Model):
 
 class Purchase(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='purchases')
+    order = models.ForeignKey('Order', on_delete=models.SET_NULL, null=True, blank=True)
     purchase_date = models.DateTimeField(auto_now_add=True)
     total_price = models.DecimalField(max_digits=10, decimal_places=2)
     payment_method = models.CharField(max_length=50, blank=True, null=True)

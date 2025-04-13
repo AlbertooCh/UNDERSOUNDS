@@ -24,6 +24,10 @@ class OrderDTO:
     updated_at: datetime = None
     items: List[CartItemDTO] = None
 
+    @property
+    def total(self):
+        return sum(item.subtotal for item in self.items) if self.items else 0
+
 @dataclass
 class PurchaseDTO:
     id: int = None

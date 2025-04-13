@@ -1,19 +1,122 @@
 {% extends 'base.html' %}
 {% load static %}
+{% load humanize %}
 
-{% block title %}Confirmación de Pedido{% endblock %}
-
-{% block extra_css %}
-    <link rel="stylesheet" href="{% static 'store/css/order_confirmation.css' %}">
-{% endblock %}
+{% block title %}Compra Exitosa{% endblock %}
 
 {% block content %}
-<div class="order-confirmation-container">
-    <h1>¡Gracias por tu compra!</h1>
-    <p>Se ha generado el pedido <strong>#{{ order.id }}</strong>.</p>
-    <p>Total: <strong>{{ order.total|floatformat:2 }} €</strong></p>
-    <p>Fecha: {{ order.created_at|date:"d/m/Y H:i" }}</p>
-    <p>Pronto recibirás un correo con los detalles de tu pedido.</p>
-    <a href="{% url 'catalogo' %}" class="btn">Volver al Catálogo</a>
+<div class="confirmation-container">
+    <div class="confirmation-card">
+        <div class="confirmation-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="#27ae60">
+                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+            </svg>
+        </div>
+        <h1>¡Compra realizada con éxito!</h1>
+        <p class="confirmation-message">Gracias por tu compra. Aquí tienes los detalles de tu pedido:</p>
+
+        <div class="purchase-details">
+            <p><strong>Número de pedido:</strong> #{{ purchase.id }}</p>
+            <p><strong>Fecha:</strong> {{ purchase.purchase_date|date:"d/m/Y H:i" }}</p>
+            <p><strong>Total:</strong> {{ purchase.total_price|intcomma }} €</p>
+            <p><strong>Método de pago:</strong> {{ purchase.get_payment_method_display }}</p>
+        </div>
+
+        <div class="confirmation-actions">
+            <a href="{% url 'inicio' %}" class="btn btn-primary">Volver al inicio</a>
+            <a href="{% url 'historial_compras' %}" class="btn btn-secondary">Ver historial de compras</a>
+        </div>
+    </div>
 </div>
+
+<style>
+.confirmation-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 70vh;
+    padding: 2rem;
+}
+
+.confirmation-card {
+    background: white;
+    padding: 3rem;
+    border-radius: 10px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    max-width: 600px;
+    width: 100%;
+}
+
+.confirmation-icon {
+    margin-bottom: 1.5rem;
+}
+
+.confirmation-card h1 {
+    font-size: 2rem;
+    color: #2c3e50;
+    margin-bottom: 1rem;
+}
+
+.confirmation-message {
+    font-size: 1.1rem;
+    color: #7f8c8d;
+    margin-bottom: 1.5rem;
+}
+
+.purchase-details {
+    text-align: left;
+    background: #f8f9fa;
+    padding: 1.5rem;
+    border-radius: 8px;
+    margin-bottom: 2rem;
+}
+
+.purchase-details p {
+    margin-bottom: 0.5rem;
+}
+
+.confirmation-actions {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin-top: 2rem;
+}
+
+.btn {
+    padding: 0.8rem 1.5rem;
+    border-radius: 5px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+.btn-primary {
+    background: #3498db;
+    color: white;
+}
+
+.btn-primary:hover {
+    background: #2980b9;
+}
+
+.btn-secondary {
+    background: #95a5a6;
+    color: white;
+}
+
+.btn-secondary:hover {
+    background: #7f8c8d;
+}
+
+@media (max-width: 576px) {
+    .confirmation-actions {
+        flex-direction: column;
+    }
+
+    .btn {
+        width: 100%;
+    }
+}
+</style>
 {% endblock %}

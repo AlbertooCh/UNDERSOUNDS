@@ -1,113 +1,63 @@
 {% extends 'base.html' %}
 {% load static %}
-{% block title %}Historial de Compras - Undersounds{% endblock %}
+{% load humanize %}
+
+{% block title %}Historial de Pedidos - Undersounds{% endblock %}
 {% block extra_css %}
     <link rel="stylesheet" href="{% static 'user/css/compras.css' %}">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
 {% endblock %}
+
 {% block content %}
-
-
 <div class="history-container">
-    <h1 class="history-title">HISTORIAL DE COMPRAS</h1>
+    <h1 class="history-title">HISTORIAL DE PEDIDOS</h1>
 
-    <!-- Ejemplo de compra 1 -->
-    <div class="purchase-card">
-        <div class="purchase-header">
-            <div>
-                <span class="purchase-id">Pedido #US12345</span>
-                <span class="purchase-date"> - 15 Marzo 2023</span>
-            </div>
-            <span class="purchase-status status-completed">Completado</span>
-        </div>
-
-        <div class="purchase-items">
-            <div class="purchase-item">
-                <img src="{% static 'images/album1.jpg' %}" alt="Álbum" class="item-image">
-                <div class="item-details">
-                    <div class="item-name">Midnights (The Til Dawn Edition)</div>
-                    <div class="item-price">1 × €12.99</div>
+    {% if orders %}
+        {% for order in orders %}
+        <div class="purchase-card">
+            <div class="purchase-header">
+                <div>
+                    <span class="purchase-id">Pedido #US{{ order.id }}</span>
+                    <span class="purchase-date"> - {{ order.created_at|date:"d F Y" }}</span>
                 </div>
-                <div class="item-total">€12.99</div>
+                <span class="purchase-status status-{{ order.status|lower }}">{{ order.get_status_display }}</span>
             </div>
 
-            <div class="purchase-item">
-                <img src="{% static 'images/album2.jpg' %}" alt="Álbum" class="item-image">
-                <div class="item-details">
-                    <div class="item-name">Sour (Deluxe Edition)</div>
-                    <div class="item-price">1 × €11.99</div>
+            <div class="purchase-items">
+                {% for item in order.items %}
+                <div class="purchase-item">
+                    {% if item.song.image %}
+                    <img src="{{ item.song.image.url }}" alt="{{ item.song.title }}" class="item-image">
+                    {% else %}
+                    <img src="{% static 'images/default_album.jpg' %}" alt="Álbum" class="item-image">
+                    {% endif %}
+                    <div class="item-details">
+                        <div class="item-name">{{ item.song_title }}</div>
+                        <div class="item-price">{{ item.quantity }} × €{{ item.song_price|intcomma }}</div>
+                    </div>
+                    <div class="item-total">€{{ item.subtotal|intcomma }}</div>
                 </div>
-                <div class="item-total">€11.99</div>
-            </div>
-        </div>
-
-        <div class="purchase-total">
-            Total: €24.98
-        </div>
-    </div>
-
-    <!-- Ejemplo de compra 2 -->
-    <div class="purchase-card">
-        <div class="purchase-header">
-            <div>
-                <span class="purchase-id">Pedido #US12344</span>
-                <span class="purchase-date"> - 10 Febrero 2023</span>
-            </div>
-            <span class="purchase-status status-completed">Completado</span>
-        </div>
-
-        <div class="purchase-items">
-            <div class="purchase-item">
-                <img src="{% static 'images/album3.jpg' %}" alt="Álbum" class="item-image">
-                <div class="item-details">
-                    <div class="item-name">Un Verano Sin Ti</div>
-                    <div class="item-price">1 × €14.99</div>
-                </div>
-                <div class="item-total">€14.99</div>
-            </div>
-        </div>
-
-        <div class="purchase-total">
-            Total: €14.99
-        </div>
-    </div>
-
-    <!-- Ejemplo de compra pendiente -->
-    <div class="purchase-card">
-        <div class="purchase-header">
-            <div>
-                <span class="purchase-id">Pedido #US12346</span>
-                <span class="purchase-date"> - 25 Marzo 2023</span>
-            </div>
-            <span class="purchase-status status-pending">En proceso</span>
-        </div>
-
-        <div class="purchase-items">
-            <div class="purchase-item">
-                <img src="{% static 'images/album4.jpg' %}" alt="Álbum" class="item-image">
-                <div class="item-details">
-                    <div class="item-name">Harry's House</div>
-                    <div class="item-price">1 × €13.99</div>
-                </div>
-                <div class="item-total">€13.99</div>
+                {% endfor %}
             </div>
 
-            <div class="purchase-item">
-                <img src="{% static 'images/album5.jpg' %}" alt="Álbum" class="item-image">
-                <div class="item-details">
-                    <div class="item-name">Renaissance</div>
-                    <div class="item-price">1 × €15.99</div>
-                </div>
-                <div class="item-total">€$15.99</div>
+            <div class="purchase-total">
+                Total: €{{ order.total|intcomma }}
+            </div>
+
+            <div class="order-actions">
+                <a href="{% url 'order_detail' order.id %}" class="btn-details">Ver Detalles</a>
             </div>
         </div>
-
-        <div class="purchase-total">
-            Total: €29.98
+        {% endfor %}
+    {% else %}
+        <div class="empty-history">
+            <p>No tienes pedidos registrados aún.</p>
+            <a href="{% url 'catalogo' %}" class="btn">Explorar catálogo</a>
         </div>
-    </div>
+    {% endif %}
 
     <!-- Botón para seguir comprando -->
-    <div style="text-align: center;">
+    <div style="text-align: center; margin-top: 2rem;">
         <a href="{% url 'catalogo' %}" class="btn">Seguir Comprando</a>
     </div>
 </div>

@@ -1,8 +1,9 @@
 # store/dao/store_dao.py
 from django.core.exceptions import ObjectDoesNotExist
-from model.store.store_models import CartItem, Order, Purchase, PurchaseDetail
+from model.store.store_models import CartItem, Order, Purchase, PurchaseDetail, OrderItem
 from model.Dto.store_dto import CartItemDTO, OrderDTO, PurchaseDTO, PurchaseDetailDTO
 from model.Factory.store_factory import StoreFactory
+from django.db import transaction
 
 
 class CartDAO:
@@ -19,7 +20,6 @@ class CartDAO:
             # Si existe, actualiza la cantidad
             item.quantity += quantity
             item.save()
-            return (False, "La canción ya estaba en tu carrito. Se ha actualizado la cantidad.")
         except CartItem.DoesNotExist:
             # Si no existe, créalo
             CartItem.objects.create(
@@ -31,19 +31,6 @@ class CartDAO:
         except Exception as e:
             return (False, str(e))
 
-    @staticmethod
-    def add_to_cart(user_id, song_id, quantity=1):
-        try:
-            item = CartItem.objects.get(user_id=user_id, song_id=song_id)
-            item.quantity += quantity
-            item.save()
-        except ObjectDoesNotExist:
-            item = CartItem.objects.create(
-                user_id=user_id,
-                song_id=song_id,
-                quantity=quantity
-            )
-        return item.id
 
     @staticmethod
     def remove_from_cart(user_id, song_id):
@@ -70,12 +57,8 @@ class CartDAO:
 
 class OrderDAO:
     @staticmethod
-    def create_order(user_id, total, status='pending'):
-        order = Order.objects.create(
-            user_id=user_id,
-            total=total,
-            status=status
-        )
+    def create_order(user_id):
+        order = Order.objects.create(user_id=user_id)
         return order.id
 
     @staticmethod
@@ -86,30 +69,60 @@ class OrderDAO:
         except ObjectDoesNotExist:
             return None
 
+    def add_items_to_order(order_id, items):
+        try:
+            order = Order.objects.get(id=order_id)
+            total = 0
+
+            # Crear items y calcular total
+            for item in items:
+                OrderItem.objects.create(
+                    order=order,
+                    song_id=item['song_id'],
+                    price=item['price'],
+                    quantity=item['quantity']
+                )
+                total += float(item['price']) * int(item['quantity'])
+
+            # Actualizar total del pedido
+            order.total = total
+            order.save()
+            print(f"Items añadidos a orden {order_id}. Nuevo total: {total}")  # Debug
+
+            return True
+        except Exception as e:
+            print(f"Error al añadir items: {str(e)}")  # Debug
+            return False
+
     @staticmethod
     def get_user_orders(user_id):
-        orders = Order.objects.filter(user_id=user_id).order_by('-created_at')
+        orders = Order.objects.filter(user=user_id).prefetch_related('items__song').order_by('-created_at')
         return [StoreFactory.create_order_dto_from_model(order) for order in orders]
 
 
 class PurchaseDAO:
     @staticmethod
-    def create_purchase(user_id, total_price, items, payment_method=None):
-        purchase = Purchase.objects.create(
-            user_id=user_id,
-            total_price=total_price,
-            payment_method=payment_method
-        )
-
-        for item in items:
-            PurchaseDetail.objects.create(
-                purchase=purchase,
-                song_id=item['song_id'],
-                price=item['price'],
-                quantity=item.get('quantity', 1)
+    def create_purchase(user_id, total_price, items, payment_method, order_id=None):
+        with transaction.atomic():
+            # Crear la compra principal
+            purchase = Purchase.objects.create(
+                user_id=user_id,
+                total_price=total_price,
+                payment_method=payment_method,
+                order_id=order_id  # Añade esta línea
             )
 
-        return purchase.id
+            # Crear los detalles de compra
+            PurchaseDetail.objects.bulk_create([
+                PurchaseDetail(
+                    purchase=purchase,
+                    song_id=item['song_id'],
+                    price=item['price'],
+                    quantity=item['quantity']
+                ) for item in items
+            ])
+
+            return purchase.id
 
     @staticmethod
     def get_purchase_by_id(purchase_id):

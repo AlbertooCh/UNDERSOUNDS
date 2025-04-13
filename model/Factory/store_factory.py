@@ -16,17 +16,15 @@ class StoreFactory:
             added_at=cart_item.added_at
         )
 
-    @staticmethod
     def create_order_dto_from_model(order: Order) -> OrderDTO:
-        cart_items = CartItem.objects.filter(user=order.user)
         return OrderDTO(
             id=order.id,
             user_id=order.user.id,
-            total=float(order.total),
+            total=float(order.total),  # Ahora usa la propiedad
             status=order.status,
             created_at=order.created_at,
             updated_at=order.updated_at,
-            items=[StoreFactory.create_cart_item_dto_from_model(item) for item in cart_items]
+            items=[StoreFactory.create_order_item_dto_from_model(item) for item in order.items.all()]
         )
 
     @staticmethod
@@ -39,6 +37,16 @@ class StoreFactory:
             purchase_date=purchase.purchase_date,
             payment_method=purchase.payment_method,
             details=[StoreFactory.create_purchase_detail_dto_from_model(d) for d in details]
+        )
+
+    @staticmethod
+    def create_order_item_dto_from_model(item) -> CartItemDTO:
+        return CartItemDTO(
+            song_id=item.song.id,
+            song_title=item.song.title,
+            song_price=float(item.price),
+            quantity=item.quantity,
+            subtotal=float(item.subtotal())
         )
 
     @staticmethod

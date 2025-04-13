@@ -7,9 +7,10 @@ from model.user.forms import FanRegisterForm, ArtistRegisterForm
 from django.http import JsonResponse
 from user.models import User
 from model.Dao.user_dao import UserDAO
+from model.Dao.store_dao import OrderDAO
 from django.contrib.auth import logout as auth_logout
 from model.music.music_models import Song
-
+from model.store.store_models import Order
 
 def login_view(request):
     if request.method == 'POST':
@@ -204,3 +205,21 @@ def change_password(request):
 def my_songs(request):
     user_songs = Song.objects.filter(artist=request.user)
     return render(request, 'user/mis_obras.html', {'user_songs': user_songs})
+
+@login_required
+def order_history(request):
+    if not request.user.is_authenticated:
+        return redirect('login')
+
+    # Versión con evaluación explícita
+    orders = list(Order.objects.filter(user=request.user)
+                  .select_related('user')
+                  .prefetch_related('items__song')
+                  .order_by('-created_at'))
+
+    # Debug crítico
+    print(f"Pedidos encontrados ({len(orders)}):", [o.id for o in orders])
+
+    return render(request, 'historial_compras.html', {
+        'orders': orders  # Asegúrate que coincide con el template
+    })

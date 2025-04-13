@@ -1,8 +1,9 @@
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404, redirect
-from model.store.store_models import CartItem, Order
+from model.store.store_models import CartItem, Order, Purchase, PurchaseDetail
 from model.music.music_models import Song
+from controller.store_controller import PurchaseController, CartController, OrderController
 
 
 # Create your views here.
@@ -89,4 +90,7 @@ def pago(request):
     }
     return render(request, 'pago.html', context)
 
+def purchase_success(request, purchase_id):
+    purchase = get_object_or_404(Purchase, id=purchase_id, user=request.user)
+    return render(request, 'order_confirmation.html', {'purchase': purchase})
 

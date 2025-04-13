@@ -12,7 +12,8 @@ from view.user.views import (
     update_profile,
     delete_account,
     deactivate_account,
-    change_password
+    change_password,
+    order_history
 )
 from django.shortcuts import render
 

@@ -1,10 +1,12 @@
 # store/controllers/store_controller.py
 from django.contrib import messages
-from django.shortcuts import redirect
+from django.shortcuts import redirect, render
 from django.shortcuts import get_object_or_404
 from model.Dao.store_dao import CartDAO, OrderDAO, PurchaseDAO
 from model.Dto.store_dto import CartItemDTO, OrderDTO, PurchaseDTO
 from model.music.music_models import Song
+from model.store.store_models import CartItem, Order, Purchase, PurchaseDetail, OrderItem
+from django.urls import reverse
 
 
 class CartController:
@@ -105,29 +107,51 @@ class OrderController:
 
 class PurchaseController:
     @staticmethod
-    def process_purchase(user_id, payment_method=None):
-        cart_items = CartDAO.get_user_cart(user_id)
+    def process_purchase(request):
+        if not request.user.is_authenticated:
+            messages.error(request, "Debes iniciar sesión para realizar una compra")
+            return redirect('login')
+
+        cart_items = CartDAO.get_user_cart(request.user.id)
         if not cart_items:
-            return None
+            messages.error(request, "Tu carrito está vacío")
+            return redirect('carrito')
 
+        if request.method == 'POST':
+            # 1. Crear la orden
+            order_id = OrderDAO.create_order(request.user.id)
+
+            # 2. Convertir items del carrito a items de orden
+            order_items = [{
+                'song_id': item.song_id,
+                'price': item.song_price,
+                'quantity': item.quantity
+            } for item in cart_items]
+
+            OrderDAO.add_items_to_order(order_id, order_items)
+
+
+            # 3. Crear la compra (registro financiero)
+            purchase_id = PurchaseDAO.create_purchase(
+                user_id=request.user.id,
+                order_id=order_id,
+                payment_method=request.POST.get('payment_method', 'tarjeta'),
+                total_price=sum(item.subtotal for item in cart_items),
+                items=order_items
+            )
+
+            # 4. Vaciar el carrito
+            CartDAO.clear_user_cart(request.user.id)
+
+            # 5. Redirigir a confirmación
+            return redirect('order_confirmation', order_id=order_id)
+
+        # Mostrar formulario de pago (GET)
         total = sum(item.subtotal for item in cart_items)
-        purchase_items = [{
-            'song_id': item.song_id,
-            'price': item.song_price,
-            'quantity': item.quantity
-        } for item in cart_items]
-
-        purchase_id = PurchaseDAO.create_purchase(
-            user_id=user_id,
-            total_price=total,
-            items=purchase_items,
-            payment_method=payment_method
-        )
-
-        # Vaciar el carrito después de la compra
-        CartDAO.clear_user_cart(user_id)
-
-        return purchase_id
+        return render(request, 'pago.html', {
+            'cart_items': cart_items,
+            'total': total
+        })
 
     @staticmethod
     def get_purchase_history(user_id):
