@@ -10,4 +10,5 @@ urlpatterns = [
     path('cart/remove/<int:song_id>/', CartController.remove_from_cart, name='remove_from_cart'),
     path('order_confirmation/<int:order_id>/', views.order_confirmation, name='order_confirmation'),
     path('pago/', PurchaseController.process_purchase, name='pago'),
+    path('order/int:<order_id>/', views.order_detail, name='order_detail'),
 ]

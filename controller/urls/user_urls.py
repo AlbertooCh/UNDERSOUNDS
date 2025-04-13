@@ -13,7 +13,7 @@ from view.user.views import (
     delete_account,
     deactivate_account,
     change_password,
-    order_history
+    order_history,
 )
 from django.shortcuts import render
 
@@ -29,7 +29,7 @@ urlpatterns = [
     # Perfil y áreas privadas
     path('perfil/', perfil, name='perfil'),
     path('user/configuracion/', configuracion, name='configuracion'),
-    path('user/historial_compras/', historial_compras, name='historial_compras'),
+    path('user/historial_compras/', order_history, name='historial_compras'),
     path('upload-avatar/', upload_avatar, name='upload_avatar'),
     path('update_profile/', update_profile, name='update_profile'),
     path('delete_account/', delete_account, name='delete_account'),

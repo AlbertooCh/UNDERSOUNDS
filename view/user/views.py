@@ -11,6 +11,7 @@ from model.Dao.store_dao import OrderDAO
 from django.contrib.auth import logout as auth_logout
 from model.music.music_models import Song
 from model.store.store_models import Order
+from django.core.exceptions import ValidationError
 
 def login_view(request):
     if request.method == 'POST':
@@ -140,24 +141,52 @@ def mis_obras(request):
 
 @login_required
 def upload_avatar(request):
-    if request.method == 'POST' and request.FILES.get('avatar'):
-        try:
-            user = request.user
-            user.avatar = request.FILES['avatar']
-            user.save()
-            return JsonResponse({
-                'success': True,
-                'avatar_url': user.avatar.url
-            })
-        except Exception as e:
-            return JsonResponse({
-                'success': False,
-                'message': str(e)
-            }, status=400)
-    return JsonResponse({
-        'success': False,
-        'message': 'Solicitud inválida'
-    }, status=400)
+    if request.method != 'POST':
+        return JsonResponse({
+            'success': False,
+            'message': 'Método no permitido. Se requiere POST.'
+        }, status=405)  # 405 Method Not Allowed
+
+    if not request.FILES.get('avatar'):
+        return JsonResponse({
+            'success': False,
+            'message': 'No se proporcionó archivo de avatar.'
+        }, status=400)
+
+    try:
+        avatar_file = request.FILES['avatar']
+
+        # Validaciones básicas del archivo
+        if avatar_file.size > 5 * 1024 * 1024:  # 5MB máximo
+            raise ValidationError('El archivo es demasiado grande (máx. 5MB)')
+
+        if not avatar_file.content_type.startswith('image/'):
+            raise ValidationError('Solo se permiten archivos de imagen')
+
+        # Procesar la actualización
+        user = request.user
+        user.avatar = avatar_file
+        user.save()
+
+        return JsonResponse({
+            'success': True,
+            'avatar_url': user.avatar.url,
+            'message': 'Avatar actualizado correctamente'
+        })
+
+    except ValidationError as e:
+        return JsonResponse({
+            'success': False,
+            'message': str(e)
+        }, status=400)
+
+    except Exception as e:
+        # Loggear el error para debugging (opcional)
+        # logger.error(f"Error al actualizar avatar: {str(e)}")
+        return JsonResponse({
+            'success': False,
+            'message': 'Error interno del servidor'
+        }, status=500)
 
 @login_required
 def update_profile(request):
@@ -208,18 +237,5 @@ def my_songs(request):
 
 @login_required
 def order_history(request):
-    if not request.user.is_authenticated:
-        return redirect('login')
-
-    # Versión con evaluación explícita
-    orders = list(Order.objects.filter(user=request.user)
-                  .select_related('user')
-                  .prefetch_related('items__song')
-                  .order_by('-created_at'))
-
-    # Debug crítico
-    print(f"Pedidos encontrados ({len(orders)}):", [o.id for o in orders])
-
-    return render(request, 'historial_compras.html', {
-        'orders': orders  # Asegúrate que coincide con el template
-    })
+    order = Order.objects.filter(user=request.user).order_by('-created_at')
+    return render(request, 'historial_compras.html', {'orders': order})

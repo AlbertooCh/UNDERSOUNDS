@@ -9,6 +9,195 @@
 {% endblock %}
 
 {% block content %}
+  <style>
+  .order-detail-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 2rem;
+    font-family: 'Montserrat', sans-serif;
+    color: #333;
+}
+
+.history-title {
+    font-size: 1.8rem;
+    font-weight: 700;
+    margin-bottom: 2rem;
+    text-align: center;
+    color: #000;
+}
+
+.order-info {
+    background-color: #f8f8f8;
+    border-radius: 8px;
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.info-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 0.8rem;
+    font-size: 0.95rem;
+}
+
+.info-row:last-child {
+    margin-bottom: 0;
+}
+
+.info-label {
+    font-weight: 600;
+    color: #555;
+}
+
+.info-value {
+    color: #000;
+}
+
+.status-completed {
+    color: #28a745;
+}
+
+.status-pending {
+    color: #ffc107;
+}
+
+.items-title {
+    font-size: 1.4rem;
+    margin: 1.5rem 0;
+    color: #000;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 0.5rem;
+}
+
+.purchase-items {
+    margin-bottom: 2rem;
+}
+
+.purchase-item {
+    display: flex;
+    align-items: center;
+    padding: 1rem 0;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.item-image {
+    width: 60px;
+    height: 60px;
+    object-fit: cover;
+    border-radius: 4px;
+    margin-right: 1rem;
+}
+
+.item-details {
+    flex-grow: 1;
+}
+
+.item-name {
+    font-weight: 600;
+    margin-bottom: 0.3rem;
+}
+
+.item-artist {
+    font-size: 0.85rem;
+    color: #666;
+    margin-bottom: 0.5rem;
+}
+
+.item-price {
+    font-size: 0.9rem;
+    color: #555;
+}
+
+.item-total {
+    font-weight: 600;
+    min-width: 80px;
+    text-align: right;
+}
+
+.order-summary {
+    background-color: #f8f8f8;
+    border-radius: 8px;
+    padding: 1.5rem;
+    margin-top: 2rem;
+}
+
+.summary-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 0.8rem;
+    font-size: 0.95rem;
+}
+
+.summary-row.total {
+    font-weight: 700;
+    font-size: 1.1rem;
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid #ddd;
+}
+
+.order-actions {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 2rem;
+}
+
+.btn-back {
+    padding: 0.8rem 1.5rem;
+    background-color: #f0f0f0;
+    color: #333;
+    text-decoration: none;
+    border-radius: 4px;
+    font-weight: 500;
+    transition: background-color 0.3s;
+}
+
+.btn-back:hover {
+    background-color: #e0e0e0;
+}
+
+.btn {
+    padding: 0.8rem 1.5rem;
+    background-color: #000;
+    color: white;
+    text-decoration: none;
+    border-radius: 4px;
+    font-weight: 500;
+    transition: background-color 0.3s;
+}
+
+.btn:hover {
+    background-color: #333;
+}
+
+/* Estilos responsivos */
+@media (max-width: 768px) {
+    .order-detail-container {
+        padding: 1rem;
+    }
+
+    .purchase-item {
+        flex-wrap: wrap;
+    }
+
+    .item-total {
+        width: 100%;
+        text-align: left;
+        margin-top: 0.5rem;
+        padding-left: 76px; /* Alineación con el contenido */
+    }
+
+    .order-actions {
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .btn-back, .btn {
+        width: 100%;
+        text-align: center;
+    }
+}
+  </style>
 <div class="order-detail-container">
     <h1 class="history-title">DETALLE DE PEDIDO #US{{ order.id }}</h1>
     
@@ -28,33 +217,26 @@
     </div>
 
     <div class="purchase-items">
-        <h2 class="items-title">Tus canciones</h2>
-        {% for item in order.items %}
-        <div class="purchase-item">
-            {% if item.song.image %}
-            <img src="{{ item.song.image.url }}" alt="{{ item.song.title }}" class="item-image">
-            {% else %}
-            <img src="{% static 'images/default_album.jpg' %}" alt="Álbum" class="item-image">
-            {% endif %}
-            <div class="item-details">
-                <div class="item-name">{{ item.song_title }}</div>
-                <div class="item-artist">{{ item.song.artist.name }}</div>
-                <div class="item-price">{{ item.quantity }} × €{{ item.song_price|intcomma }}</div>
-            </div>
-            <div class="item-total">€{{ item.subtotal|intcomma }}</div>
+    <h2 class="items-title">Tus canciones</h2>
+    {% for item in order.items.all %}
+    <div class="purchase-item">
+        {% if item.song.album_cover %}
+        <img src="{{ item.song.album_cover.url }}" alt="{{ item.song.title }}" class="item-image">
+        {% else %}
+        <img src="{% static 'images/default_album.jpg' %}" alt="Álbum" class="item-image">
+        {% endif %}
+        <div class="item-details">
+            <div class="item-name">{{ item.song.title }}</div>
+            <div class="item-artist">{{ item.song.artist_name }}</div>
+            <div class="item-album">{{ item.song.album_title }}</div>
+            <div class="item-price">{{ item.quantity }} × €{{ item.price|intcomma }}</div>
         </div>
-        {% endfor %}
+        <div class="item-total">€{{ item.get_subtotal|intcomma }}</div>
     </div>
+    {% endfor %}
+</div>
 
     <div class="order-summary">
-        <div class="summary-row">
-            <span>Subtotal:</span>
-            <span>€{{ order.total|intcomma }}</span>
-        </div>
-        <div class="summary-row">
-            <span>IVA (21%):</span>
-            <span>€{{ order.total|multiply:0.21|floatformat:2|intcomma }}</span>
-        </div>
         <div class="summary-row total">
             <span>Total:</span>
             <span>€{{ order.total|intcomma }}</span>
@@ -62,7 +244,7 @@
     </div>
 
     <div class="order-actions">
-        <a href="{% url 'order_history' %}" class="btn-back">Volver al historial</a>
+        <a href="{% url 'historial_compras' %}" class="btn-back">Volver al historial</a>
         <a href="{% url 'catalogo' %}" class="btn">Seguir Comprando</a>
     </div>
 </div>

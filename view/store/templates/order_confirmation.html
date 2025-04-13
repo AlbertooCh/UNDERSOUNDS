@@ -16,10 +16,9 @@
         <p class="confirmation-message">Gracias por tu compra. Aquí tienes los detalles de tu pedido:</p>
 
         <div class="purchase-details">
-            <p><strong>Número de pedido:</strong> #{{ purchase.id }}</p>
+            <p><strong>Número de pedido:</strong> #{{ purchase.order_id }}</p>
             <p><strong>Fecha:</strong> {{ purchase.purchase_date|date:"d/m/Y H:i" }}</p>
             <p><strong>Total:</strong> {{ purchase.total_price|intcomma }} €</p>
-            <p><strong>Método de pago:</strong> {{ purchase.get_payment_method_display }}</p>
         </div>
 
         <div class="confirmation-actions">

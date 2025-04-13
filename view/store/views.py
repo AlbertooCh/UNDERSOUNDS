@@ -10,10 +10,19 @@ from controller.store_controller import PurchaseController, CartController, Orde
 
 @login_required
 def order_confirmation(request, order_id):
-    # Obtiene el pedido del usuario autenticado; se asume que el modelo Order tiene un campo
-    # de fecha de compra, id y total
+    """
+    Vista de confirmación de compra que muestra los detalles basados en el modelo Purchase
+    pero vinculado a un Order específico del usuario.
+    """
+    # Primero verificar que el Order existe y pertenece al usuario
     order = get_object_or_404(Order, id=order_id, user=request.user)
-    return render(request, 'order_confirmation.html', {'order': order})
+
+    # Obtener el purchase relacionado con este order
+    purchase = get_object_or_404(Purchase, order=order)
+
+    return render(request, 'order_confirmation.html', {
+        'purchase': purchase,  # Mantenemos ambas variables por si las necesitas en el template
+    })
 
 @login_required
 def carrito(request):
@@ -93,4 +102,9 @@ def pago(request):
 def purchase_success(request, purchase_id):
     purchase = get_object_or_404(Purchase, id=purchase_id, user=request.user)
     return render(request, 'order_confirmation.html', {'purchase': purchase})
+
+@login_required
+def order_detail(request, order_id):
+    order = get_object_or_404(Order, id=order_id, user=request.user)
+    return render(request, 'order_detail.html', {'order': order})
 

@@ -23,22 +23,7 @@
                 <span class="purchase-status status-{{ order.status|lower }}">{{ order.get_status_display }}</span>
             </div>
 
-            <div class="purchase-items">
-                {% for item in order.items %}
-                <div class="purchase-item">
-                    {% if item.song.image %}
-                    <img src="{{ item.song.image.url }}" alt="{{ item.song.title }}" class="item-image">
-                    {% else %}
-                    <img src="{% static 'images/default_album.jpg' %}" alt="Álbum" class="item-image">
-                    {% endif %}
-                    <div class="item-details">
-                        <div class="item-name">{{ item.song_title }}</div>
-                        <div class="item-price">{{ item.quantity }} × €{{ item.song_price|intcomma }}</div>
-                    </div>
-                    <div class="item-total">€{{ item.subtotal|intcomma }}</div>
-                </div>
-                {% endfor %}
-            </div>
+
 
             <div class="purchase-total">
                 Total: €{{ order.total|intcomma }}
