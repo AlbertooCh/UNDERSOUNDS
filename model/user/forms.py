@@ -67,3 +67,8 @@ class ArtistRegisterForm(UserCreationForm):
         if commit:
             user.save()
         return user
+
+class AvatarUploadForm(forms.ModelForm):
+    class Meta:
+        model = User
+        fields = ['avatar']

@@ -84,7 +84,11 @@
     <h1 class="profile-title">MI PERFIL</h1>
 
     <div class="profile-header">
-        <img src="{% static 'images/default-avatar.jpg' %}" alt="Avatar" class="profile-avatar">
+{% if user.avatar %}
+    <img src="{{ user.avatar.url }}" alt="Avatar" class="profile-avatar">
+{% else %}
+    <img src="{% static 'images/default-avatar.jpg' %}" alt="Avatar" class="profile-avatar">
+{% endif %}
         <div class="profile-info">
             <div class="profile-name">
                 {{ user.artist_name|default:user.username }}

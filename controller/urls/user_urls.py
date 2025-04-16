@@ -35,5 +35,4 @@ urlpatterns = [
     path('delete_account/', delete_account, name='delete_account'),
     path('deactivate_account/', deactivate_account, name='deactivate_account'),
     path('change_password/', change_password, name='change_password'),
-
 ]
