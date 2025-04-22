@@ -3,6 +3,60 @@
 {% block title %}Registro - Undersounds{% endblock %}
 {% block extra_css %}
     <link rel="stylesheet" href="{% static 'user/css/auth.css' %}">
+    <style>
+    /* Estilos adicionales para el botón de Google */
+        .oauth-providers {
+            margin: 20px 0;
+            text-align: center;
+        }
+
+        .oauth-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: white;
+            color: #757575;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 10px 15px;
+            margin: 10px 0;
+            width: 100%;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .oauth-btn:hover {
+            background: #f7f7f7;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .oauth-btn.google {
+            border-color: #4285F4;
+        }
+
+        .oauth-btn img {
+            width: 20px;
+            height: 20px;
+            margin-right: 10px;
+        }
+
+        .divider {
+            display: flex;
+            align-items: center;
+            margin: 20px 0;
+            color: #777;
+            font-size: 14px;
+        }
+
+        .divider::before,
+        .divider::after {
+            content: "";
+            flex: 1;
+            border-bottom: 1px solid #ddd;
+            margin: 0 10px;
+        }
+    </style>
 {% endblock %}
 {% block content %}
 
@@ -51,7 +105,12 @@
 
     <button type="submit" class="submit-btn">CREAR CUENTA</button>
 </form>
-
+    <div class="oauth-providers">
+        <a href="/oauth/login/google-oauth2/" class="oauth-btn google">
+            <img src="{% static 'images/google.png' %}" alt="Google Logo">
+            Continuar con Google
+        </a>
+    </div>
 
     <div class="auth-footer">
         ¿Ya tienes cuenta? <a href="{% url 'login' %}">Inicia sesión aquí</a>

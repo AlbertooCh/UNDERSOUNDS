@@ -6,7 +6,6 @@
 {% endblock %}
 {% block content %}
 
-
 <div class="auth-container">
     <h1 class="auth-title">INICIAR SESIÓN</h1>
 
@@ -34,8 +33,17 @@
         <button type="submit" class="submit-btn">ENTRAR</button>
     </form>
 
+    <div class="divider">o</div>
+
+    <div class="oauth-providers">
+        <a href="/oauth/login/google-oauth2/" class="oauth-btn google">
+            <img src="{% static 'images/google.png' %}" alt="Google Logo">
+            Continuar con Google
+        </a>
+    </div>
+
     <div class="auth-footer">
-        ¿No tienes cuenta? Registrate aquí
+        ¿No tienes cuenta? Regístrate aquí
         <a href="{% url 'register' %}">como fan</a> o <a href="{% url 'artist_register' %}">como artista</a>.
     </div>
 </div>
