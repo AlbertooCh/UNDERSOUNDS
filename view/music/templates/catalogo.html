@@ -156,20 +156,17 @@
 
 <h2 class="title">CATÁLOGO</h2>
 
-<button id="lupa">🔎</button>
-<div class="search-bar" id="search-bar">
+<div class="filter-buttons">
+    <button class="filter-btn active" onclick="filterSelection('all')">Mostrar todo</button>
+    <button id="lupa" class="filter-btn">Buscar</button>
+    <button class="filter-btn" onclick="filterByArtist()">Artistas</button>
+    <button class="filter-btn" onclick="filterRecent()">Recientes</button>
+</div>
+    <div class="search-bar" id="search-bar">
     <input type="text" id="nombreCancion" placeholder="Buscar por canción, artista, álbum, género ..." class="nombreCancion">
     <input type="date" id="fechaAnt">
     <input type="date" id="fechaPost">
     <button id="buscarBtn" onclick="searchSongs()">Buscar</button>
-</div>
-
-<div class="filter-buttons">
-    <button class="filter-btn active" onclick="filterSelection('all')">Mostrar todo</button>
-    <button class="filter-btn" onclick="filterByGenre('Rock')">Rock</button>
-    <button class="filter-btn" onclick="filterByGenre('Pop')">Pop</button>
-    <button class="filter-btn" onclick="filterByArtist()">Artistas</button>
-    <button class="filter-btn" onclick="filterRecent()">Recientes</button>
 </div>
 
 <!-- Catálogo dinámico -->
@@ -201,6 +198,7 @@
     function searchSongs() {
         const query = document.getElementById('nombreCancion').value;
         window.location.href = `{% url 'catalogo' %}?q=${encodeURIComponent(query)}`;
+
     }
 
     // Filtros
@@ -212,6 +210,8 @@
         const artist = prompt("Introduce el nombre del artista:");
         if (artist) {
             window.location.href = `{% url 'catalogo' %}?artist=${encodeURIComponent(artist)}`;
+        }else{
+             window.location.href = `{% url 'catalogo' %}`;
         }
     }
 

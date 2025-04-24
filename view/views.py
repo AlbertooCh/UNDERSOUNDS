@@ -10,5 +10,5 @@ def contacto(request):
 
 
 def novedades(request):
-    recent_songs = SongController.get_all_songs(ordered=True)[:15]
+    recent_songs = SongController.get_all_songs(ordered=False)[:15]
     return render(request, "novedades.html", {"songs": recent_songs})

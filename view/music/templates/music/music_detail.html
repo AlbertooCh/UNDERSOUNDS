@@ -40,6 +40,7 @@
     <source src="{{ song.song_file.url }}" type="audio/mpeg">
     Tu navegador no soporta audio.
   </audio>
+
 {% endif %}
 
 {% if messages %}
@@ -116,123 +117,6 @@
             document.getElementById('overlayComent').classList.remove('active');
         }
 
-        const item = JSON.parse(localStorage.getItem('item'));
-
-
-        if (item) {
-            document.getElementById('song-name').textContent = item.song_name;
-            document.getElementById('artist-name').textContent = `by ${item.artist_name}`;
-            document.getElementById('track-cover').src = item.album_photo;
-            document.getElementById('author-name').textContent = item.artist_name;
-            document.getElementById('author-genre').textContent = item.genre;
-            document.getElementById('author-image').src = item.artist_photo;
-            const desc = document.getElementById('Desc-button');
-            desc.innerText = "Descargar " + item.price + "$";
-            mostrarComentarios();
-
-            const trackList = document.getElementById('track-list');
-            mostrarComentarios();
-        } else {
-            document.querySelector('.track-info').innerHTML = '<p>No hay datos disponibles.</p>';
-        }
-
-
-        let canciones = [];
-        fetch('/static/prueba5.json')
-            .then(response => response.json())
-            .then(data => {
-                canciones = data;
-                filterCanciones();
-            })
-        .catch(error => console.error('Error al cargar el JSON:', error));
-
-        function filterCanciones() {
-            fetch('/static/prueba5.json')
-                .then(response => response.json())
-                .then(data => {
-                    canciones = data;
-                    const filteredSongs = canciones.filter(cancion => {
-                        const matchesAlbum = cancion.album_name.toLowerCase() === item.album_name.toLowerCase();
-                        const isNotCurrentSong = cancion.song_name.toLowerCase() !== item.song_name.toLowerCase();
-
-                        return matchesAlbum && isNotCurrentSong;
-                    });
-                    mostarCanciones(filteredSongs);
-                })
-        }
-
-        function mostarCanciones(songs){
-            const contenedor = document.getElementById('song-list');
-            contenedor.innerHTML = '';
-            songs.forEach(cancion => {
-                const songDiv = document.createElement('div');
-                songDiv.className = 'songDiv';
-                const li = document.createElement('p');
-                li.className = 'linfo';
-                li.classList.add('linfo');
-                li.textContent = cancion.song_name;
-                li.addEventListener('click', () => {
-                    localStorage.setItem('item', JSON.stringify(cancion));
-                    window.location.href = `../music_detail/`;
-                });
-                const progressBar = document.createElement('div');
-        progressBar.className = 'barra';
-        li.appendChild(progressBar);
-                songDiv.appendChild(li);
-                contenedor.appendChild(songDiv);
-            });
-        }
-
-        document.getElementById('Descripcion').addEventListener('click', function() {
-            const Desc = document.getElementById('Desc');
-            Desc.style.display = Desc.style.display === 'block' ? 'none' : 'block';
-        });
-
-        function mostrarComentarios() {
-    const comentariosDiv = document.getElementById('comentarios');
-    comentariosDiv.innerHTML = '';
-
-    item.comments.forEach((comment, index) => {
-        const commentDiv = document.createElement('div');
-        commentDiv.classList.add('comment');
-
-        const userDiv = document.createElement('div');
-        userDiv.classList.add('user');
-
-        const img = document.createElement('img');
-        img.src = comment.profile_photo;
-        img.alt = "Foto de perfil";
-        img.onerror = function() {
-            img.src = "../static/Photos/OIP.jpg";
-        };
-        userDiv.appendChild(img);
-
-        const userName = document.createElement('p');
-        userName.textContent = `${comment.user_name}`;
-        userDiv.appendChild(userName);
-
-        const commentContentDiv = document.createElement('div');
-        commentContentDiv.classList.add('come');
-
-        const userComment = document.createElement('p');
-        userComment.textContent = `Comentario: ${comment.comment}`;
-        commentContentDiv.appendChild(userComment);
-
-        const userRating = document.createElement('div');
-        userRating.classList.add('rating');
-        for (let i = 1; i <= 5; i++) {
-            const star = document.createElement('span');
-            star.classList.add('star');
-            star.innerHTML = i <= comment.rating ? '★' : '☆';
-            userRating.appendChild(star);
-        }
-        commentContentDiv.appendChild(userRating);
-
-        commentDiv.appendChild(userDiv);
-        commentDiv.appendChild(commentContentDiv);
-        comentariosDiv.appendChild(commentDiv);
-    });
-}
 
         function addComment() {
             const newComment = document.getElementById('new-comment').value;
