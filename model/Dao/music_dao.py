@@ -93,8 +93,9 @@ class SongDAO:
     def search(query):
         """Busca canciones por título, artista o álbum"""
         songs = Song.objects.filter(
-            models.Q(tittle__icontains=query) |
+            models.Q(title__icontains=query) |
             models.Q(artist_name__icontains=query) |
-            models.Q(album_title__icontains=query)
+            models.Q(album_title__icontains=query) |
+            models.Q(genre__icontains=query)
         )
         return [SongFactory.create_dto_from_model(song) for song in songs]

@@ -3,18 +3,16 @@ from django.contrib.auth.forms import UserCreationForm
 from user.models import User
 
 class FanRegisterForm(UserCreationForm):
-    email = forms.EmailField(required=True)
-
-    class Meta:
-        model = User
-        fields = ['username', 'email', 'password1', 'password2']
-        widgets = {
-            'username': forms.TextInput(attrs={'class': 'form-control'}),
-            'password1': forms.PasswordInput(attrs={'class': 'form-control'}),
-            'password2': forms.PasswordInput(attrs={'class': 'form-control'}),
-            'email' : forms.EmailField(widget=forms.EmailInput(attrs={'class': 'form-control'}))
-
-        }
+    class FanRegisterForm(UserCreationForm):
+        class Meta:
+            model = User
+            fields = ['username', 'email', 'password1', 'password2']
+            widgets = {
+                'username': forms.TextInput(attrs={'class': 'form-control'}),
+                'password1': forms.PasswordInput(attrs={'class': 'form-control'}),
+                'password2': forms.PasswordInput(attrs={'class': 'form-control'}),
+                'email': forms.EmailInput(attrs={'class': 'form-control'}),  # Use EmailInput widget
+            }
     def save(self, commit=True):
         user = super().save(commit=False)
         user.role = 'user'

@@ -18,12 +18,22 @@
             <p><strong>Fecha de lanzamiento:</strong> {{ song.release_date }}</p>
             <p><strong>Precio:</strong> €{{ song.price }}</p>
             <form action="{% url 'add_to_cart' song.id %}" method="post" class="add-to-cart-form">
-                {% csrf_token %}
-                <input type="hidden" name="quantity" value="1">
-                <button type="submit" class="add-to-cart-btn">
-                 <i class="fas fa-cart-plus"></i> Añadir al carrito
-                 </button>
-            </form>
+    {% csrf_token %}
+    <input type="hidden" name="quantity" value="1">
+            {% if in_order %}
+            <button type="button" class="add-to-cart-btn" disabled>
+                <i class="fas fa-check-double"></i> Ya comprado
+            </button>
+        {% elif in_cart %}
+            <button type="button" class="add-to-cart-btn" disabled>
+                <i class="fas fa-shopping-cart"></i> En el carrito
+            </button>
+        {% else %}
+            <button type="submit" class="add-to-cart-btn">
+                <i class="fas fa-cart-plus"></i> Añadir al carrito
+            </button>
+        {% endif %}
+</form>
         </div>
         <div class="track-cover">
             {% if song.album_cover %}
@@ -159,6 +169,7 @@
       }, 1000); // 1 segundo visible
     }
   });// 1000 milisegundos = 1 segundo
+
 
     </script>
 {% endblock %}

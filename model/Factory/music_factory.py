@@ -19,6 +19,7 @@ class SongFactory:
     @staticmethod
     def create_dto_from_model(song):
         """Crea un DTO a partir de un modelo Song"""
+
         return SongDTO(
             id=song.id,
             title=song.title,

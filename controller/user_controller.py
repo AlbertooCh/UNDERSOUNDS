@@ -10,10 +10,21 @@ class UserController:
     @staticmethod
     def login(request, username_or_email, password):
         user = UserDAO.authenticate(username_or_email, password)
-        if user:
+        if user is None:
+            # Po si falla, lo intenta con el email del usuario
+            try:
+                user_by_email = User.objects.get(email=username_or_email)
+                user = UserDAO.authenticate(username_or_email, password)
+            except User.DoesNotExist:
+                pass
+
+        if user is not None:
+            # Set the backend for standard username/password login
+            user.backend = 'django.contrib.auth.backends.ModelBackend'
             auth_login(request, user)
-            return UserFactory.create_from_model(user)
-        return None
+            return user
+        else:
+            return None
 
     @staticmethod
     def logout(request):

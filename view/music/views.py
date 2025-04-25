@@ -1,12 +1,20 @@
 # views.py
+from datetime import date
+
+from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.shortcuts import render, redirect, get_object_or_404
+from django.template.defaulttags import comment
+
 from controller.music_controller import SongController
 from model.Dto.music_dto import SongDTO
+from model.music.comments_model import Comments
 from model.music.forms import SongForm
 from django.http import JsonResponse
 from model.music.music_models import Song
+from model.store.store_models import CartItem, Order, Purchase, OrderItem
+
 
 def music_detail_redirect(request):
     song_id = request.GET.get("id")
@@ -18,7 +26,6 @@ def music_detail(request, id):
     if not song_dto:
         return render(request, '404.html', status=404)
 
-    # Convertimos el DTO a un diccionario para la plantilla
     song = {
         'id': song_dto.id,
         'title': song_dto.title,
@@ -30,13 +37,63 @@ def music_detail(request, id):
         'album_cover': song_dto.album_cover,
         'song_file': song_dto.song_file
     }
-    return render(request, 'music/music_detail.html', {'song': song})
 
+    comments_ratings = Comments.objects.filter(song_id=id)
+
+    order_data = None
+    in_cart = False
+    in_order = False
+
+    if request.user.is_authenticated:
+        # Obtener los items en el carrito del usuario
+        items_in_cart = CartItem.objects.filter(user=request.user)
+
+        # Obtener la última orden completada del usuario (o la orden actual si estás en proceso de compra)
+        user_purchases = Purchase.objects.filter(user=request.user)
+        order_data  = set()
+        for purchase in user_purchases:
+            if purchase.order:
+                for item in purchase.order.items.all():
+                    order_data.add(item.song)
+
+        for items in items_in_cart:
+            if (items.song.id == id):
+                in_cart = True
+                break;
+
+        for order in order_data:
+            if (order.id == id):
+                in_order = True
+                break;
+
+    # Modificamos o agregamos un comentario si es necesario
+    if request.method == 'POST' and request.user.is_authenticated:
+        comment = request.POST.get('comment')
+        rating = request.POST.get('rating')
+        if comment and rating:
+            Comments.objects.create(
+                user_id=request.user,
+                song_id=Song.objects.get(id=id),
+                comment=comment,
+                rating=rating
+            )
+
+    context = {
+        'song': song,
+        'comments_ratings': comments_ratings,
+        'items': items_in_cart,
+        'order': order_data,
+        'in_cart': in_cart,
+        'in_order': in_order
+
+    }
+    return render(request, 'music/music_detail.html', context)
 
 def catalogo(request):
     query = request.GET.get('q')
     genre = request.GET.get('genre')
     artist = request.GET.get('artist')
+    recent = request.GET.get('recent')
 
     if query:
         songs = SongController.search_songs(query)
@@ -44,6 +101,9 @@ def catalogo(request):
         songs = SongController.filter_songs_by_genre(genre)
     elif artist:
         songs = SongController.filter_songs_by_artist(artist)
+    elif recent:
+        recent = date.fromisoformat(recent)
+        songs = SongController.get_songs_recent(recent)
     else:
         songs = SongController.get_all_songs()
 

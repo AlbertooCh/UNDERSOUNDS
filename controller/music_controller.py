@@ -34,7 +34,7 @@ class SongController:
         return SongDAO.get_by_id(song_id)
 
     @staticmethod
-    def get_all_songs(ordered=False):
+    def get_all_songs(ordered=True):
         """
         Obtiene todas las canciones
         :param ordered: Si True, devuelve ordenado por fecha descendente
@@ -130,6 +130,18 @@ class SongController:
             return None
 
         return song
+
+    @staticmethod
+    def get_songs_recent(recent_date):
+        """
+        Obtiene todas las canciones, con opción de filtrar por fecha reciente y ordenar.
+        :param recent_date: (Opcional) Filtra las canciones publicadas después o en esta fecha (objeto date).
+        :param ordered: Si True, devuelve ordenado por fecha descendente.
+        """
+        songs = SongDAO.get_all()
+        if recent_date:
+            songs = [song for song in songs if song.release_date and song.release_date.date() >= recent_date]
+        return songs
 
     @staticmethod
     def get_songs_by_artist(artist_id):
