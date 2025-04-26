@@ -292,3 +292,15 @@ def artist_detail(request, artist_id=None):
     }
 
     return render(request, 'music/artist_detail.html', context)
+
+def add_comment(request, song_id):
+    if request.method == 'POST':
+        comment_text = request.POST.get('comment_text')
+        if comment_text:
+            song = Song.objects.get(pk=song_id)
+            Comments.objects.create(
+                user_id=request.user,
+                song_id=song,
+                comment=comment_text
+            )
+    return redirect('music_detail_id', id=song_id)

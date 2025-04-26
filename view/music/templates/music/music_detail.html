@@ -83,8 +83,12 @@
                 <img src="{{ request.user.avatar.url }}" alt="Perfil" class="nav-icon">
                 {{ request.user.username }}
                 <p>
-                    <input type="text" id="Comment-text" placeholder="Escribe aquí tu comentario" class="comment-text">
-                    <button id="comment-sum" class="add-to-cart-btn">Publicar</button>
+                <form action="{% url 'add_comment' song.id %}" method="POST" style="display: flex; align-items: center;">
+    {% csrf_token %}
+    <input type="text" name="comment_text" id="Comment-text" placeholder="Escribe aquí tu comentario" class="comment-text" style="flex: 1; margin-right: 10px;">
+    <button type="submit" class="add-to-cart-btn">Publicar</button>
+    </form>
+
                 </p>
             {% else %}
                 <p>Inicia sesión o crea una cuenta para dejar un comentario</p>
@@ -92,11 +96,12 @@
         </div>
         <div class="comments-list">
             {% for comment in comments %}
-                <div class="comment">
-                    <img src="{{ comment.user.avatar.url }}" alt="Perfil" class="user">
-                    <strong>{{ comment.user.username }}</strong>
-                    <p>{{ comment.comment }}</p>
-                </div>
+<div class="comment">
+<img src="{{ comment.user_id.avatar.url }}" alt="Perfil" class="user" style="width: 40px; height: 40px; object-fit: cover; border-radius: 50%;">
+    <strong>{{ comment.user_id.username }}</strong>
+    <p>{{ comment.comment }}</p>
+</div>
+
             {% endfor %}
         </div>
     </div>
