@@ -1,6 +1,6 @@
 # model/controllers/user_controller.py
 from django.contrib.auth import login as auth_login, logout as auth_logout
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.backends import ModelBackend
 from model.Dao.user_dao import UserDAO
 from model.Factory.user_factory import UserFactory
 from model.Dto.user_dto import UserDTO
@@ -10,21 +10,14 @@ class UserController:
     @staticmethod
     def login(request, username_or_email, password):
         user = UserDAO.authenticate(username_or_email, password)
-        if user is None:
-            # Po si falla, lo intenta con el email del usuario
-            try:
-                user_by_email = User.objects.get(email=username_or_email)
-                user = UserDAO.authenticate(username_or_email, password)
-            except User.DoesNotExist:
-                pass
-
-        if user is not None:
-            # Set the backend for standard username/password login
-            user.backend = 'django.contrib.auth.backends.ModelBackend'
-            auth_login(request, user)
-            return user
-        else:
-            return None
+        if user:
+            # Asegurar que el backend está asignado
+            if not hasattr(user, 'backend'):
+                user.backend = f'{ModelBackend.__module__}.{ModelBackend.__qualname__}'
+                user.save(update_fields=['backend'])
+            auth_login(request, user, backend=user.backend)  # Login explícito con backend
+            return UserFactory.create_from_model(user)
+        return None
 
     @staticmethod
     def logout(request):
@@ -35,7 +28,7 @@ class UserController:
         user_dto = UserFactory.create_fan(username, email, password, **kwargs)
         user = UserDAO.create(user_dto)
         if user:
-            auth_login(request, user)
+            auth_login(request, user, backend=user.backend)
             return UserFactory.create_from_model(user)
         return None
 
@@ -44,13 +37,27 @@ class UserController:
         user_dto = UserFactory.create_artist(username, email, password, artist_name, **kwargs)
         user = UserDAO.create(user_dto)
         if user:
-            auth_login(request, user)
+            auth_login(request, user, backend=user.backend)
+            return UserFactory.create_from_model(user)
+        return None
+
+    @staticmethod
+    def handle_oauth_user(request, email, **kwargs):
+        """Maneja el registro/login de usuarios OAuth"""
+        user_dto = UserFactory.create_for_oauth(email, **kwargs)
+        user, created = UserDAO.get_or_create_oauth_user(user_dto)
+        if user:
+            auth_login(request, user, backend=user.backend)
             return UserFactory.create_from_model(user)
         return None
 
     @staticmethod
     def get_current_user(request):
         if request.user.is_authenticated:
+            # Asegurar que el backend está asignado
+            if not hasattr(request.user, 'backend'):
+                request.user.backend = f'{ModelBackend.__module__}.{ModelBackend.__qualname__}'
+                request.user.save(update_fields=['backend'])
             return UserFactory.create_from_model(request.user)
         return None
 
@@ -70,7 +77,7 @@ class UserController:
         user = UserDAO.get_by_id(user_id)
         if user and user.role == 'artist':
             user_dto = UserFactory.create_from_model(user)
-            user_dto.songs = user.songs.all()  # Obtener canciones relacionadas
+            user_dto.songs = user.songs.all()
             return user_dto
         return None
 
@@ -102,8 +109,10 @@ class UserController:
     @staticmethod
     def change_password(user_id, current_password, new_password):
         user = UserDAO.get_by_id(user_id)
-        if user and user.check_password(current_password):  # Verifica la contraseña actual
-            user.set_password(new_password)  # Hashea la nueva contraseña automáticamente
+        if user and user.check_password(current_password):
+            user.set_password(new_password)
+            # Mantener el backend después de cambiar la contraseña
+            user.backend = getattr(user, 'backend', f'{ModelBackend.__module__}.{ModelBackend.__qualname__}')
             user.save()
             return True
         return False
