@@ -3,23 +3,29 @@ from django.contrib.auth.forms import UserCreationForm
 from user.models import User
 
 class FanRegisterForm(UserCreationForm):
-    class FanRegisterForm(UserCreationForm):
-        class Meta:
-            model = User
-            fields = ['username', 'email', 'password1', 'password2']
-            widgets = {
-                'username': forms.TextInput(attrs={'class': 'form-control'}),
-                'password1': forms.PasswordInput(attrs={'class': 'form-control'}),
-                'password2': forms.PasswordInput(attrs={'class': 'form-control'}),
-                'email': forms.EmailInput(attrs={'class': 'form-control'}),  # Use EmailInput widget
-            }
+    password2 = forms.CharField(widget=forms.PasswordInput(attrs={'class': 'form-control'}), label='Confirmar Contraseña')
+    email = forms.EmailInput(attrs={'class': 'form-control'})  # Explicitly define email
+
+    class Meta(UserCreationForm.Meta):
+        model = User
+        fields = ['username', 'email']
+        widgets = {
+            'username': forms.TextInput(attrs={'class': 'form-control'}),
+        }
+
+    def clean_password2(self):
+        password = self.cleaned_data.get('password')
+        password2 = self.cleaned_data.get('password2')
+        if password and password2 and password != password2:
+            raise forms.ValidationError("Las contraseñas no coinciden.")
+        return password2
+
     def save(self, commit=True):
         user = super().save(commit=False)
         user.role = 'user'
         if commit:
             user.save()
         return user
-
 
 class ArtistRegisterForm(UserCreationForm):
     email = forms.EmailField(widget=forms.EmailInput(attrs={'class': 'form-control'}))

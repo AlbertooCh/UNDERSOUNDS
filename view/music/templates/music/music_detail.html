@@ -72,6 +72,44 @@
     {% endfor %}
   </div>
 {% endif %}
+
+
+
+<div class="comments-section">
+    <div class="new-comment">
+        <h2><strong>Comentarios</strong></h2>
+        <div class="comment">
+            {% if request.user.id %}
+                <img src="{{ request.user.avatar.url }}" alt="Perfil" class="nav-icon">
+                {{ request.user.username }}
+                <p>
+                    <input type="text" id="Comment-text" placeholder="Escribe aquí tu comentario" class="comment-text">
+                    <button id="comment-sum" class="add-to-cart-btn">Publicar</button>
+                </p>
+            {% else %}
+                <p>Inicia sesión o crea una cuenta para dejar un comentario</p>
+            {% endif %}
+        </div>
+        <div class="comments-list">
+            {% for comment in comments %}
+                <div class="comment">
+                    <img src="{{ comment.user.avatar.url }}" alt="Perfil" class="user">
+                    <strong>{{ comment.user.username }}</strong>
+                    <p>{{ comment.comment }}</p>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+    <div class="author-info">
+        <h2><strong>Artista</strong></h2>
+        <!-- Aquí va la información del artista -->
+        <p>Nombre del artista: {{ artist.name }}</p>
+        <p>Género: {{ artist.genre }}</p>
+        <p>Biografía: {{ artist.bio }}</p>
+    </div>
+</div>
+
+
     <script>
         var audio = document.getElementById('audio');
         var progressBar = document.getElementById('progress-bar');

@@ -79,6 +79,9 @@
     flex-direction: column;
     align-items: center;
 }
+.new-comment h2{
+    align-items: center;
+}
 
 .track-buttons button {
     margin: 5px 0;

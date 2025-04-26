@@ -66,26 +66,12 @@ def music_detail(request, id):
                 in_order = True
                 break;
 
-    # Modificamos o agregamos un comentario si es necesario
-    if request.method == 'POST' and request.user.is_authenticated:
-        comment = request.POST.get('comment')
-        rating = request.POST.get('rating')
-        if comment and rating:
-            Comments.objects.create(
-                user_id=request.user,
-                song_id=Song.objects.get(id=id),
-                comment=comment,
-                rating=rating
-            )
 
     context = {
         'song': song,
-        'comments_ratings': comments_ratings,
-        'items': items_in_cart,
-        'order': order_data,
+        'comments': comments_ratings,
         'in_cart': in_cart,
         'in_order': in_order
-
     }
     return render(request, 'music/music_detail.html', context)
 
