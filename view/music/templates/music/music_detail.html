@@ -100,15 +100,30 @@
             {% endfor %}
         </div>
     </div>
-    <div class="author-info">
-        <h2><strong>Artista</strong></h2>
-        <!-- Aquí va la información del artista -->
-        <p>Nombre del artista: {{ artist.name }}</p>
-        <p>Género: {{ artist.genre }}</p>
-        <p>Biografía: {{ artist.bio }}</p>
-    </div>
-</div>
+   <div class="author-info">
+    <h2><strong>Artista</strong></h2>
+    {% if song.artist %}
+    <div class="artist-card">
+        <div class="artist-avatar">
+            <img src="{{ song.artist.avatar.url }}" alt="{{ song.artist_name }}" class="artist-avatar-img">
+        </div>
+        <div class="artist-details">
+            <h3>{{ song.artist.artist_name }}</h3>
+            <p><strong>Género:</strong> {{ song.artist.genre|default:"No especificado" }}</p>
+            <p><strong>País:</strong> {{ song.artist.country|default:"No especificado" }}</p>
+            {% if song.artist.bio %}
+                <p class="artist-bio">{{ song.artist.bio }}</p>
+            {% endif %}
 
+            <a href="{% url 'artist_detail' %}" class="add-to-cart-btn" style="text-decoration: none; margin-top: 10px;">
+                <i class="fas fa-user"></i> Ver perfil completo
+            </a>
+        </div>
+    </div>
+    {% else %}
+        <p>Información del artista no disponible</p>
+    {% endif %}
+</div>
 
     <script>
         var audio = document.getElementById('audio');

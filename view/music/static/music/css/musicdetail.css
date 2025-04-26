@@ -352,3 +352,55 @@
         animation: cartAdded 0.5s ease;
         background-color: #4CAF50 !important;
     }
+
+
+    .artist-card {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+    background: #f8f9fa;
+    padding: 15px;
+    border-radius: 8px;
+    margin-top: 15px;
+}
+
+.artist-avatar img {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.artist-details {
+    flex: 1;
+}
+
+.artist-details h3 {
+    margin: 0 0 5px 0;
+    color: #333;
+}
+
+.artist-details p {
+    margin: 5px 0;
+    color: #666;
+}
+
+.artist-btn {
+    display: inline-block;
+    background: #6c757d;
+    color: white;
+    padding: 8px 15px;
+    border-radius: 4px;
+    text-decoration: none;
+    margin-top: 10px;
+    transition: background 0.3s;
+}
+
+.artist-btn:hover {
+    background: #5a6268;
+    color: white;
+}
+
+.artist-btn i {
+    margin-right: 5px;
+}

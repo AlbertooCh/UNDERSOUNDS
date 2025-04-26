@@ -1,0 +1,182 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}{{ artist.artist_name }} - Undersounds{% endblock %}
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'music/css/musicdetail.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        /* Estilos específicos para artist_detail */
+        .artist-header {
+            display: flex;
+            gap: 30px;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .artist-avatar-lg {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 5px solid #6c757d;
+        }
+
+        .artist-info {
+            flex: 1;
+        }
+
+        .artist-name {
+            font-size: 2rem;
+            margin: 0 0 10px 0;
+            color: #333;
+        }
+
+        .artist-meta {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 15px;
+        }
+
+        .artist-meta-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            color: #666;
+        }
+
+        .artist-meta-item i {
+            color: #6c757d;
+        }
+
+        .artist-bio {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            line-height: 1.6;
+        }
+
+        .artist-songs {
+            margin-top: 30px;
+        }
+
+        .song-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .song-card {
+            background: #fff;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .song-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .song-cover {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+        }
+
+        .song-info {
+            padding: 15px;
+        }
+
+        .song-title {
+            margin: 0 0 5px 0;
+            font-size: 1.1rem;
+            color: #333;
+        }
+
+        .song-meta {
+            font-size: 0.9rem;
+            color: #666;
+            margin: 5px 0;
+        }
+
+        .back-button {
+            display: inline-block;
+            margin-top: 20px;
+            color: #6c757d;
+            text-decoration: none;
+        }
+
+        .back-button:hover {
+            color: #333;
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+<main class="container">
+    <a href="javascript:history.back()" class="back-button">
+        <i class="fas fa-arrow-left"></i> Volver
+    </a>
+
+    <div class="artist-header">
+        <img src="{{ artist.avatar.url }}" alt="{{ artist.artist_name }}" class="artist-avatar-lg">
+        <div class="artist-info">
+            <h1 class="artist-name">{{ artist.artist_name }}</h1>
+            <div class="artist-meta">
+                {% if artist.artist_type %}
+                <span class="artist-meta-item">
+                    <i class="fas fa-guitar"></i> {{ artist.artist_type }}
+                </span>
+                {% endif %}
+                {% if artist.genre %}
+                <span class="artist-meta-item">
+                    <i class="fas fa-music"></i> {{ artist.genre }}
+                </span>
+                {% endif %}
+                {% if artist.country %}
+                <span class="artist-meta-item">
+                    <i class="fas fa-globe"></i> {{ artist.country }}
+                </span>
+                {% endif %}
+            </div>
+            {% if artist.bio %}
+            <div class="artist-bio">
+                <h3><i class="fas fa-info-circle"></i> Biografía</h3>
+                <p>{{ artist.bio }}</p>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="artist-songs">
+        <h2><i class="fas fa-compact-disc"></i> Discografía</h2>
+        {% if artist.songs.all %}
+        <div class="song-list">
+            {% for song in artist.songs.all %}
+            <div class="song-card">
+                <a href="{% url 'music_detail' song.id %}">
+                    {% if song.album_cover %}
+                        <img src="{{ song.album_cover.url }}" alt="{{ song.title }}" class="song-cover">
+                    {% else %}
+                        <img src="{% static 'images/default_album.jpg' %}" alt="Portada no disponible" class="song-cover">
+                    {% endif %}
+                </a>
+                <div class="song-info">
+                    <h3 class="song-title">{{ song.title }}</h3>
+                    <p class="song-meta">{{ song.album_title }}</p>
+                    <p class="song-meta">{{ song.release_date|date:"Y" }}</p>
+                    <p class="song-meta">€{{ song.price }}</p>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <p>Este artista aún no tiene canciones publicadas.</p>
+        {% endif %}
+    </div>
+</main>
+{% endblock %}

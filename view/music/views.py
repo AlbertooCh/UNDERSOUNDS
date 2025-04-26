@@ -1,6 +1,6 @@
 # views.py
 from datetime import date
-
+from django.db.models import Q
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
@@ -25,14 +25,18 @@ def music_detail(request, id):
     song_dto = SongController.get_song(id)
     if not song_dto:
         return render(request, '404.html', status=404)
+    User = get_user_model()
+    artist = User.objects.filter(artist_name=song_dto.artist_name).first()
 
     song = {
         'id': song_dto.id,
         'title': song_dto.title,
         'artist_name': song_dto.artist_name,
+        'artist_id': artist.id if artist else None,
         'album_title': song_dto.album_title,
         'genre': song_dto.genre,
         'price': song_dto.price,
+        'artist': artist,
         'release_date': song_dto.release_date,
         'album_cover': song_dto.album_cover,
         'song_file': song_dto.song_file
@@ -225,34 +229,6 @@ def artist_panel(request):
 
 
 @login_required
-def artist_detail(request):
-    if request.user.role != 'artist':
-        return render(request, 'music/artist_not_found.html', {
-            'artist_name': request.user.username
-        })
-
-    songs = SongController.filter_songs_by_artist(request.user.artist_name)
-
-    if not songs:
-        return render(request, 'music/artist_not_found.html', {
-            'artist_name': request.user.artist_name
-        })
-
-    artist = {
-        'name': request.user.artist_name,
-        'age': 26,  # Puedes obtener esto de tu modelo de usuario
-        'nationality': getattr(request.user, 'country', 'Desconocido'),
-        'bio': getattr(request.user, 'bio', ''),
-        'awards': ['Electronic Music Award']  # Datos de ejemplo
-    }
-
-    return render(request, 'music/artist_detail.html', {
-        'artist': artist,
-        'albums': songs,
-    })
-
-
-@login_required
 def save_song(request):
     if request.method == 'POST':
         song_id = request.POST.get('song_id')
@@ -278,3 +254,41 @@ def save_song(request):
         except Exception as e:
             return JsonResponse({'success': False, 'message': str(e)})
     return JsonResponse({'success': False, 'message': 'Método no permitido'}, status=405)
+
+
+@login_required
+def artist_detail(request, artist_id=None):
+
+    User = get_user_model()
+
+    # Determinar si es el perfil propio o de otro artista
+    if artist_id:
+        artist = get_object_or_404(User, Q(id=artist_id) & Q(role='artist'))
+        is_own_profile = request.user.id == artist.id
+    else:
+        if request.user.role != 'artist':
+            return render(request, 'music/artist_not_found.html', {
+                'artist_name': request.user.username
+            })
+        artist = request.user
+        is_own_profile = True
+
+    # Obtener canciones del artista
+    songs = SongController.filter_songs_by_artist(artist.artist_name)
+
+    # Preparar contexto para el template
+    context = {
+        'artist': {
+            'object': artist,  # Objeto User completo
+            'name': artist.artist_name,
+            'avatar': artist.avatar,
+            'artist_type': artist.artist_type,
+            'genre': artist.genre,
+            'country': artist.country,
+            'bio': artist.bio,
+            'is_own_profile': is_own_profile
+        },
+        'songs': songs,
+    }
+
+    return render(request, 'music/artist_detail.html', context)
