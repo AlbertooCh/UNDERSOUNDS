@@ -13,6 +13,7 @@ class User(AbstractUser):
     credit_card_expiry = models.DateField(blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     avatar = models.ImageField(upload_to='avatars/', default='avatars/usuario.png')
+    backend = models.CharField(max_length=255, default='django.contrib.auth.backends.ModelBackend')
 
 
     # Artist-specific fields

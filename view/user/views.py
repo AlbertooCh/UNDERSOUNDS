@@ -239,3 +239,12 @@ def my_songs(request):
 def order_history(request):
     order = Order.objects.filter(user=request.user).order_by('-created_at')
     return render(request, 'historial_compras.html', {'orders': order})
+def oauth_callback(request):
+    # Ejemplo para Google OAuth
+    email = request.GET.get('email')  # Obtener email del callback
+    user = UserController.handle_oauth_user(request, email)
+    if user:
+        return redirect('inicio')
+    else:
+        messages.error(request, 'Error en autenticación OAuth')
+        return redirect('login')

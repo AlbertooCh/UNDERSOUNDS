@@ -3,13 +3,13 @@ from datetime import datetime
 
 
 class UserDTO:
-    def __init__(self, id=None, username=None, email=None, password=None, role='user', **kwargs):
+    def __init__(self, id=None, username=None, email=None, password=None, role='user',backend=None, **kwargs):
         self.id = id
         self.username = username
         self.email = email
         self.password = password
         self.role = role
-
+        self.backend = backend or 'django.contrib.auth.backends.ModelBackend'
 
         # Resto de campos...
         self.avatar = kwargs.get('avatar', 'avatars/usuario.png')
@@ -23,7 +23,7 @@ class UserDTO:
         self.created_at = kwargs.get('created_at', datetime.now())
 
     def to_dict(self):
-        return {
+        data ={
             'id': self.id,
             'username': self.username,
             'email': self.email,
@@ -34,4 +34,8 @@ class UserDTO:
             'artist_name': self.artist_name,
             'artist_type': self.artist_type,
             'role': self.role
+
         }
+        if hasattr(self, 'backend'):
+            data['backend'] = self.backend
+        return data

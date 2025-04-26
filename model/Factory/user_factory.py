@@ -1,5 +1,6 @@
 # model/Factory/user_factory.py
 from model.Dto.user_dto import UserDTO
+from django.contrib.auth.backends import ModelBackend
 
 class UserFactory:
     @staticmethod
@@ -15,7 +16,8 @@ class UserFactory:
             created_at=user_model.created_at,
             role=user_model.role,
             artist_name=user_model.artist_name,
-            artist_type=user_model.artist_type
+            artist_type=user_model.artist_type,
+            backend=getattr(user_model, 'backend', f'{ModelBackend.__module__}.{ModelBackend.__qualname__}')
         )
 
     @staticmethod
@@ -36,5 +38,16 @@ class UserFactory:
             password=password,
             role='artist',
             artist_name=artist_name,
+            **kwargs
+        )
+
+    @staticmethod
+    def create_for_oauth(email, **kwargs):
+        """Factory especial para usuarios OAuth"""
+        return UserDTO(
+            username=email.split('@')[0],  # Username basado en email
+            email=email,
+            password=None,  # No password para OAuth
+            backend='social_core.backends.google.GoogleOAuth2',
             **kwargs
         )

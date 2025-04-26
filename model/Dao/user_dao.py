@@ -2,6 +2,7 @@
 from django.contrib.auth.hashers import make_password, check_password
 from user.models import User
 from model.Dto.user_dto import UserDTO
+from django.contrib.auth.backends import ModelBackend
 
 
 class UserDAO:
@@ -20,6 +21,7 @@ class UserDAO:
             genre=user_dto.genre,
             country=user_dto.country
         )
+        user.backend = f'{ModelBackend.__module__}.{ModelBackend.__qualname__}'  # Asignar backend
         user.save()
         return user
 
@@ -46,13 +48,13 @@ class UserDAO:
 
     @staticmethod
     def authenticate(username_or_email, password):
-        # Try by username first
-        user = UserDAO.get_by_username(username_or_email)
-        if not user:
-            # Try by email
-            user = UserDAO.get_by_email(username_or_email)
+        user = UserDAO.get_by_username(username_or_email) or UserDAO.get_by_email(username_or_email)
 
         if user and check_password(password, user.password):
+            # Asegurar que el backend está asignado
+            if not hasattr(user, 'backend'):
+                user.backend = f'{ModelBackend.__module__}.{ModelBackend.__qualname__}'
+                user.save(update_fields=['backend'])
             return user
         return None
 
@@ -106,3 +108,27 @@ class UserDAO:
             return True
         except User.DoesNotExist:
             return False
+
+    @staticmethod
+    def get_or_create_oauth_user(user_dto):
+        try:
+            user = User.objects.get(email=user_dto.email)
+            created = False
+        except User.DoesNotExist:
+            user = User(
+                username=user_dto.username,
+                email=user_dto.email,
+                is_active=True,
+                backend=user_dto.backend
+            )
+            user.set_unusable_password()  # Usuarios OAuth no usan password
+            user.save()
+            created = True
+
+        # Actualizar campos si es necesario
+        for field in ['avatar', 'first_name', 'last_name']:
+            if hasattr(user_dto, field):
+                setattr(user, field, getattr(user_dto, field))
+        user.save()
+
+        return user, created
