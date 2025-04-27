@@ -8,6 +8,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.template.defaulttags import comment
 
 from controller.music_controller import SongController
+from controller.user_controller import UserController
 from model.Dto.music_dto import SongDTO
 from model.music.comments_model import Comments
 from model.music.forms import SongForm
@@ -257,38 +258,27 @@ def save_song(request):
 
 
 @login_required
-def artist_detail(request, artist_id=None):
-
+def artist_detail(request, artist_name=None):
     User = get_user_model()
 
     # Determinar si es el perfil propio o de otro artista
-    if artist_id:
-        artist = get_object_or_404(User, Q(id=artist_id) & Q(role='artist'))
+    if artist_name:
+        artist = get_object_or_404(User, Q(artist_name=artist_name) & Q(role='artist'))
+        artist = UserController.get_artist_with_songs(artist.id)
         is_own_profile = request.user.id == artist.id
     else:
         if request.user.role != 'artist':
             return render(request, 'music/artist_not_found.html', {
                 'artist_name': request.user.username
             })
-        artist = request.user
+        artist = UserController.get_artist_with_songs(request.user.id)
         is_own_profile = True
 
-    # Obtener canciones del artista
-    songs = SongController.filter_songs_by_artist(artist.artist_name)
-
-    # Preparar contexto para el template
+    # Preparar contexto simplificado
     context = {
-        'artist': {
-            'object': artist,  # Objeto User completo
-            'name': artist.artist_name,
-            'avatar': artist.avatar,
-            'artist_type': artist.artist_type,
-            'genre': artist.genre,
-            'country': artist.country,
-            'bio': artist.bio,
-            'is_own_profile': is_own_profile
-        },
-        'songs': songs,
+        'artist': artist,  # Pasamos el objeto completo directamente
+        'is_own_profile': is_own_profile,
+        'songs': artist.songs.all()  # Accedemos a las canciones desde el artista
     }
 
     return render(request, 'music/artist_detail.html', context)
@@ -303,4 +293,4 @@ def add_comment(request, song_id):
                 song_id=song,
                 comment=comment_text
             )
-    return redirect('music_detail_id', id=song_id)
+    return redirect(f"{reverse('music_detail', args=[song_id])}#comment-{new_comment.id}")

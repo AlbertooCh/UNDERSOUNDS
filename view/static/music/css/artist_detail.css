@@ -1,0 +1,97 @@
+ /* Estilos para la sección de obras */
+        .artist-works-section {
+            margin-top: 40px;
+        }
+
+        .works-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: flex-start;
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .work-item {
+            position: relative;
+            width: 200px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .work-cover {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .work-actions {
+            position: absolute;
+            bottom: -40px;
+            left: 0;
+            right: 0;
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            {% if not is_own_profile %}display: none;{% endif %}
+        }
+
+        .action-btn {
+            padding: 5px 10px;
+            background-color: #1DB954;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: background-color 0.3s;
+        }
+
+        .action-btn.delete {
+            background-color: #e74c3c;
+        }
+
+        .action-btn:hover {
+            background-color: #169c46;
+        }
+
+        .action-btn.delete:hover {
+            background-color: #c0392b;
+        }
+
+        .work-title {
+            margin-top: 10px;
+            font-weight: bold;
+        }
+
+        .work-meta {
+            font-size: 0.8rem;
+            color: #666;
+            margin-top: 5px;
+        }
+
+        .genre-badge {
+            display: inline-block;
+            padding: 3px 8px;
+            background-color: #1DB954;
+            color: white;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            margin-right: 5px;
+            margin-bottom: 5px;
+        }
+
+        .profile-header {
+            position: relative;
+        }
+
+        .edit-profile-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+        }
+     .artist-works-section {
+            margin-top: 40px;
+        }

@@ -1,84 +1,45 @@
+/**/
+    .footer {
+        width: 100%;
+        height: 120px;
+        background: linear-gradient(to top, #000, #333);
+        color: white;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        padding: 20px 5%;
+        position: relative;
+        z-index: 1000;
+    }
 
-html, body {
-    height: 100%;
-    margin: 0;
-    padding: 0;
-    display: flex;
-    flex-direction: column;
-}
+    .footer-logo img {
+        height: 50px;
+        margin-bottom: 10px;
+        transition: transform 0.3s ease;
+    }
 
+    .footer-logo img:hover {
+        transform: scale(1.05);
+    }
 
-.wrapper {
-    display: flex;
-    flex-direction: column;
-    min-height: 100vh;
-    width: 100%;
-}
+    .footer-nav-links {
+        list-style: none;
+        display: flex;
+        justify-content: center;
+        gap: 30px;
+        margin: 0;
+        padding: 0;
+    }
 
+    .footer-nav-links a {
+        text-decoration: none;
+        color: white;
+        font-weight: 500;
+        font-size: 1.1rem;
+        transition: color 0.3s ease;
+    }
 
-.main-content {
-    flex: 1;
-}
-
-/* Footer Styling */
-.footer {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
-    padding: 40px 20px;
-    background: linear-gradient(to top, black, grey 50%);
-    color: white;
-    font-family: 'Arial', sans-serif;
-    height: auto;
-    min-height: 150px;
-    width: 100%;
-    margin-top: auto;
-}
-
-/* Logo Container */
-.footer-logo {
-    display: flex;
-    justify-content: center;
-    margin-bottom: 15px;
-}
-
-/* Adjust logo size */
-.footer-logo img {
-    height: 60px;
-    width: auto;
-}
-
-/* Footer Links */
-.footer-links .footer-nav-links {
-    list-style: none;
-    display: flex;
-    gap: 30px;
-    margin: 0;
-    padding: 0;
-}
-
-/* Footer Link Items */
-.footer-links .footer-nav-links li {
-    margin: 0;
-}
-
-/* Footer Links */
-.footer-links .footer-nav-links a {
-    text-decoration: none;
-    color: white;
-    font-size: 16px;
-    font-weight: 500;
-    transition: color 0.3s ease;
-}
-
-/* Hover Effect */
-.footer-links .footer-nav-links a:hover {
-    color: #1db954;
-}
-
-/* Main tag to apply spacing and centering */
-main {
-    margin: 20px auto;
-    width: 100%;
-}
+    .footer-nav-links a:hover {
+        color: #1db954;
+    }

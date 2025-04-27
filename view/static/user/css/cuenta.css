@@ -1,0 +1,738 @@
+/* ------------------- Estilos de la configuración -------------- */
+.settings-container {
+        max-width: 800px;
+        margin: 40px auto;
+        padding: 40px;
+        background-color: #fff;
+        border-radius: 15px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    .settings-title {
+        font-size: 32px;
+        font-weight: bold;
+        text-align: center;
+        margin-bottom: 30px;
+        color: #000;
+        font-family: Arial, sans-serif;
+    }
+
+    .settings-section {
+        margin-bottom: 40px;
+        border-bottom: 1px solid #eee;
+        padding-bottom: 30px;
+    }
+
+    .settings-section:last-child {
+        border-bottom: none;
+    }
+
+
+    .form-group {
+        margin-bottom: 25px;
+    }
+
+    .form-group label {
+        display: block;
+        font-size: 16px;
+        color: #333;
+        margin-bottom: 8px;
+        font-weight: bold;
+        font-family: Arial, sans-serif;
+    }
+
+    .form-control {
+        width: 100%;
+        padding: 12px 15px;
+        font-size: 16px;
+        border: 2px solid #ddd;
+        border-radius: 10px;
+        transition: all 0.3s ease;
+        font-family: Arial, sans-serif;
+    }
+
+    .form-control:focus {
+        border-color: #000;
+        outline: none;
+        box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.1);
+    }
+
+    .btn {
+        background-color: #000;
+        color: white;
+        border: none;
+        padding: 12px 25px;
+        font-size: 16px;
+        font-weight: bold;
+        border-radius: 25px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        font-family: Arial, sans-serif;
+    }
+
+    .btn:hover {
+        background-color: #333;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    /* Estilos para el avatar */
+    .avatar-container {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+        margin-bottom: 20px;
+    }
+
+    .avatar-preview {
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 2px solid #ddd;
+        transition: all 0.3s ease;
+    }
+
+    .avatar-upload {
+        position: relative;
+        display: inline-block;
+    }
+
+    .file-input {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        opacity: 0;
+        cursor: pointer;
+    }
+
+    /* Estilos para switches */
+    .switch {
+        position: relative;
+        display: inline-block;
+        width: 50px;
+        height: 24px;
+    }
+
+    .switch input {
+        opacity: 0;
+        width: 0;
+        height: 0;
+    }
+
+    .slider {
+        position: absolute;
+        cursor: pointer;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: #ccc;
+        transition: .4s;
+        border-radius: 24px;
+    }
+
+    .slider:before {
+        position: absolute;
+        content: "";
+        height: 16px;
+        width: 16px;
+        left: 4px;
+        bottom: 4px;
+        background-color: white;
+        transition: .4s;
+        border-radius: 50%;
+    }
+
+    input:checked + .slider {
+        background-color: #000;
+    }
+
+    input:checked + .slider:before {
+        transform: translateX(26px);
+    }
+
+    /* Zona de peligro */
+    .danger-zone {
+        background-color: #fff9f9;
+        padding: 20px;
+        border-radius: 10px;
+        border: 1px solid #ffdddd;
+    }
+
+    .danger-btn {
+        background-color: #ff4d4d;
+    }
+
+    .danger-btn:hover {
+        background-color: #ff3333;
+    }
+
+    /* Estilos para datos de usuario */
+    .user-data {
+        padding: 12px 15px;
+        font-size: 16px;
+        background-color: #f8f9fa;
+        border-radius: 10px;
+        border: 1px solid #eee;
+    }
+
+    .user-data-email {
+        color: #007bff;
+    }
+/* Estilos para campos de contraseña */
+    .password-field-container {
+        position: relative;
+    }
+
+    .password-toggle {
+        position: absolute;
+        right: 10px;
+        top: 50%;
+        transform: translateY(-50%);
+        background: none;
+        border: none;
+        cursor: pointer;
+        padding: 5px;
+    }
+
+    .password-toggle img {
+        width: 20px;
+        height: 20px;
+    }
+
+    /* Estilo para mensajes de error */
+    .error-message {
+        color: #ff4d4d;
+        font-size: 14px;
+        margin-top: 5px;
+        display: none;
+    }
+
+    .error-border {
+        border-color: #ff4d4d !important;
+    }
+
+
+
+    /* -------------------- Estilos de Mis_obras -------------------- */
+.works-container {
+        max-width: 1200px;
+        margin: 40px auto;
+        padding: 40px;
+        background-color: #fff;
+        border-radius: 15px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    .works-title {
+        font-size: 32px;
+        font-weight: bold;
+        text-align: center;
+        margin-bottom: 30px;
+        color: #000;
+        font-family: Arial, sans-serif;
+    }
+
+    .album-card {
+        border: 1px solid #eee;
+        border-radius: 15px;
+        padding: 20px;
+        margin-bottom: 30px;
+        transition: all 0.3s ease;
+    }
+
+    .album-card:hover {
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    .album-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+    }
+
+    .album-title {
+        font-size: 24px;
+        font-weight: bold;
+        color: #333;
+    }
+
+    .album-actions {
+        display: flex;
+        gap: 10px;
+    }
+
+    .btn {
+        padding: 8px 16px;
+        border-radius: 20px;
+        font-weight: bold;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        font-family: Arial, sans-serif;
+        border: none;
+    }
+
+    .btn-edit {
+        background-color: #000;
+        color: white;
+    }
+
+    .btn-delete {
+        background-color: #ff4d4d;
+        color: white;
+    }
+
+    .btn-add {
+        background-color: #000;
+        color: white;
+        padding: 12px 24px;
+        font-size: 16px;
+        margin-bottom: 30px;
+    }
+
+    .btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    .tracks-list {
+        margin-top: 20px;
+    }
+
+    .track-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 12px 15px;
+        border-bottom: 1px solid #eee;
+    }
+
+    .track-info {
+        flex: 1;
+    }
+
+    .track-name {
+        font-weight: bold;
+        margin-bottom: 5px;
+    }
+
+    .track-price {
+        color: #000;
+        font-weight: bold;
+    }
+
+    .album-cover {
+        width: 120px;
+        height: 120px;
+        border-radius: 10px;
+        object-fit: cover;
+        margin-right: 20px;
+    }
+
+    .album-details {
+        display: flex;
+        margin-bottom: 20px;
+    }
+
+    .album-meta {
+        flex: 1;
+    }
+
+    .album-description {
+        color: #666;
+        margin-top: 10px;
+    }
+
+    .form-group {
+        margin-bottom: 20px;
+    }
+
+    .form-group label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: bold;
+    }
+
+    .form-control {
+        width: 90%;
+        padding: 10px 15px;
+        border: 2px solid #ddd;
+        border-radius: 10px;
+        font-family: Arial, sans-serif;
+    }
+
+    /* Modal de edición */
+   .modal {
+        display: none;
+        position: fixed;
+        z-index: 1000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0,0,0,0.5);
+        overflow: auto;
+    }
+
+    .modal-content {
+        background-color: #fff;
+        margin: 50px auto;
+        padding: 30px;
+        border-radius: 15px;
+        width: 90%;
+        max-width: 900px;
+        max-height: 80vh;
+        overflow-y: auto;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    }
+
+    /* Contenedor de canciones con scroll si es necesario */
+    .tracks-scroll-container {
+        max-height: 300px;
+        overflow-y: auto;
+        margin: 15px 0;
+        border: 1px solid #eee;
+        border-radius: 10px;
+        padding: 15px;
+    }
+
+    /* Barra de scroll personalizada */
+    .modal-content::-webkit-scrollbar,
+    .tracks-scroll-container::-webkit-scrollbar {
+        width: 8px;
+    }
+
+    .modal-content::-webkit-scrollbar-track,
+    .tracks-scroll-container::-webkit-scrollbar-track {
+        background: #f1f1f1;
+        border-radius: 10px;
+    }
+
+    .modal-content::-webkit-scrollbar-thumb,
+    .tracks-scroll-container::-webkit-scrollbar-thumb {
+        background: #888;
+        border-radius: 10px;
+    }
+
+    .modal-content::-webkit-scrollbar-thumb:hover,
+    .tracks-scroll-container::-webkit-scrollbar-thumb:hover {
+        background: #555;
+    }
+
+    /* ------------------- Estilos del perfil ------------------- */
+    .profile-container {
+        max-width: 800px;
+        margin: 40px auto;
+        padding: 40px;
+        background-color: #fff;
+        border-radius: 15px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        font-family: Arial, sans-serif;
+    }
+
+    .profile-title {
+        font-size: 32px;
+        font-weight: bold;
+        text-align: center;
+        margin-bottom: 30px;
+        color: #000;
+    }
+
+    .profile-header {
+        display: flex;
+        align-items: center;
+        margin-bottom: 30px;
+        gap: 30px;
+    }
+
+    .profile-avatar {
+        width: 120px;
+        height: 120px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 3px solid #000;
+    }
+
+    .profile-info {
+        flex: 1;
+    }
+
+    .profile-name {
+        font-size: 24px;
+        font-weight: bold;
+        margin-bottom: 5px;
+        color: #000;
+    }
+
+    .profile-username {
+        font-size: 16px;
+        color: #666;
+        margin-bottom: 10px;
+    }
+
+    .profile-bio {
+        color: #333;
+        line-height: 1.5;
+    }
+
+    .profile-stats {
+        display: flex;
+        gap: 20px;
+        margin-top: 15px;
+    }
+
+    .stat-item {
+        text-align: center;
+    }
+
+    .stat-number {
+        font-size: 20px;
+        font-weight: bold;
+        color: #000;
+    }
+
+    .stat-label {
+        font-size: 14px;
+        color: #666;
+    }
+
+    .section-title {
+        font-size: 20px;
+        font-weight: bold;
+        margin: 30px 0 15px;
+        color: #000;
+        border-bottom: 2px solid #eee;
+        padding-bottom: 8px;
+    }
+
+    .edit-btn {
+        background-color: #000;
+        color: white;
+        border: none;
+        padding: 8px 20px;
+        font-size: 14px;
+        font-weight: bold;
+        border-radius: 20px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        margin-top: 10px;
+        text-decoration: none;
+        display: inline-block;
+    }
+
+    .edit-btn:hover {
+        background-color: #333;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    .profile-section {
+        margin-bottom: 30px;
+    }
+
+    .info-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+    }
+
+    .info-item {
+        margin-bottom: 15px;
+    }
+
+    .info-label {
+        font-weight: bold;
+        color: #666;
+        margin-bottom: 5px;
+        font-size: 14px;
+    }
+
+    .info-value {
+        color: #000;
+        font-size: 16px;
+    }
+
+    .purchases-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        gap: 20px;
+    }
+
+    .purchase-card {
+        border: 1px solid #eee;
+        border-radius: 10px;
+        padding: 15px;
+        transition: all 0.3s ease;
+    }
+
+    .purchase-card:hover {
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .purchase-title {
+        font-weight: bold;
+        margin-bottom: 5px;
+    }
+
+    .purchase-date {
+        color: #666;
+        font-size: 14px;
+        margin-bottom: 10px;
+    }
+
+    .purchase-price {
+        font-weight: bold;
+        color: #000;
+    }
+
+    .config-link {
+        display: inline-block;
+        margin-top: 20px;
+        color: #000;
+        font-weight: bold;
+        text-decoration: none;
+        border-bottom: 1px solid #000;
+        padding-bottom: 2px;
+    }
+
+    .config-link:hover {
+        color: #333;
+        border-bottom-color: #333;
+    }
+    .songs-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 20px;
+    margin-top: 20px;
+}
+
+.song-card {
+    background: white;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    transition: transform 0.3s ease;
+}
+
+.song-card:hover {
+    transform: translateY(-5px);
+}
+
+.song-cover img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+}
+
+.song-info {
+    padding: 15px;
+}
+
+.song-title {
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.song-meta {
+    display: flex;
+    justify-content: space-between;
+    color: #666;
+    font-size: 0.9em;
+}
+
+.song-actions {
+    margin-top: 10px;
+    display: flex;
+    gap: 10px;
+}
+
+.action-btn {
+    padding: 5px 10px;
+    background: #1DB954;
+    color: white;
+    border-radius: 5px;
+    font-size: 0.8em;
+    text-decoration: none;
+}
+
+.action-btn.delete {
+    background: #ff3333;
+}
+
+
+   /* Estilos para la sección de obras */
+        .my-works-section {
+            margin-top: 40px;
+        }
+
+        .works-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .work-item {
+            position: relative;
+            width: 200px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .work-cover {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .work-actions {
+            position: absolute;
+            bottom: -40px;
+            left: 0;
+            right: 0;
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .action-btn {
+            padding: 5px 10px;
+            background-color: #1DB954;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: background-color 0.3s;
+        }
+
+        .action-btn.delete {
+            background-color: #e74c3c;
+        }
+
+        .action-btn:hover {
+            background-color: #169c46;
+        }
+
+        .action-btn.delete:hover {
+            background-color: #c0392b;
+        }
+
+        .work-title {
+            margin-top: 10px;
+            font-weight: bold;
+        }
+
+        .work-meta {
+            font-size: 0.8rem;
+            color: #666;
+            margin-top: 5px;
+        }

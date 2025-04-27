@@ -2,181 +2,129 @@
 {% load static %}
 {% block title %}{{ artist.artist_name }} - Undersounds{% endblock %}
 {% block extra_css %}
-    <link rel="stylesheet" href="{% static 'music/css/musicdetail.css' %}">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-    <style>
-        /* Estilos específicos para artist_detail */
-        .artist-header {
-            display: flex;
-            gap: 30px;
-            align-items: center;
-            margin-bottom: 30px;
-            padding-bottom: 20px;
-            border-bottom: 1px solid #e0e0e0;
-        }
-
-        .artist-avatar-lg {
-            width: 150px;
-            height: 150px;
-            border-radius: 50%;
-            object-fit: cover;
-            border: 5px solid #6c757d;
-        }
-
-        .artist-info {
-            flex: 1;
-        }
-
-        .artist-name {
-            font-size: 2rem;
-            margin: 0 0 10px 0;
-            color: #333;
-        }
-
-        .artist-meta {
-            display: flex;
-            gap: 20px;
-            margin-bottom: 15px;
-        }
-
-        .artist-meta-item {
-            display: flex;
-            align-items: center;
-            gap: 5px;
-            color: #666;
-        }
-
-        .artist-meta-item i {
-            color: #6c757d;
-        }
-
-        .artist-bio {
-            background: #f8f9fa;
-            padding: 20px;
-            border-radius: 8px;
-            margin: 20px 0;
-            line-height: 1.6;
-        }
-
-        .artist-songs {
-            margin-top: 30px;
-        }
-
-        .song-list {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-            gap: 20px;
-            margin-top: 20px;
-        }
-
-        .song-card {
-            background: #fff;
-            border-radius: 8px;
-            overflow: hidden;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-            transition: transform 0.3s ease;
-        }
-
-        .song-card:hover {
-            transform: translateY(-5px);
-        }
-
-        .song-cover {
-            width: 100%;
-            height: 150px;
-            object-fit: cover;
-        }
-
-        .song-info {
-            padding: 15px;
-        }
-
-        .song-title {
-            margin: 0 0 5px 0;
-            font-size: 1.1rem;
-            color: #333;
-        }
-
-        .song-meta {
-            font-size: 0.9rem;
-            color: #666;
-            margin: 5px 0;
-        }
-
-        .back-button {
-            display: inline-block;
-            margin-top: 20px;
-            color: #6c757d;
-            text-decoration: none;
-        }
-
-        .back-button:hover {
-            color: #333;
-        }
-    </style>
+    <link rel="stylesheet" href="{% static 'user/css/cuenta.css' %}">
+    <link rel="stylesheet" href="{% static 'music/css/artist_detail.css' %}">
 {% endblock %}
 
 {% block content %}
-<main class="container">
-    <a href="javascript:history.back()" class="back-button">
-        <i class="fas fa-arrow-left"></i> Volver
-    </a>
+<div class="profile-container">
+    <h1 class="profile-title">
+        {% if is_own_profile %}MI PERFIL{% else %}PERFIL DE ARTISTA{% endif %}
+    </h1>
 
-    <div class="artist-header">
-        <img src="{{ artist.avatar.url }}" alt="{{ artist.artist_name }}" class="artist-avatar-lg">
-        <div class="artist-info">
-            <h1 class="artist-name">{{ artist.artist_name }}</h1>
-            <div class="artist-meta">
-                {% if artist.artist_type %}
-                <span class="artist-meta-item">
-                    <i class="fas fa-guitar"></i> {{ artist.artist_type }}
-                </span>
-                {% endif %}
-                {% if artist.genre %}
-                <span class="artist-meta-item">
-                    <i class="fas fa-music"></i> {{ artist.genre }}
-                </span>
-                {% endif %}
-                {% if artist.country %}
-                <span class="artist-meta-item">
-                    <i class="fas fa-globe"></i> {{ artist.country }}
-                </span>
-                {% endif %}
+    <!-- Cabecera del perfil -->
+    <div class="profile-header">
+        {% if artist.avatar %}
+            <img src="{{ artist.avatar.url }}" alt="Avatar" class="profile-avatar">
+        {% else %}
+            <img src="{% static 'images/default-avatar.jpg' %}" alt="Avatar" class="profile-avatar">
+        {% endif %}
+
+        {% if is_own_profile %}
+            <a href="{% url 'configuracion' %}" class="edit-btn edit-profile-btn">Editar perfil</a>
+        {% endif %}
+
+        <div class="profile-info">
+            <div class="profile-name">
+                {{ artist.artist_name }}
             </div>
+            <div class="profile-username">@{{ artist.username }}</div>
+
             {% if artist.bio %}
-            <div class="artist-bio">
-                <h3><i class="fas fa-info-circle"></i> Biografía</h3>
-                <p>{{ artist.bio }}</p>
+            <div class="profile-bio">
+                {{ artist.bio|linebreaks }}
             </div>
             {% endif %}
+
+            {% if artist.genre %}
+            <div class="profile-genres">
+                {% for genre in artist.genre.split|slice:":5" %}
+                    <span class="genre-badge">{{ genre }}</span>
+                {% endfor %}
+            </div>
+            {% endif %}
+
+            <div class="profile-stats">
+                <div class="stat-item">
+                    <div class="stat-number">{{ artist.songs.count }}</div>
+                    <div class="stat-label">Canciones</div>
+                </div>
+            </div>
         </div>
     </div>
 
-    <div class="artist-songs">
-        <h2><i class="fas fa-compact-disc"></i> Discografía</h2>
+    <!-- Información del artista -->
+    <div class="profile-section">
+        <h2 class="section-title">Información del artista</h2>
+        <div class="info-grid">
+            <div class="info-item">
+                <div class="info-label">Tipo de artista</div>
+                <div class="info-value">{{ artist.artist_type|default:"No especificado" }}</div>
+            </div>
+            <div class="info-item">
+                <div class="info-label">Géneros</div>
+                <div class="info-value">{{ artist.genre|default:"No especificados" }}</div>
+            </div>
+            <div class="info-item">
+                <div class="info-label">País</div>
+                <div class="info-value">{{ artist.country|default:"No especificado" }}</div>
+            </div>
+            <div class="info-item">
+                <div class="info-label">Fecha de registro</div>
+                <div class="info-value">{{ artist.created_at|date:"d/m/Y" }}</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sección de canciones -->
+    <div class="artist-works-section">
+        <h2 class="section-title">Obras publicadas</h2>
+
         {% if artist.songs.all %}
-        <div class="song-list">
+        <div class="works-container">
             {% for song in artist.songs.all %}
-            <div class="song-card">
-                <a href="{% url 'music_detail' song.id %}">
+            <div class="work-item" onclick="window.location='{% url 'music_detail_id' song.id %}'" style="cursor: pointer;">
+                <div class="cuadrado" style="width: 200px; height: 200px; margin: 0;">
                     {% if song.album_cover %}
-                        <img src="{{ song.album_cover.url }}" alt="{{ song.title }}" class="song-cover">
+                        <img src="{{ song.album_cover.url }}" alt="{{ song.title }}" class="work-cover">
                     {% else %}
-                        <img src="{% static 'images/default_album.jpg' %}" alt="Portada no disponible" class="song-cover">
+                        <img src="{% static 'images/default_album.jpg' %}" alt="Portada predeterminada" class="work-cover">
                     {% endif %}
-                </a>
-                <div class="song-info">
-                    <h3 class="song-title">{{ song.title }}</h3>
-                    <p class="song-meta">{{ song.album_title }}</p>
-                    <p class="song-meta">{{ song.release_date|date:"Y" }}</p>
-                    <p class="song-meta">€{{ song.price }}</p>
+                </div>
+                <div class="work-title">{{ song.title }}</div>
+                <div class="work-meta">
+                    {{ song.release_date|date:"Y" }}
+                    {% if song.genre %}
+                        <span class="genre-badge">{{ song.genre }}</span>
+                    {% endif %}
+                </div>
+                <div class="work-actions">
+                    {% if is_own_profile %}
+                        <a href="{% url 'edit_song' song.id %}" class="action-btn">Editar</a>
+                        <a href="{% url 'delete_song' song.id %}" class="action-btn delete">Eliminar</a>
+                    {% endif %}
                 </div>
             </div>
             {% endfor %}
         </div>
         {% else %}
-        <p>Este artista aún no tiene canciones publicadas.</p>
+        <p style="text-align: center; margin-top: 20px;">
+            {% if is_own_profile %}
+                No has subido ninguna obra todavía.
+            {% else %}
+                Este artista no tiene obras publicadas todavía.
+            {% endif %}
+        </p>
+        {% if is_own_profile %}
+        <div style="text-align: center; margin-top: 20px;">
+            <a href="{% url 'add_song' %}" class="action-btn">Añadir nueva canción</a>
+        </div>
+        {% endif %}
         {% endif %}
     </div>
-</main>
+</div>
+
+{% if is_own_profile %}
+<script src="{% static 'music/js/artist.js' %}"></script>
+{% endif %}
 {% endblock %}

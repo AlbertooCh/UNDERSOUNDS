@@ -2,92 +2,9 @@
 {% load static %}
 {% block title %}Novedades - Undersounds{% endblock %}
 {% block styles %}
-    <link rel="stylesheet" href="{% static 'music/css/catalogo.css' %}">
 {% endblock %}
 {% block content %}
-   <style>
-    body {
-        font-family: Arial, sans-serif;
-        margin: 20px;
-    }
-    .title {
-        font-size: 40px;
-        font-weight: bold;
-        text-align: center;
-    }
-    .cuadrado {
-        flex: 1;
-        padding-top: 100%;
-        width: 17vw;
-        height: 17vw;
-        display: inline-block;
-        margin: 10px;
-        padding: 10px;
-        box-sizing: border-box;
-        text-align: center;
-        position: relative;
-        overflow: hidden;
-        transition: background-color 0.8s ease, filter 0.8s ease;
-        animation: fadeIn 0.5s ease forwards;
-        opacity: 0;
-        border-radius: 15px;
-    }
-    .cuadrado:hover {
-        background-color: rgba(0, 0, 0, 0.5);
-    }
-    .cuadrado:hover .album-title {
-        display: block;
-    }
-    .album-title {
-        margin-top: 5px;
-        font-size: 1em;
-        color: #ffffff;
-        display: none;
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        z-index: 2;
-    }
-    .catalog {
-        flex: 2;
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: space-between;
-        padding: 0 50px;
-        max-width: 1200px;
-        margin: 0 auto;
-        background: lightgray;
-        border-radius: 15px;
-    }
-    .cuadrado img {
-        width: 100%;
-        height: 100%;
-        object-fit: fill;
-        transition: filter 0.6s ease, background-color 0.6s ease;
-        z-index: 1;
-        border-radius: 15px;
-    }
-    .cuadrado:hover img {
-        filter: brightness(20%);
-    }
-    .subtitle {
-        text-align: center;
-        font-size: 1.2em;
-        color: #666;
-        margin-bottom: 30px;
-    }
-    @keyframes fadeIn {
-        from {
-            opacity: 0;
-            transform: scale(0.9);
-        }
-        to {
-            opacity: 1;
-            transform: scale(1);
-        }
-    }
-</style>
+ <link rel="stylesheet" href="{% static 'css/novedades.css' %}">
 
 <h2 class="title">NOVEDADES</h2>
 <p class="subtitle">Descubre las últimas canciones añadidas a nuestro catálogo</p>
