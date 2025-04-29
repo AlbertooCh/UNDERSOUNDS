@@ -56,7 +56,12 @@ def register_artist(request):
                 username=form.cleaned_data['username'],
                 email=form.cleaned_data['email'],
                 password=form.cleaned_data['password1'],
-                artist_name=form.cleaned_data['artist_name']
+                artist_name=form.cleaned_data['artist_name'],
+                artist_type=form.cleaned_data['artist_type'],
+                bio=form.cleaned_data['bio'],
+                genre=form.cleaned_data['genre'],
+                country=form.cleaned_data['country']
+
             )
             if user:
                 messages.success(request, '¡Registro como artista exitoso!')
@@ -248,3 +253,4 @@ def oauth_callback(request):
     else:
         messages.error(request, 'Error en autenticación OAuth')
         return redirect('login')
+

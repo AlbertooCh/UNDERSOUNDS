@@ -1,6 +1,6 @@
 # views.py
 from datetime import date
-
+from django.db.models import Q
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
@@ -8,6 +8,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.template.defaulttags import comment
 
 from controller.music_controller import SongController
+from controller.user_controller import UserController
 from model.Dto.music_dto import SongDTO
 from model.music.comments_model import Comments
 from model.music.forms import SongForm
@@ -25,14 +26,18 @@ def music_detail(request, id):
     song_dto = SongController.get_song(id)
     if not song_dto:
         return render(request, '404.html', status=404)
+    User = get_user_model()
+    artist = User.objects.filter(artist_name=song_dto.artist_name).first()
 
     song = {
         'id': song_dto.id,
         'title': song_dto.title,
         'artist_name': song_dto.artist_name,
+        'artist_id': artist.id if artist else None,
         'album_title': song_dto.album_title,
         'genre': song_dto.genre,
         'price': song_dto.price,
+        'artist': artist,
         'release_date': song_dto.release_date,
         'album_cover': song_dto.album_cover,
         'song_file': song_dto.song_file
@@ -225,34 +230,6 @@ def artist_panel(request):
 
 
 @login_required
-def artist_detail(request):
-    if request.user.role != 'artist':
-        return render(request, 'music/artist_not_found.html', {
-            'artist_name': request.user.username
-        })
-
-    songs = SongController.filter_songs_by_artist(request.user.artist_name)
-
-    if not songs:
-        return render(request, 'music/artist_not_found.html', {
-            'artist_name': request.user.artist_name
-        })
-
-    artist = {
-        'name': request.user.artist_name,
-        'age': 26,  # Puedes obtener esto de tu modelo de usuario
-        'nationality': getattr(request.user, 'country', 'Desconocido'),
-        'bio': getattr(request.user, 'bio', ''),
-        'awards': ['Electronic Music Award']  # Datos de ejemplo
-    }
-
-    return render(request, 'music/artist_detail.html', {
-        'artist': artist,
-        'albums': songs,
-    })
-
-
-@login_required
 def save_song(request):
     if request.method == 'POST':
         song_id = request.POST.get('song_id')
@@ -278,3 +255,42 @@ def save_song(request):
         except Exception as e:
             return JsonResponse({'success': False, 'message': str(e)})
     return JsonResponse({'success': False, 'message': 'Método no permitido'}, status=405)
+
+
+@login_required
+def artist_detail(request, artist_name=None):
+    User = get_user_model()
+
+    # Determinar si es el perfil propio o de otro artista
+    if artist_name:
+        artist = get_object_or_404(User, Q(artist_name=artist_name) & Q(role='artist'))
+        artist = UserController.get_artist_with_songs(artist.id)
+        is_own_profile = request.user.id == artist.id
+    else:
+        if request.user.role != 'artist':
+            return render(request, 'music/artist_not_found.html', {
+                'artist_name': request.user.username
+            })
+        artist = UserController.get_artist_with_songs(request.user.id)
+        is_own_profile = True
+
+    # Preparar contexto simplificado
+    context = {
+        'artist': artist,  # Pasamos el objeto completo directamente
+        'is_own_profile': is_own_profile,
+        'songs': artist.songs.all()  # Accedemos a las canciones desde el artista
+    }
+
+    return render(request, 'music/artist_detail.html', context)
+
+def add_comment(request, song_id):
+    if request.method == 'POST':
+        comment_text = request.POST.get('comment_text')
+        if comment_text:
+            song = Song.objects.get(pk=song_id)
+            Comments.objects.create(
+                user_id=request.user,
+                song_id=song,
+                comment=comment_text
+            )
+    return redirect(f"{reverse('music_detail', args=[song_id])}#comment-{new_comment.id}")

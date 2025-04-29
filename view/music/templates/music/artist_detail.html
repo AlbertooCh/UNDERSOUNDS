@@ -1,0 +1,130 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}{{ artist.artist_name }} - Undersounds{% endblock %}
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'user/css/cuenta.css' %}">
+    <link rel="stylesheet" href="{% static 'music/css/artist_detail.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="profile-container">
+    <h1 class="profile-title">
+        {% if is_own_profile %}MI PERFIL{% else %}PERFIL DE ARTISTA{% endif %}
+    </h1>
+
+    <!-- Cabecera del perfil -->
+    <div class="profile-header">
+        {% if artist.avatar %}
+            <img src="{{ artist.avatar.url }}" alt="Avatar" class="profile-avatar">
+        {% else %}
+            <img src="{% static 'images/default-avatar.jpg' %}" alt="Avatar" class="profile-avatar">
+        {% endif %}
+
+        {% if is_own_profile %}
+            <a href="{% url 'configuracion' %}" class="edit-btn edit-profile-btn">Editar perfil</a>
+        {% endif %}
+
+        <div class="profile-info">
+            <div class="profile-name">
+                {{ artist.artist_name }}
+            </div>
+            <div class="profile-username">@{{ artist.username }}</div>
+
+            {% if artist.bio %}
+            <div class="profile-bio">
+                {{ artist.bio|linebreaks }}
+            </div>
+            {% endif %}
+
+            {% if artist.genre %}
+            <div class="profile-genres">
+                {% for genre in artist.genre.split|slice:":5" %}
+                    <span class="genre-badge">{{ genre }}</span>
+                {% endfor %}
+            </div>
+            {% endif %}
+
+            <div class="profile-stats">
+                <div class="stat-item">
+                    <div class="stat-number">{{ artist.songs.count }}</div>
+                    <div class="stat-label">Canciones</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Información del artista -->
+    <div class="profile-section">
+        <h2 class="section-title">Información del artista</h2>
+        <div class="info-grid">
+            <div class="info-item">
+                <div class="info-label">Tipo de artista</div>
+                <div class="info-value">{{ artist.artist_type|default:"No especificado" }}</div>
+            </div>
+            <div class="info-item">
+                <div class="info-label">Géneros</div>
+                <div class="info-value">{{ artist.genre|default:"No especificados" }}</div>
+            </div>
+            <div class="info-item">
+                <div class="info-label">País</div>
+                <div class="info-value">{{ artist.country|default:"No especificado" }}</div>
+            </div>
+            <div class="info-item">
+                <div class="info-label">Fecha de registro</div>
+                <div class="info-value">{{ artist.created_at|date:"d/m/Y" }}</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sección de canciones -->
+    <div class="artist-works-section">
+        <h2 class="section-title">Obras publicadas</h2>
+
+        {% if artist.songs.all %}
+        <div class="works-container">
+            {% for song in artist.songs.all %}
+            <div class="work-item" onclick="window.location='{% url 'music_detail_id' song.id %}'" style="cursor: pointer;">
+                <div class="cuadrado" style="width: 200px; height: 200px; margin: 0;">
+                    {% if song.album_cover %}
+                        <img src="{{ song.album_cover.url }}" alt="{{ song.title }}" class="work-cover">
+                    {% else %}
+                        <img src="{% static 'images/default_album.jpg' %}" alt="Portada predeterminada" class="work-cover">
+                    {% endif %}
+                </div>
+                <div class="work-title">{{ song.title }}</div>
+                <div class="work-meta">
+                    {{ song.release_date|date:"Y" }}
+                    {% if song.genre %}
+                        <span class="genre-badge">{{ song.genre }}</span>
+                    {% endif %}
+                </div>
+                <div class="work-actions">
+                    {% if is_own_profile %}
+                        <a href="{% url 'edit_song' song.id %}" class="action-btn">Editar</a>
+                        <a href="{% url 'delete_song' song.id %}" class="action-btn delete">Eliminar</a>
+                    {% endif %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <p style="text-align: center; margin-top: 20px;">
+            {% if is_own_profile %}
+                No has subido ninguna obra todavía.
+            {% else %}
+                Este artista no tiene obras publicadas todavía.
+            {% endif %}
+        </p>
+        {% if is_own_profile %}
+        <div style="text-align: center; margin-top: 20px;">
+            <a href="{% url 'add_song' %}" class="action-btn">Añadir nueva canción</a>
+        </div>
+        {% endif %}
+        {% endif %}
+    </div>
+</div>
+
+{% if is_own_profile %}
+<script src="{% static 'music/js/artist.js' %}"></script>
+{% endif %}
+{% endblock %}

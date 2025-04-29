@@ -1,0 +1,44 @@
+ .confirm-wrapper {
+        max-width: 500px;
+        margin: 60px auto;
+        padding: 30px;
+        background-color: #fff0f0;
+        border: 2px solid #ffaaaa;
+        border-radius: 15px;
+        text-align: center;
+        font-family: Arial, sans-serif;
+    }
+
+    .confirm-wrapper h2 {
+        color: #cc0000;
+        margin-bottom: 20px;
+    }
+
+    .confirm-wrapper button,
+    .confirm-wrapper a {
+        display: inline-block;
+        margin: 10px;
+        padding: 10px 20px;
+        font-size: 16px;
+        border-radius: 10px;
+        text-decoration: none;
+    }
+
+    .confirm-wrapper button {
+        background-color: #cc0000;
+        color: white;
+        border: none;
+    }
+
+    .confirm-wrapper button:hover {
+        background-color: #a50000;
+    }
+
+    .confirm-wrapper a {
+        background-color: #ccc;
+        color: black;
+    }
+
+    .confirm-wrapper a:hover {
+        background-color: #aaa;
+    }

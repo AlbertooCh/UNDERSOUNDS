@@ -9,7 +9,7 @@ urlpatterns = [
     path('music_detail/<int:id>/', views.music_detail, name='music_detail_id'),
 
     # Artista
-    path('artist_detail/', login_required(views.artist_detail), name='artist_detail'),
+    path('artist_detail/<str:artist_name>/', views.artist_detail, name='artist_detail'),
     path('artist/panel/', login_required(views.artist_panel), name='artist_panel'),
 
     # CRUD de canciones (protegidas por login y rol de artista)
@@ -18,4 +18,6 @@ urlpatterns = [
     path('music/delete/<int:song_id>/', login_required(views.delete_song), name='delete_song'),
     path('save-song/', views.save_song, name='save_song'),
     path('delete-song/', views.delete_song, name='delete_song'),
+    path('add_comment/<int:song_id>/', login_required(views.add_comment), name='add_comment'),
+
 ]
