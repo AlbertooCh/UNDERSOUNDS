@@ -12,7 +12,7 @@ class UserDTO:
         self.backend = backend or 'django.contrib.auth.backends.ModelBackend'
 
         # Resto de campos...
-        self.avatar = kwargs.get('avatar', 'avatars/usuario.png')
+        self.avatar = kwargs.get('avatar', 'avatar/usuario.png')
         self.credit_card_number = kwargs.get('credit_card_number', None)
         self.credit_card_expiry = kwargs.get('credit_card_expiry', None)
         self.bio = kwargs.get('bio', '')

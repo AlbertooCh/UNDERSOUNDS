@@ -1,4 +1,6 @@
 # music/controllers/song_controller.py
+from django.utils.datetime_safe import date, datetime
+
 from model.Dao.music_dao import SongDAO
 from model.Dto.music_dto import SongDTO
 from django.core.files.uploadedfile import InMemoryUploadedFile
@@ -144,6 +146,18 @@ class SongController:
         return songs
 
     @staticmethod
-    def get_songs_by_artist(artist_id):
-        songs = Song.objects.filter(artist_id=artist_id)  # Asegúrate de usar el campo correcto
-        return [SongFactory.create_from_model(song) for song in songs]
+    def filter_songs_by_date_range(fecha_ant, fecha_post, query):
+        """
+        Filtra canciones por rango de fechas y opcionalmente por un término de búsqueda.
+        """
+        try:
+            if fecha_ant:
+                datetime.strptime(fecha_ant, '%Y-%m-%d').date()  # Potential Error
+            if fecha_post:
+                datetime.strptime(fecha_post, '%Y-%m-%d').date()  # Potential Error
+
+            songs = SongDAO.filter_by_date_range(fecha_ant, fecha_post, query)
+            return songs
+        except ValueError:
+            # Handle invalid date formats gracefully
+            return []  # Or raise an exception, log, etc.

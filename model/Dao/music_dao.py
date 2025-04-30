@@ -1,4 +1,6 @@
 # music/dao/song_dao.py
+from datetime import datetime
+
 from django.core.exceptions import ObjectDoesNotExist
 from model.music.music_models import Song
 from django.db import models
@@ -99,3 +101,33 @@ class SongDAO:
             models.Q(genre__icontains=query)
         )
         return [SongFactory.create_dto_from_model(song) for song in songs]
+
+    @staticmethod
+    def filter_by_date_range(fecha_ant=None, fecha_post=None, query=None):
+        """
+        Filtra canciones por rango de fechas y opcionalmente por texto (título, artista, etc.).
+        """
+        songs = Song.objects.all()  # Start with all songs
+
+        if fecha_ant:
+            fecha_ant = datetime.strptime(fecha_ant, '%Y-%m-%d').date()
+            print(f"Filtering: release_date >= {fecha_ant}")  # Debugging
+            songs = songs.filter(release_date__gte=fecha_ant)
+        if fecha_post:
+            fecha_post = datetime.strptime(fecha_post, '%Y-%m-%d').date()
+            print(f"Filtering: release_date <= {fecha_post}")  # Debugging
+            songs = songs.filter(release_date__lte=fecha_post)
+
+        if query:
+            print(f"Filtering: query = {query}")  # Debugging
+            songs = songs.filter(
+                models.Q(title__icontains=query) |
+                models.Q(artist_name__icontains=query) |
+                models.Q(album_title__icontains=query) |
+                models.Q(genre__icontains=query)
+            )
+
+        print(f"Query: {songs.query}")  # Very important debugging!
+        results = [SongFactory.create_dto_from_model(song) for song in songs]
+        print(f"Results count: {len(results)}")  # Debugging
+        return results

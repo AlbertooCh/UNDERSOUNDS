@@ -25,8 +25,6 @@
                 <a href="#" onclick="toggleDropdown(event)" class="icon-link">
                     {% if request.user.avatar %}
                         <img src="{{ request.user.avatar.url }}" alt="Perfil" class="nav-icon">
-                    {% else %}
-                        <img src="{% static 'images/perfil.png' %}" alt="Perfil" class="nav-icon">
                     {% endif %}
                 </a>
                 <div class="dropdown-content">

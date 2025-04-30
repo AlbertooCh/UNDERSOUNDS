@@ -77,34 +77,34 @@
 
 <div class="comments-section">
     <div class="new-comment">
-        <h2><strong>Comentarios</strong></h2>
-        <div class="comment">
+        <div class="introducir-comment">
             {% if request.user.id %}
                 <img src="{{ request.user.avatar.url }}" alt="Perfil" class="nav-icon">
                 {{ request.user.username }}
                 <p>
                 <form action="{% url 'add_comment' song.id %}" method="POST" style="display: flex; align-items: center;">
     {% csrf_token %}
-    <input type="text" name="comment_text" id="Comment-text" placeholder="Escribe aquí tu comentario" class="comment-text" style="flex: 1; margin-right: 10px;">
-    <button type="submit" class="add-to-cart-btn">Publicar</button>
-    </form>
-
+                    <input type="text" name="comment_text" id="Comment-text" placeholder="Escribe aquí tu comentario" class="introducir-comment-text" style="flex: 1; margin-right: 10px;">
+                    <button type="submit" class="add-to-cart-btn">Publicar</button>
+                </form>
                 </p>
             {% else %}
                 <p>Inicia sesión o crea una cuenta para dejar un comentario</p>
             {% endif %}
         </div>
-        <div class="comments-list">
-            {% for comment in comments %}
-<div class="comment">
-<img src="{{ comment.user_id.avatar.url }}" alt="Perfil" class="user" style="width: 40px; height: 40px; object-fit: cover; border-radius: 50%;">
-    <strong>{{ comment.user_id.username }}</strong>
-    <p>{{ comment.comment }}</p>
-</div>
+    </div>
+            <div class="comments-list">
+            <h2><strong>Comentarios</strong></h2>
+                {% for comment in comments %}
+                    <div class="comment">
+                        <img src="{{ comment.user_id.avatar.url }}" alt="Perfil" class="user"
+                             style="width: 40px; height: 40px; object-fit: cover; border-radius: 50%;">
+                        <strong>{{ comment.user_id.username }}</strong>
+                        <p>{{ comment.comment }}</p>
+                    </div>
 
             {% endfor %}
         </div>
-    </div>
    <div class="author-info">
     <h2><strong>Artista</strong></h2>
     {% if song.artist %}
@@ -120,9 +120,17 @@
                 <p class="artist-bio">{{ song.artist.bio }}</p>
             {% endif %}
 
-            <a href="{% url 'artist_detail' artist_name=song.artist_name %}" class="add-to-cart-btn" style="text-decoration: none; margin-top: 10px;">
+            <a href="{% url 'artist_detail' artist_name=song.artist_name %}" class="btn" style="text-decoration: none; margin-top: 10px;">
                 <i class="fas fa-user"></i> Ver perfil completo
             </a>
+              <p>MAS DEL ARTISTA</p>
+        {% for song in artist_songs %}
+            <div>
+            <a class="btn" style="text-decoration: none; margin-top: 10px;" onclick="location.href='{% url 'music_detail_id' song.id %}'">
+        <i class="fas fa-user"></i> {{ song.title}}
+      </a>
+            </div>
+    {% endfor %}
         </div>
     </div>
     {% else %}
@@ -156,77 +164,21 @@
             }
         }
 
-
-        function goBack() {
-            window.history.back();
-        }
-
-        function showInfoBox() {
-            document.getElementById('overlay').classList.add('active');
-        }
-
-        function hideInfoBox() {
-            document.getElementById('overlay').classList.remove('active');
-        }
-
-        function showInfoBoxD() {
-            document.getElementById('overlayDesc').classList.add('active');
-        }
-
-        function hideInfoBoxD() {
-            document.getElementById('overlayDesc').classList.remove('active');
-        }
-
-        function showInfoBoxC() {
-            document.getElementById('overlayComent').classList.add('active');
-        }
-
-        function hideInfoBoxC() {
-            document.getElementById('overlayComent').classList.remove('active');
-        }
-
-
-        function addComment() {
-            const newComment = document.getElementById('new-comment').value;
-            const userName = "Nuevo Usuario";
-            const profilePhoto = "../static/Photos/Users/default.jpg";
-            const rating = document.querySelector('.star-rating input:checked') ? document.querySelector('.star-rating input:checked').value : 0;
-
-            if (newComment) {
-                const comment = {
-                    user_name: userName,
-                    profile_photo: profilePhoto,
-                    comment: newComment,
-                    rating: rating
-                };
-
-                item.comments.unshift(comment);
-                mostrarComentarios();
-
-                document.getElementById('new-comment').value = '';
-                document.querySelector('.star-rating input:checked').checked = false;
-            } else {
-                alert('Por favor, añade un comentario.');
-            }
-            hideInfoBoxC();
-        }
-
-  // Cierra el mensaje automáticamente después de 1 segundo
         window.addEventListener('DOMContentLoaded', () => {
-    const msg = document.getElementById('flash-message');
-    if (msg) {
-      // Espera 1 segundo y luego hace fade out en 0.5s
-      setTimeout(() => {
-        msg.style.transition = 'opacity 0.5s ease';
-        msg.style.opacity = '0';
+     const msg = document.getElementById('flash-message');
+     if (msg) {
+       // Espera 1 segundo y luego hace fade out en 0.5s
+       setTimeout(() => {
+         msg.style.transition = 'opacity 0.5s ease';
+         msg.style.opacity = '0';
 
-        // Espera 0.5s más para eliminarlo del DOM
-        setTimeout(() => {
-          msg.remove();
-        }, 500);
-      }, 1000); // 1 segundo visible
-    }
-  });// 1000 milisegundos = 1 segundo
+         // Espera 0.5s más para eliminarlo del DOM
+         setTimeout(() => {
+           msg.remove();
+         }, 500);
+       }, 1000); // 1 segundo visible
+     }
+   });
 
 
     </script>

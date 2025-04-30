@@ -13,11 +13,13 @@
     <button id="lupa" class="filter-btn">Buscar</button>
     <button class="filter-btn" onclick="filterRecent()">Recientes</button>
 </div>
-    <div class="search-bar" id="search-bar">
-    <input type="text" id="nombreCancion" placeholder="Buscar por canción, artista, álbum, género ..." class="nombreCancion">
-    <input type="date" id="fechaAnt">
-    <input type="date" id="fechaPost">
-    <button class="add-to-cart-btn" id="buscarBtn" onclick="searchSongs() ">Buscar</button>
+<div class="search-bar" id="search-bar">
+    <form id="searchForm">
+        <input type="text" id="nombreCancion" placeholder="Buscar por canción, artista, álbum, género ..." class="nombreCancion">
+        <input type="date" id="fechaAnt" >
+        <input type="date" id="fechaPost">
+        <button class="add-to-cart-btn" id="buscarBtn" type="button" onclick="searchSongs()">Buscar</button>
+    </form>
 </div>
 
 <!-- Catálogo dinámico -->
@@ -46,18 +48,45 @@
     });
 
     // Función para búsqueda
-    function searchSongs() {
-        const query = document.getElementById('nombreCancion').value;
-        if(query){
-            window.location.href = `{% url 'catalogo' %}?q=${encodeURIComponent(query)}`;
-        }
-        window.location.href = `{% url 'catalogo' %}?q=${encodeURIComponent(query)}`;
+function searchSongs() {
+    const query = document.getElementById('nombreCancion').value;
+    const fechaAnt = document.getElementById('fechaAnt').value;
+    const fechaPost = document.getElementById('fechaPost').value;
+    let url = `{% url 'catalogo' %}?`;
 
+    let hasParams = false; // Flag to track if we added any parameters
+
+    if (query) {
+        url += `q=${encodeURIComponent(query)}&`;
+        hasParams = true;
+    }
+    if (fechaAnt) {
+        url += `fechaAnt=${fechaAnt.toISOString().split('T')[0]}&`;
+        hasParams = true;
+    }
+    if (fechaPost) {
+        url += `fechaPost=${fechaPost.toISOString().split('T')[0]}&`;
+        hasParams = true;
     }
 
-    function filterByDate(date){
+    if (hasParams) {
+        url = url.slice(0, -1); // Remove the trailing '&'
+    }
+
+    window.location.href = url;
+}
+
+    // Filtros
+    function filterByDate(){
+        const date = document.getElementById('fechaAnt').value;
         window.location.href = `{% url 'catalogo' %}?recent=${date.toISOString().split('T')[0]}`;
     }
+
+    // Trigger searchSongs() on Enter keypress
+    document.getElementById('searchForm').addEventListener('submit', function(event) {
+        event.preventDefault(); // Prevent the default form submission
+        searchSongs();
+    });
 
     // Filtros
     function filterByGenre(genre) {

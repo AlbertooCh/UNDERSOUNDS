@@ -6,6 +6,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.shortcuts import render, redirect, get_object_or_404
 from django.template.defaulttags import comment
+from django.urls import reverse
 
 from controller.music_controller import SongController
 from controller.user_controller import UserController
@@ -43,7 +44,9 @@ def music_detail(request, id):
         'song_file': song_dto.song_file
     }
 
-    comments_ratings = Comments.objects.filter(song_id=id)
+    comments_ratings = list(Comments.objects.filter(song_id=id))
+    comments_ratings.reverse()
+    artist_songs = UserController.get_artist_with_songs(artist.id)
 
     order_data = None
     in_cart = False
@@ -76,7 +79,8 @@ def music_detail(request, id):
         'song': song,
         'comments': comments_ratings,
         'in_cart': in_cart,
-        'in_order': in_order
+        'in_order': in_order,
+        'artist_songs': artist_songs.songs.all()
     }
     return render(request, 'music/music_detail.html', context)
 
@@ -85,18 +89,23 @@ def catalogo(request):
     genre = request.GET.get('genre')
     artist = request.GET.get('artist')
     recent = request.GET.get('recent')
+    fecha_ant = request.GET.get('fechaAnt')
+    fecha_post = request.GET.get('fechaPost')
 
-    if query:
-        songs = SongController.search_songs(query)
+    songs = SongController.get_all_songs()
+
+    if query or fecha_ant or fecha_post:
+        songs = SongController.filter_songs_by_date_range(fecha_ant, fecha_post, query)
     elif genre:
         songs = SongController.filter_songs_by_genre(genre)
     elif artist:
         songs = SongController.filter_songs_by_artist(artist)
     elif recent:
-        recent = date.fromisoformat(recent)
-        songs = SongController.get_songs_recent(recent)
-    else:
-        songs = SongController.get_all_songs()
+        try:
+            recent_date = date.fromisoformat(recent)
+            songs = SongController.get_songs_recent(recent_date)
+        except ValueError:
+            pass
 
     return render(request, "catalogo.html", {"songs": songs})
 
@@ -284,13 +293,30 @@ def artist_detail(request, artist_name=None):
     return render(request, 'music/artist_detail.html', context)
 
 def add_comment(request, song_id):
+    new_comment = None  # Initialize new_comment
     if request.method == 'POST':
         comment_text = request.POST.get('comment_text')
         if comment_text:
-            song = Song.objects.get(pk=song_id)
-            Comments.objects.create(
-                user_id=request.user,
-                song_id=song,
-                comment=comment_text
-            )
-    return redirect(f"{reverse('music_detail', args=[song_id])}#comment-{new_comment.id}")
+            try:
+                song = Song.objects.get(pk=song_id)
+                new_comment = Comments.objects.create(
+                    user_id=request.user,
+                    song_id=song,
+                    comment=comment_text
+                )
+            except Song.DoesNotExist:
+                # Handle the case where the song does not exist.
+                return redirect(reverse('home'))  # Or some other appropriate error handling
+    # new_comment will be None if it wasn't created
+    if new_comment:
+        return redirect(f"{reverse('music_detail_id', args=[song_id])}#comment-{new_comment.id}")
+    else:
+        return redirect(reverse('music_detail_id', args=[song_id]) + '?error=empty_comment')
+
+def delete_comment(request, comment_id):
+    if request.method == 'POST':
+        comentario = Comments.get_object_or_404(Comments, id=comment_id)
+        comentario.delete()
+        return redirect(reverse('music_detail_id', args=[comment.song_id.id]))
+    else:
+        return redirect(reverse('music_detail_id', args=[comment.song_id.id]))
