@@ -115,11 +115,9 @@ class SongDAO:
             songs = songs.filter(release_date__gte=fecha_ant)
         if fecha_post:
             fecha_post = datetime.strptime(fecha_post, '%Y-%m-%d').date()
-            print(f"Filtering: release_date <= {fecha_post}")  # Debugging
             songs = songs.filter(release_date__lte=fecha_post)
 
         if query:
-            print(f"Filtering: query = {query}")  # Debugging
             songs = songs.filter(
                 models.Q(title__icontains=query) |
                 models.Q(artist_name__icontains=query) |

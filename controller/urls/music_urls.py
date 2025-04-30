@@ -19,5 +19,6 @@ urlpatterns = [
     path('save-song/', views.save_song, name='save_song'),
     path('delete-song/', views.delete_song, name='delete_song'),
     path('add_comment/<int:song_id>/', login_required(views.add_comment), name='add_comment'),
+    path('delete_comment/<int:comment_id>/', login_required(views.delete_comment), name='delete_comment'),
 
 ]

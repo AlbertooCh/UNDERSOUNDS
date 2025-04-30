@@ -95,7 +95,7 @@ def catalogo(request):
     songs = SongController.get_all_songs()
 
     if query or fecha_ant or fecha_post:
-        songs = SongController.filter_songs_by_date_range(fecha_ant, fecha_post, query)
+        songs = SongController.search_songs(fecha_ant, fecha_post, query)
     elif genre:
         songs = SongController.filter_songs_by_genre(genre)
     elif artist:
@@ -306,7 +306,7 @@ def add_comment(request, song_id):
                 )
             except Song.DoesNotExist:
                 # Handle the case where the song does not exist.
-                return redirect(reverse('home'))  # Or some other appropriate error handling
+                return redirect(f"{reverse('music_detail_id', args=[song_id])}")  # Or some other appropriate error handling
     # new_comment will be None if it wasn't created
     if new_comment:
         return redirect(f"{reverse('music_detail_id', args=[song_id])}#comment-{new_comment.id}")
@@ -315,8 +315,17 @@ def add_comment(request, song_id):
 
 def delete_comment(request, comment_id):
     if request.method == 'POST':
-        comentario = Comments.get_object_or_404(Comments, id=comment_id)
-        comentario.delete()
-        return redirect(reverse('music_detail_id', args=[comment.song_id.id]))
+        try:
+            comment = get_object_or_404(Comments, pk=comment_id)
+            song_id = comment.song_id_id  # Obtén el ID de la canción antes de eliminar
+            comment.delete()
+            # Redirige a la página de detalles de la canción
+            return redirect(reverse('delete_comment', args=[song_id]))  # Reemplaza 'song_detail' con el nombre real de tu URL
+        except Comments.DoesNotExist:
+            # Manejar el caso en que el comentario no existe (opcional)
+            # Podrías redirigir con un mensaje de error si lo deseas
+            return redirect(reverse('delete_comment', args=[song_id])+ '?error=comment_not_found') # Redirige a la página principal con un error
     else:
-        return redirect(reverse('music_detail_id', args=[comment.song_id.id]))
+        # Si alguien intenta acceder a esta URL con GET, redirige a donde sea apropiado
+        return redirect(reverse('add_comment', args=[comment_id]))
+

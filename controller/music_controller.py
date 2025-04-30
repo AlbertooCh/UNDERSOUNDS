@@ -70,11 +70,11 @@ class SongController:
         return SongDAO.delete(song_id)
 
     @staticmethod
-    def search_songs(query):
+    def search_songs(query, fecha_ant, fecha_post, ordered=True):
         """
         Busca canciones por término
         """
-        return SongDAO.search(query)
+        return SongDAO.filter_by_date_range(fecha_ant, fecha_post, query)
 
     @staticmethod
     def filter_songs_by_genre(genre):
