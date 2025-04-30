@@ -348,3 +348,4 @@ def delete_comment(request, comment_id):
         # Si alguien intenta acceder a esta URL con GET, redirige a la página de detalles de la canción
         comment = get_object_or_404(Comments, pk=comment_id)
         return redirect(reverse('music_detail_id', args=[comment.song_id_id]))
+
