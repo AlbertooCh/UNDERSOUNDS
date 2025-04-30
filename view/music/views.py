@@ -35,13 +35,13 @@ def music_detail(request, id):
         'title': song_dto.title,
         'artist_name': song_dto.artist_name,
         'artist_id': artist.id if artist else None,
-        'album_title': song_dto.album_title,
         'genre': song_dto.genre,
         'price': song_dto.price,
         'artist': artist,
         'release_date': song_dto.release_date,
-        'album_cover': song_dto.album_cover,
-        'song_file': song_dto.song_file
+        'song_cover': song_dto.song_cover,
+        'song_file': song_dto.song_file,
+        'album_id': song_dto.album_id,
     }
 
     comments_ratings = list(Comments.objects.filter(song_id=id))
@@ -80,7 +80,8 @@ def music_detail(request, id):
         'comments': comments_ratings,
         'in_cart': in_cart,
         'in_order': in_order,
-        'artist_songs': artist_songs.songs.all()
+        'artist_songs': artist_songs.songs.all(),
+        'album_id': song_dto.album_id
     }
     return render(request, 'music/music_detail.html', context)
 
@@ -117,6 +118,7 @@ def add_song(request):
         messages.error(request, "Solo los artistas pueden añadir canciones")
         return redirect('home')
 
+
     if request.method == 'POST':
         form = SongForm(request.POST, request.FILES)
         if form.is_valid():
@@ -124,13 +126,12 @@ def add_song(request):
             song_dto = SongDTO(
                 title=form.cleaned_data['title'],
                 artist_name=request.user.artist_name,
-                album_title=form.cleaned_data['album_title'],
                 genre=form.cleaned_data['genre'],
                 price=float(form.cleaned_data['price']),
                 release_date=form.cleaned_data['release_date'],
-                album_cover=request.FILES.get('album_cover'),
+                song_cover=request.FILES.get('song_cover'),
                 song_file=request.FILES.get('song_file'),
-                artist_id=request.user.id  # Nuevo campo para asociación
+                artist_id=request.user.id  # Nuevo campo para asociación,
             )
 
             # Usamos el controller para crear la canción
@@ -171,12 +172,12 @@ def edit_song(request, song_id):
                 id=song_id,
                 title=form.cleaned_data['title'],
                 artist_name=request.user.artist_name,
-                album_title=form.cleaned_data['album_title'],
                 genre=form.cleaned_data['genre'],
                 price=form.cleaned_data['price'],
                 release_date=form.cleaned_data['release_date'],
-                album_cover=request.FILES.get('album_cover') or song_dto.album_cover,
-                song_file=request.FILES.get('song_file') or song_dto.song_file
+                song_cover=request.FILES.get('song_cover') or song_dto.song_cover,
+                song_file=request.FILES.get('song_file') or song_dto.song_file,
+                album_id=song_dto.album_id,
             )
 
             # Usamos el controller para actualizar
@@ -191,7 +192,6 @@ def edit_song(request, song_id):
         # Prellenamos el formulario con los datos actuales
         initial_data = {
             'title': song_dto.title,
-            'album_title': song_dto.album_title,
             'genre': song_dto.genre,
             'price': song_dto.price,
             'release_date': song_dto.release_date,
@@ -253,6 +253,7 @@ def save_song(request):
             song.duration = request.POST.get('duration')
             song.genre = request.POST.get('genre')
             song.description = request.POST.get('description')
+            song.release_date = request.POST.get('release_date')
 
             if 'cover_image' in request.FILES:
                 song.cover_image = request.FILES['cover_image']

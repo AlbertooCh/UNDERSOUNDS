@@ -103,7 +103,7 @@ class SongController:
         return SongDAO.update(song_dto)
 
     @staticmethod
-    def upload_album_cover(song_id, cover_image: InMemoryUploadedFile):
+    def upload_song_cover(song_id, cover_image: InMemoryUploadedFile):
         """
         Maneja la subida de la portada del álbum
         """
@@ -111,7 +111,7 @@ class SongController:
         if not song_dto:
             return False
 
-        song_dto.album_cover = cover_image
+        song_dto.song_cover = cover_image
         return SongDAO.update(song_dto)
 
     @staticmethod

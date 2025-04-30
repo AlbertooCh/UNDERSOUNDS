@@ -9,9 +9,9 @@ class SongDTO:
         self.title = title
         self.artist_name = artist_name
         self.artist_id = artist_id  # Nuevo campo
-        self.album_title = kwargs.get('album_title', '')
         self.genre = kwargs.get('genre', '')
         self.price = kwargs.get('price', 0.0)
         self.release_date = kwargs.get('release_date')
-        self.album_cover = kwargs.get('album_cover')
+        self.song_cover = kwargs.get('song_cover')
         self.song_file = kwargs.get('song_file')
+        self.album_id = kwargs.get('album_id')
