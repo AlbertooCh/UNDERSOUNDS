@@ -22,7 +22,6 @@ def music_detail_redirect(request):
     song_id = request.GET.get("id")
     return redirect("music_detail_id", id=song_id)
 
-
 def music_detail(request, id):
     song_dto = SongController.get_song(id)
     if not song_dto:
@@ -74,13 +73,21 @@ def music_detail(request, id):
                 in_order = True
                 break;
 
+    ratings = []
+    for comment in comments_ratings:  # Asegúrate de que el rating sea un número
+        ratings.append(comment.rating)
 
+    if ratings:
+        valoracion= sum(ratings) / len(ratings)
+    else:
+        valoracion = 0
     context = {
         'song': song,
         'comments': comments_ratings,
         'in_cart': in_cart,
         'in_order': in_order,
-        'artist_songs': artist_songs.songs.all()
+        'artist_songs': artist_songs.songs.all(),
+        'valoracion': valoracion
     }
     return render(request, 'music/music_detail.html', context)
 
@@ -296,13 +303,15 @@ def add_comment(request, song_id):
     new_comment = None  # Initialize new_comment
     if request.method == 'POST':
         comment_text = request.POST.get('comment_text')
+        comment_rating = request.POST.get('rating')
         if comment_text:
             try:
                 song = Song.objects.get(pk=song_id)
                 new_comment = Comments.objects.create(
                     user_id=request.user,
                     song_id=song,
-                    comment=comment_text
+                    comment=comment_text,
+                    rating=comment_rating
                 )
             except Song.DoesNotExist:
                 # Handle the case where the song does not exist.
@@ -313,19 +322,29 @@ def add_comment(request, song_id):
     else:
         return redirect(reverse('music_detail_id', args=[song_id]) + '?error=empty_comment')
 
+@login_required
 def delete_comment(request, comment_id):
     if request.method == 'POST':
         try:
             comment = get_object_or_404(Comments, pk=comment_id)
-            song_id = comment.song_id_id  # Obtén el ID de la canción antes de eliminar
-            comment.delete()
-            # Redirige a la página de detalles de la canción
-            return redirect(reverse('delete_comment', args=[song_id]))  # Reemplaza 'song_detail' con el nombre real de tu URL
-        except Comments.DoesNotExist:
-            # Manejar el caso en que el comentario no existe (opcional)
-            # Podrías redirigir con un mensaje de error si lo deseas
-            return redirect(reverse('delete_comment', args=[song_id])+ '?error=comment_not_found') # Redirige a la página principal con un error
-    else:
-        # Si alguien intenta acceder a esta URL con GET, redirige a donde sea apropiado
-        return redirect(reverse('add_comment', args=[comment_id]))
+            song_id = request.POST.get('song_id')
 
+            # Verifica si el usuario actual es el autor del comentario (opcional, pero recomendado por seguridad)
+            if comment.user_id_id == request.user.id:
+                comment.delete()
+                return redirect(reverse('music_detail_id', args=[song_id]))
+            else:
+                # Si el usuario no es el autor, puedes redirigir con un mensaje de error
+                return redirect(reverse('music_detail_id', args=[song_id]) + '?error=unauthorized')
+        except Comments.DoesNotExist:
+            # Intenta obtener el song_id del POST (debería estar presente gracias al campo oculto)
+            song_id = request.POST.get('song_id')
+            if song_id:
+                return redirect(reverse('music_detail_id', args=[song_id]) + '?error=comment_not_found')
+            else:
+                # Si no se puede obtener el song_id, redirige a una página segura
+                return redirect('inicio')  # Reemplaza 'inicio' con el nombre de tu URL de inicio
+    else:
+        # Si alguien intenta acceder a esta URL con GET, redirige a la página de detalles de la canción
+        comment = get_object_or_404(Comments, pk=comment_id)
+        return redirect(reverse('music_detail_id', args=[comment.song_id_id]))

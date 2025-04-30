@@ -17,6 +17,7 @@
             <p><strong>Género:</strong> {{ song.genre }}</p>
             <p><strong>Fecha de lanzamiento:</strong> {{ song.release_date }}</p>
             <p><strong>Precio:</strong> €{{ song.price }}</p>
+            <p><strong>Valoracion Media:</strong> {{ valoracion|floatformat:2 }} / 5</p>
             <form action="{% url 'add_to_cart' song.id %}" method="post" class="add-to-cart-form">
     {% csrf_token %}
     <input type="hidden" name="quantity" value="1">
@@ -45,13 +46,21 @@
     </div>
 </main>
 
-{% if song.song_file %}
-  <audio controls>
-    <source src="{{ song.song_file.url }}" type="audio/mpeg">
-    Tu navegador no soporta audio.
-  </audio>
-
-{% endif %}
+{% if request.user.is_authenticated %}
+    {% if song.song_file %}
+      <audio controls>
+        <source src="{{ song.song_file.url }}" type="audio/mpeg">
+        Tu navegador no soporta audio.
+      </audio>
+        {% if in_order %}
+      <p><a href="{{ song.song_file.url }}" download="{{ song.title }}.mp3" class="download-button">Descargar Canción</a></p>
+    {% else %}
+      <p>Debes comprar la canción para poder descargarla.</p>
+      {% endif %}
+    {% endif %}
+  {% else %}
+    <p><a href="{% url 'login' %}?next={{ request.path }}">Inicia sesión</a> para escuchar o descargar la cancion la canción.</p>
+  {% endif %}
 
 {% if messages %}
   <div id="flash-message" style="
@@ -72,7 +81,23 @@
     {% endfor %}
   </div>
 {% endif %}
+<script>
+       window.addEventListener('DOMContentLoaded', () => {
+     const msg = document.getElementById('flash-message');
+     if (msg) {
+       // Espera 1 segundo y luego hace fade out en 0.5s
+       setTimeout(() => {
+         msg.style.transition = 'opacity 0.5s ease';
+         msg.style.opacity = '0';
 
+         // Espera 0.5s más para eliminarlo del DOM
+         setTimeout(() => {
+           msg.remove();
+         }, 500);
+       }, 1000); // 1 segundo visible
+     }
+   });
+</script>
 
 
 <div class="comments-section">
@@ -85,6 +110,8 @@
                 <form action="{% url 'add_comment' song.id %}" method="POST" style="display: flex; align-items: center;">
     {% csrf_token %}
                     <input type="text" name="comment_text" id="Comment-text" placeholder="Escribe aquí tu comentario" class="introducir-comment-text" style="flex: 1; margin-right: 10px;">
+
+                    <input type="number" name="rating" placeholder="Valoracion">
                     <button type="submit" class="add-to-cart-btn">Publicar</button>
                 </form>
                 </p>
@@ -100,10 +127,15 @@
                         <img src="{{ comment.user_id.avatar.url }}" alt="Perfil" class="user"
                              style="width: 40px; height: 40px; object-fit: cover; border-radius: 50%;">
                         <strong>{{ comment.user_id.username }}</strong>
+                    <div>
+                        <p>{{ comment.rating }}</p>
+                    </div>
                         <p>{{ comment.comment }}</p>
+
                         {% if request.user == comment.user_id %}
                     <form method="post" action="{% url 'delete_comment' comment.id %}">
     {% csrf_token %}
+                            <input type="hidden" name="song_id" value="{{ comment.song_id_id }}">
     <button type="submit">Eliminar</button>
                         {% endif %}
 </form>
@@ -160,7 +192,6 @@
         });
 
         function togglePlay() {
-            showInfoBox();
             if (audio.paused) {
                 audio.play();
                 playButton.textContent = 'Pause';
@@ -169,22 +200,6 @@
                 playButton.textContent = 'Play';
             }
         }
-
-        window.addEventListener('DOMContentLoaded', () => {
-     const msg = document.getElementById('flash-message');
-     if (msg) {
-       // Espera 1 segundo y luego hace fade out en 0.5s
-       setTimeout(() => {
-         msg.style.transition = 'opacity 0.5s ease';
-         msg.style.opacity = '0';
-
-         // Espera 0.5s más para eliminarlo del DOM
-         setTimeout(() => {
-           msg.remove();
-         }, 500);
-       }, 1000); // 1 segundo visible
-     }
-   });
 
 
     </script>
