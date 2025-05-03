@@ -1,10 +1,10 @@
 # music/dao/song_dao.py
 from datetime import datetime
-
+from django.core.files import File
 from django.core.exceptions import ObjectDoesNotExist
-from model.music.music_models import Song
+from model.music.music_models import Song, Album
 from django.db import models
-from model.Dto.music_dto import SongDTO
+from model.Dto.music_dto import SongDTO, AlbumDTO
 from model.Factory.music_factory import SongFactory
 
 class SongDAO:
@@ -14,12 +14,12 @@ class SongDAO:
             song = Song(
                 title=song_dto.title,
                 artist_name=song_dto.artist_name,
-                album_title=song_dto.album_title,
                 genre=song_dto.genre,
                 price=song_dto.price,
                 release_date=song_dto.release_date,
-                album_cover=song_dto.album_cover,
-                song_file=song_dto.song_file
+                song_cover=song_dto.song_cover,
+                song_file=song_dto.song_file,
+                album_id=song_dto.album_id
             )
             song.save()
             # Devuelve el DTO con el ID actualizado
@@ -50,12 +50,11 @@ class SongDAO:
             song = Song.objects.get(id=song_dto.id)
             song.title = song_dto.title
             song.artist_name = song_dto.artist_name
-            song.album_title = song_dto.album_title
             song.genre = song_dto.genre
             song.price = song_dto.price
             song.release_date = song_dto.release_date
-            if song_dto.album_cover:
-                song.album_cover = song_dto.album_cover
+            if song_dto.song_cover:
+                song.song_cover = song_dto.song_cover
             if song_dto.song_file:
                 song.song_file = song_dto.song_file
             song.save()
@@ -85,11 +84,6 @@ class SongDAO:
         songs = Song.objects.filter(genre__iexact=genre)
         return [SongFactory.create_dto_from_model(song) for song in songs]
 
-    @staticmethod
-    def filter_by_album(album_title):
-        """Filtra canciones por álbum"""
-        songs = Song.objects.filter(album_title__icontains=album_title)
-        return [SongFactory.create_dto_from_model(song) for song in songs]
 
     @staticmethod
     def search(query):
@@ -97,7 +91,6 @@ class SongDAO:
         songs = Song.objects.filter(
             models.Q(title__icontains=query) |
             models.Q(artist_name__icontains=query) |
-            models.Q(album_title__icontains=query) |
             models.Q(genre__icontains=query)
         )
         return [SongFactory.create_dto_from_model(song) for song in songs]
@@ -129,3 +122,81 @@ class SongDAO:
         results = [SongFactory.create_dto_from_model(song) for song in songs]
         print(f"Results count: {len(results)}")  # Debugging
         return results
+
+class AlbumDAO:
+    @staticmethod
+    def create_album(album_dto: AlbumDTO):
+        album = Album(
+            title=album_dto.title,
+            artist_name=album_dto.artist_name,
+            genre=album_dto.genre,
+            release_date=album_dto.release_date,
+            price=album_dto.price,
+        )
+
+        if album_dto.album_cover:
+            album.album_cover.save(
+                album_dto.album_cover.name,
+                File(album_dto.album_cover),
+                save=True
+            )
+
+        album.save()
+        return album
+
+    @staticmethod
+    def get_album_by_id(album_id):
+        try:
+            return Album.objects.get(pk=album_id)
+        except Album.DoesNotExist:
+            return None
+
+    @staticmethod
+    def update_album(album_id, album_dto: AlbumDTO):
+        album = AlbumDAO.get_album_by_id(album_id)
+        if album:
+            album.title = album_dto.title
+            album.artist_name = album_dto.artist_name
+            album.genre = album_dto.genre
+            album.release_date = album_dto.release_date
+            album.price = album_dto.price
+
+            if album_dto.album_cover:
+                album.album_cover.save(
+                    album_dto.album_cover.name,
+                    File(album_dto.album_cover),
+                    save=True
+                )
+
+            album.save()
+            return album
+        return None
+
+    @staticmethod
+    def delete_album(album_id):
+        album = AlbumDAO.get_album_by_id(album_id)
+        if album:
+            album.delete()
+            return True
+        return False
+
+    @staticmethod
+    def add_song_to_album(album_id, song_id):
+        try:
+            album = Album.objects.get(pk=album_id)
+            song = Song.objects.get(pk=song_id)
+            song.album = album
+            song.save()
+            return True
+        except (Album.DoesNotExist, Song.DoesNotExist):
+            return False
+
+    @staticmethod
+    def remove_song_from_album(song_id, album_id):
+        try:
+            song = Song.objects.get(pk=song_id, album_id=album_id)
+            song.album = None
+            song.save()
+            return True
+        except Song.DoesNotExist:
+            return False

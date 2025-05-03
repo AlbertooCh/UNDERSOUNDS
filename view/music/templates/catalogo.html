@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% load static %}
 {% block title %}Catálogo - Undersounds{% endblock %}
-{%  block extra_css %}
+{% block extra_css %}
     <link rel="stylesheet" href="{% static 'music/css/catalogo.css' %}">
 {% endblock %}
 {% block content %}
@@ -10,13 +10,16 @@
 
 <div class="filter-buttons">
     <button class="filter-btn active" onclick="showAll()">Mostrar todo</button>
-    <button id="lupa" class="filter-btn">Buscar</button>
+    <button class="filter-btn" onclick="filterByType('songs')">Canciones</button>
+    <button class="filter-btn" onclick="filterByType('albums')">Álbumes</button>
     <button class="filter-btn" onclick="filterRecent()">Recientes</button>
+    <button id="lupa" class="filter-btn">Buscar</button>
 </div>
+
 <div class="search-bar" id="search-bar">
     <form id="searchForm">
         <input type="text" id="nombreCancion" placeholder="Buscar por canción, artista, álbum, género ..." class="nombreCancion">
-        <input type="date" id="fechaAnt" >
+        <input type="date" id="fechaAnt">
         <input type="date" id="fechaPost">
         <button class="add-to-cart-btn" id="buscarBtn" type="button" onclick="searchSongs()">Buscar</button>
     </form>
@@ -24,20 +27,43 @@
 
 <!-- Catálogo dinámico -->
 <div id="contenedor" class="catalog">
-    {% for song in songs %}
-        <div class="album">
-            <div class="cuadrado" style="animation-delay: {{ forloop.counter0|add:"0.1"|floatformat:1 }}s;" onclick="location.href='{% url 'music_detail_id' song.id %}'">
-                <p class="album-title">{{ song.title }}</p>
-                {% if song.album_cover %}
-                    <img src="{{ song.album_cover.url }}" alt="{{ song.title }}">
-                {% else %}
-                    <img src="{% static 'images/default_album.jpg' %}" alt="Sin portada">
-                {% endif %}
+    {% if show_type == 'songs' or not show_type %}
+        {% for song in songs %}
+            <div class="album">
+                <div class="cuadrado" style="animation-delay: {{ forloop.counter0|add:"0.1"|floatformat:1 }}s;" onclick="location.href='{% url 'music_detail_id' song.id %}'">
+                    <p class="album-title">{{ song.title }}</p>
+                    {% if song.song_cover %}
+                        <img src="{{ song.song_cover.url }}" alt="{{ song.title }}">
+                    {% else %}
+                        <img src="{% static 'images/default_album.jpg' %}" alt="Sin portada">
+                    {% endif %}
+                    <p class="album-artist">{{ song.artist_name }}</p>
+                    <p class="album-price">{{ song.price }}€</p>
+                </div>
             </div>
-        </div>
-    {% empty %}
-        <p style="text-align: center;">No hay canciones disponibles.</p>
-    {% endfor %}
+        {% empty %}
+            <p style="text-align: center; grid-column: 1 / -1;">No hay canciones disponibles.</p>
+        {% endfor %}
+    {% endif %}
+
+    {% if show_type == 'albums' or not show_type %}
+        {% for album in albums %}
+            <div class="album">
+                <div class="cuadrado" style="animation-delay: {{ forloop.counter0|add:"0.1"|floatformat:1 }}s;" onclick="location.href='{% url 'album_detail' album.id %}'">
+                    <p class="album-title">{{ album.title }}</p>
+                    {% if album.album_cover %}
+                        <img src="{{ album.album_cover.url }}" alt="{{ album.title }}">
+                    {% else %}
+                        <img src="{% static 'images/default_album.jpg' %}" alt="Sin portada">
+                    {% endif %}
+                    <p class="album-artist">{{ album.artist_name }}</p>
+                    <p class="album-meta">{{ album.songs.count }} canciones</p>
+                </div>
+            </div>
+        {% empty %}
+            <p style="text-align: center; grid-column: 1 / -1;">No hay álbumes disponibles.</p>
+        {% endfor %}
+    {% endif %}
 </div>
 
 <script>
@@ -48,67 +74,106 @@
     });
 
     // Función para búsqueda
-function searchSongs() {
-    const query = document.getElementById('nombreCancion').value;
-    const fechaAnt = document.getElementById('fechaAnt').value;
-    const fechaPost = document.getElementById('fechaPost').value;
-    let url = `{% url 'catalogo' %}?`;
+    function searchSongs() {
+        const query = document.getElementById('nombreCancion').value;
+        const fechaAnt = document.getElementById('fechaAnt').value;
+        const fechaPost = document.getElementById('fechaPost').value;
+        let url = `{% url 'catalogo' %}?`;
 
-    let hasParams = false; // Flag to track if we added any parameters
+        let hasParams = false;
 
-    if (query) {
-        url += `q=${encodeURIComponent(query)}&`;
-        hasParams = true;
-    }
-    if (fechaAnt) {
-        url += `fechaAnt=${fechaAnt.toISOString().split('T')[0]}&`;
-        hasParams = true;
-    }
-    if (fechaPost) {
-        url += `fechaPost=${fechaPost.toISOString().split('T')[0]}&`;
-        hasParams = true;
-    }
+        if (query) {
+            url += `q=${encodeURIComponent(query)}&`;
+            hasParams = true;
+        }
+        if (fechaAnt) {
+            url += `fechaAnt=${fechaAnt}&`;
+            hasParams = true;
+        }
+        if (fechaPost) {
+            url += `fechaPost=${fechaPost}&`;
+            hasParams = true;
+        }
 
-    if (hasParams) {
-        url = url.slice(0, -1); // Remove the trailing '&'
-    }
+        // Mantener el tipo de filtro actual
+        const urlParams = new URLSearchParams(window.location.search);
+        const type = urlParams.get('type');
+        if (type) {
+            url += `type=${type}&`;
+            hasParams = true;
+        }
 
-    window.location.href = url;
-}
+        if (hasParams) {
+            url = url.slice(0, -1); // Remove the trailing '&'
+        }
 
-    // Filtros
-    function filterByDate(){
-        const date = document.getElementById('fechaAnt').value;
-        window.location.href = `{% url 'catalogo' %}?recent=${date.toISOString().split('T')[0]}`;
-    }
-
-    // Trigger searchSongs() on Enter keypress
-    document.getElementById('searchForm').addEventListener('submit', function(event) {
-        event.preventDefault(); // Prevent the default form submission
-        searchSongs();
-    });
-
-    // Filtros
-    function filterByGenre(genre) {
-        window.location.href = `{% url 'catalogo' %}?genre=${encodeURIComponent(genre)}`;
+        window.location.href = url;
     }
 
+    // Filtro por tipo (canciones/álbumes)
+    function filterByType(type) {
+        // Actualizar botones activos
+        document.querySelectorAll('.filter-btn').forEach(btn => {
+            btn.classList.remove('active');
+        });
+        event.target.classList.add('active');
+
+        window.location.href = `{% url 'catalogo' %}?type=${type}`;
+    }
+
+    // Mostrar todo
+    function showAll() {
+        document.querySelectorAll('.filter-btn').forEach(btn => {
+            btn.classList.remove('active');
+        });
+        event.target.classList.add('active');
+        window.location.href = `{% url 'catalogo' %}`;
+    }
+
+    // Filtro recientes
     function filterRecent() {
         // Últimos 30 días
         const date = new Date();
         date.setDate(date.getDate() - 30);
-        window.location.href = `{% url 'catalogo' %}?recent=${date.toISOString().split('T')[0]}`;
+
+        // Mantener el tipo de filtro actual
+        const urlParams = new URLSearchParams(window.location.search);
+        const type = urlParams.get('type');
+        let url = `{% url 'catalogo' %}?recent=${date.toISOString().split('T')[0]}`;
+
+        if (type) {
+            url += `&type=${type}`;
+        }
+
+        window.location.href = url;
     }
+
+    // Trigger searchSongs() on Enter keypress
+    document.getElementById('searchForm').addEventListener('submit', function(event) {
+        event.preventDefault();
+        searchSongs();
+    });
 
     // Manejo inicial de parámetros de URL
     document.addEventListener('DOMContentLoaded', function() {
         const urlParams = new URLSearchParams(window.location.search);
         const searchQuery = urlParams.get('q');
+        const type = urlParams.get('type');
+
         if (searchQuery) {
             document.getElementById('nombreCancion').value = searchQuery;
         }
-    });
 
+        // Marcar botón activo según el tipo
+        if (type) {
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.textContent.toLowerCase() === (type === 'songs' ? 'canciones' : 'álbumes')) {
+                    btn.classList.add('active');
+                }
+            });
+        }
+    });
 </script>
 
 {% endblock %}

@@ -1,56 +1,221 @@
 {% extends 'base.html' %}
 {% load static %}
-{% block title %}Panel de Artista - Undersounds{% endblock %}
+
+{% block title %}Panel de Artista - {{ user.artist_name }} | Undersounds{% endblock %}
+
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'music/css/artist_panel.css' %}">
+<style>
+    .dashboard-container {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 2rem;
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 1rem;
+    }
+    .panel-card {
+        background: white;
+        border-radius: 10px;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        overflow: hidden;
+    }
+    .card-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1.25rem;
+        border-bottom: 1px solid #f0f0f0;
+    }
+    .card-title {
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: #333;
+    }
+    .btn-add {
+        background-color: grey;
+        color: white;
+        padding: 0.5rem 1rem;
+        border-radius: 5px;
+        font-weight: 500;
+        transition: background-color 0.2s;
+    }
+    .btn-add:hover {
+        background-color: #21867a;
+    }
+    .table-responsive {
+        overflow-x: auto;
+    }
+    .music-table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+    .music-table th {
+        background-color: #f8f9fa;
+        padding: 1rem;
+        text-align: left;
+        font-weight: 600;
+    }
+    .music-table td {
+        padding: 1rem;
+        border-bottom: 1px solid #f0f0f0;
+        vertical-align: middle;
+    }
+    .cover-img {
+        width: 50px;
+        height: 50px;
+        object-fit: cover;
+        border-radius: 4px;
+    }
+    .album-cover {
+        width: 70px;
+        height: 70px;
+    }
+    .action-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        margin: 0 3px;
+        transition: all 0.2s;
+    }
+    .action-btn:hover {
+        background-color: #f0f0f0;
+    }
+    .edit-btn { color: #2a9d8f; }
+    .delete-btn { color: #e63946; }
+    .view-btn { color: #457b9d; }
+    .empty-state {
+        padding: 2rem;
+        text-align: center;
+        color: #666;
+    }
+    .badge {
+        display: inline-block;
+        padding: 0.25em 0.4em;
+        border-radius: 10px;
+        background-color: #f0f0f0;
+        font-size: 0.75rem;
+    }
+</style>
 {% endblock %}
 
 {% block content %}
-<div class="artist-panel">
-    <div class="panel-header">
-        <h1 class="panel-title">Mis Canciones</h1>
-        <a href="{% url 'add_song' %}" class="btn-add">➕ Añadir nueva canción</a>
+<div class="dashboard-container">
+    <!-- Sección de Álbumes -->
+    <div class="panel-card">
+        <div class="card-header">
+            <h2 class="card-title">Mis Álbumes</h2>
+            <a href="{% url 'add_album' %}" class="btn-add">➕ Nuevo Álbum</a>
+        </div>
+
+        <div class="table-responsive">
+            <table class="music-table">
+                <thead>
+                    <tr>
+                        <th>Portada</th>
+                        <th>Título</th>
+                        <th>Género</th>
+                        <th>Lanzamiento</th>
+                        <th>Canciones</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for album in albums %}
+                    <tr>
+                        <td>
+                            <img src="{% if album.album_cover %}{{ album.album_cover.url }}{% else %}{% static 'images/default_album.jpg' %}{% endif %}"
+                                 class="cover-img album-cover"
+                                 alt="{{ album.title }}">
+                        </td>
+                        <td>{{ album.title }}</td>
+                        <td><span class="badge">{{ album.genre }}</span></td>
+                        <td>{{ album.release_date|date:"d M Y" }}</td>
+                        <td>{{ album.song_count }}</td>
+                        <td>
+                            <a href="{% url 'edit_album' album.id %}" class="action-btn edit-btn" title="Editar">✏️</a>
+                            <a href="{% url 'delete_album' album.id %}" class="action-btn delete-btn" title="Eliminar">🗑️</a>
+                            <a href="{% url 'album_detail' album.id %}" class="action-btn view-btn" title="Ver">👁️</a>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="6" class="empty-state">
+                            No tienes álbumes registrados.
+                            <a href="{% url 'add_album' %}" class="text-link">Crea tu primer álbum</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
     </div>
 
-    <table class="songs-table">
-        <thead>
-            <tr>
-                <th>Portada</th>
-                <th>Título</th>
-                <th>Álbum</th>
-                <th>Género</th>
-                <th>Precio</th>
-                <th>Fecha</th>
-                <th>Acciones</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for song in user.songs.all %}
-            <tr>
-                <td>
-                    {% if song.album_cover %}
-                        <img src="{{ song.album_cover.url }}" alt="{{ song.title }}" class="cover-thumbnail">
-                    {% else %}
-                        <img src="{% static 'images/default_album.jpg' %}" alt="Sin portada" class="cover-thumbnail">
-                    {% endif %}
-                </td>
-                <td>{{ song.title }}</td>
-                <td>{{ song.album_title|default:"-" }}</td>
-                <td>{{ song.genre }}</td>
-                <td>€{{ song.price }}</td>
-                <td>{{ song.release_date|date:"d/m/Y" }}</td>
-                <td class="action-links">
-                    <a href="{% url 'edit_song' song.id %}" title="Editar">✏️</a>
-                    <a href="{% url 'delete_song' song.id %}" title="Eliminar" class="delete-link">🗑️</a>
-                </td>
-            </tr>
-            {% empty %}
-            <tr>
-                <td colspan="7" class="empty-message">No tienes canciones aún. ¡Añade tu primera canción!</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+    <!-- Sección de Canciones -->
+    <div class="panel-card">
+        <div class="card-header">
+            <h2 class="card-title">Mis Canciones</h2>
+            <a href="{% url 'add_song' %}" class="btn-add">➕ Nueva Canción</a>
+        </div>
+
+        <div class="table-responsive">
+            <table class="music-table">
+                <thead>
+                    <tr>
+                        <th>Portada</th>
+                        <th>Título</th>
+                        <th>Álbum</th>
+                        <th>Género</th>
+                        <th>Precio</th>
+                        <th>Lanzamiento</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for song in songs %}
+                    <tr>
+                        <td>
+                            <img src="{% if song.song_cover %}{{ song.song_cover.url }}{% else %}{% static 'images/default_song.jpg' %}{% endif %}"
+                                 class="cover-img"
+                                 alt="{{ song.title }}">
+                        </td>
+                        <td>{{ song.title }}</td>
+                        <td>
+                            {% if song.album_id %}
+                              {% for alb in albums %}
+                                {% if alb.id == song.album_id %}
+                                    <a href="{% url 'album_detail' alb.id %}">
+                                        {{ alb.title }}
+                                    </a>
+                                {% endif %}
+                              {% endfor %}
+                            {% else %}
+                                Sin Álbum
+                            {% endif %}
+                        </td>
+                        <td><span class="badge">{{ song.genre }}</span></td>
+                        <td>€{{ song.price }}</td>
+                        <td>{{ song.release_date|date:"d M Y" }}</td>
+                        <td>
+                            <a href="{% url 'edit_song' song.id %}" class="action-btn edit-btn" title="Editar">✏️</a>
+                            <a href="{% url 'delete_song' song.id %}" class="action-btn delete-btn" title="Eliminar">🗑️</a>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="7" class="empty-state">
+                            No tienes canciones registradas.
+                            <a href="{% url 'add_song' %}" class="text-link">Añade tu primera canción</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
 </div>
 
 <script src="{% static 'music/js/artist.js' %}"></script>

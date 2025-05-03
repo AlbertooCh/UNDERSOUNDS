@@ -1,164 +1,149 @@
- body {
-        font-family: Arial, sans-serif;
-        margin: 20px;
-    }
-    .title {
-        font-size: 40px;
-        font-weight: bold;
-        text-align: center;
-    }
-    .cuadrado {
-        flex: 1;
-        padding-top: 100%;
-        width: 17vw;
-        height: 17vw;
-        display: inline-block;
-        margin: 10px;
-        padding: 10px;
-        box-sizing: border-box;
-        text-align: center;
-        position: relative;
-        overflow: hidden;
-        transition: background-color 0.8s ease, filter 0.8s ease;
-        animation: fadeIn 0.5s ease forwards;
-        opacity: 0;
-        border-radius: 15px;
-    }
-    .cuadrado:hover {
-        background-color: rgba(0, 0, 0, 0.5);
-    }
-    .cuadrado:hover .album-title {
-        display: block;
-    }
-    .album-title {
-        margin-top: 5px;
-        font-size: 1em;
-        color: #ffffff;
-        display: none;
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        z-index: 2;
-    }
+/* Estilos base */
+.title {
+    text-align: center;
+    margin: 2rem 0;
+    font-size: 2.5rem;
+    color: #1db954;
+    font-weight: 700;
+}
+
+.filter-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin-bottom: 2rem;
+    flex-wrap: wrap;
+}
+
+.filter-btn {
+    padding: 0.75rem 1.5rem;
+    border-radius: 30px;
+    background-color: #f3f4f6;
+    color: #1f2937;
+    border: none;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.filter-btn.active {
+    background-color: #1db954;
+    color: white;
+}
+
+.filter-btn:hover {
+    background-color: #d1d5db;
+}
+
+.filter-btn.active:hover {
+    background-color: #179a46;
+}
+
+.search-bar {
+    display: none;
+    justify-content: center;
+    margin-bottom: 2rem;
+    padding: 1rem;
+    background-color: #f9fafb;
+    border-radius: 10px;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.search-bar input {
+    padding: 0.75rem 1rem;
+    border-radius: 8px;
+    border: 1px solid #d1d5db;
+    font-size: 1rem;
+}
+
+.search-bar input[type="text"] {
+    min-width: 300px;
+}
+
+.search-bar input[type="date"] {
+    max-width: 150px;
+}
+
+.add-to-cart-btn {
+    padding: 0.75rem 1.5rem;
+    background-color: #1db954;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: background-color 0.3s ease;
+}
+
+.add-to-cart-btn:hover {
+    background-color: #179a46;
+}
+
+.catalog {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 2rem;
+    padding: 1rem;
+}
+
+.album {
+    position: relative;
+    transition: transform 0.3s ease;
+}
+
+.album:hover {
+    transform: translateY(-5px);
+}
+
+.cuadrado {
+    background-color: #fff;
+    border-radius: 10px;
+    padding: 1rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.cuadrado:hover {
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+}
+
+.cuadrado img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    border-radius: 8px;
+    margin-bottom: 1rem;
+}
+
+.album-title {
+    font-weight: 600;
+    color: #1f2937;
+    margin: 0.5rem 0;
+    text-align: center;
+    font-size: 1.1rem;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
     .catalog {
-        flex: 2;
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: space-between;
-        padding: 0 50px;
-        max-width: 1200px;
-        margin: 0 auto;
-        background: lightgray;
-        border-radius: 15px;
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
     }
-    .cuadroBusqueda {
-        flex: 2;
-        display: none;
-        margin-top: 20px;
-        padding: 10px;
-        width: 200px;
-        background-color: #f9f9f9;
-    }
+    
     .cuadrado img {
-        width: 100%;
-        height: 100%;
-        object-fit: fill;
-        transition: filter 0.6s ease, background-color 0.6s ease;
-        z-index: 1;
-        border-radius: 15px;
+        height: 150px;
     }
-    .cuadrado:hover img {
-        filter: brightness(20%);
-    }
-    .nombreCancion{
-        flex: 1;
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: space-between;
-        padding: 10px;
-        max-width: 500px;
-        margin: 0 auto;
-        background: white;
-        border-radius: 15px;
-    }
-
+    
     .search-bar {
-        display: none;
-        gap: 10px;
-        margin-bottom: 20px;
-        border-radius: 15px;
-    }
-    .search-bar input, .search-bar button {
-        padding: 10px;
-        font-size: 1em;
-        border-radius: 15px;
-    }
-    /* Estilos para los botones de filtro */
-    .filter-buttons {
-        display: flex;
-        justify-content: center;
-        gap: 10px;
-        margin: 20px 0;
-    }
-    .filter-btn {
-        padding: 10px 20px;
-        background-color: #f1f1f1;
-        border: none;
-        border-radius: 15px;
-        cursor: pointer;
-        font-size: 16px;
-        transition: all 0.3s ease;
-    }
-    .filter-btn:hover {
-        background-color: #ddd;
-    }
-    .filter-btn.active {
-        background-color: #666;
-        color: white;
-    }
-    @keyframes fadeIn {
-        from {
-            opacity: 0;
-            transform: scale(0.9);
-        }
-        to {
-            opacity: 1;
-            transform: scale(1);
-        }
-    }
-
-        .add-to-cart-container {
-        margin-top: 20px;
-    }
-
-    .add-to-cart-btn {
-        background-color: #1db954;
-        color: white;
-        border: none;
-        padding: 12px 25px;
-        border-radius: 25px;
-        cursor: pointer;
-        font-size: 16px;
-        font-weight: bold;
-        transition: all 0.3s ease;
-        display: flex;
+        flex-direction: column;
         align-items: center;
-        justify-content: center;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     }
-
-    .add-to-cart-btn:hover {
-        background-color: #17a84b;
-        transform: translateY(-2px);
-        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+    
+    .search-bar input[type="text"] {
+        min-width: 100%;
     }
-
-    .add-to-cart-btn:active {
-        transform: translateY(0);
-    }
-
-    .add-to-cart-btn i {
-        margin-right: 8px;
-        font-size: 18px;
-    }
+}

@@ -97,7 +97,7 @@
             <div class="profile-bio">
                 {{ user.bio|default:"Este usuario aún no tiene una biografía." }}
             </div>
-
+            {% if user.role == 'artist' %}
             <div class="profile-stats">
                 <div class="stat-item">
                     <div class="stat-number">{{ user.songs.count }}</div>
@@ -107,11 +107,13 @@
                     <div class="stat-number">156</div>
                     <div class="stat-label">Seguidores</div>
                 </div>
+
                 <div class="stat-item">
-                    <div class="stat-number">5</div>
+                    <div class="stat-number">{{ user.albums.count }}</div>
                     <div class="stat-label">Álbumes</div>
                 </div>
             </div>
+            {% endif %}
         </div>
         <a href="{% url 'configuracion' %}" class="edit-btn">Editar perfil</a>
     </div>
@@ -162,8 +164,8 @@
             {% for song in user.songs.all %}
             <div class="work-item">
                 <div class="cuadrado" style="width: 200px; height: 200px; margin: 0;">
-                    {% if song.album_cover %}
-                        <img src="{{ song.album_cover.url }}" alt="{{ song.title }}" class="work-cover">
+                    {% if song.song_cover %}
+                        <img src="{{ song.song_cover.url }}" alt="{{ song.title }}" class="work-cover">
                     {% else %}
                         <img src="{% static 'images/default_album.jpg' %}" alt="Portada predeterminada" class="work-cover">
                     {% endif %}

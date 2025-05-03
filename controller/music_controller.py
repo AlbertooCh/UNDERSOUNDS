@@ -1,13 +1,13 @@
 # music/controllers/song_controller.py
 from datetime import date, datetime
 
-from model.Dao.music_dao import SongDAO
-from model.Dto.music_dto import SongDTO
+from model.Dao.music_dao import SongDAO, AlbumDAO
+from model.Dto.music_dto import SongDTO, AlbumDTO
 from django.core.files.uploadedfile import InMemoryUploadedFile
 from model.Dao.user_dao import UserDAO
 from controller.user_controller import UserController
-from model.Factory.music_factory import SongFactory
-from model.music.music_models import Song
+from model.Factory.music_factory import SongFactory, AlbumFactory
+from model.music.music_models import Song, Album
 
 class SongController:
     @staticmethod
@@ -70,11 +70,11 @@ class SongController:
         return SongDAO.delete(song_id)
 
     @staticmethod
-    def search_songs(query, fecha_ant, fecha_post, ordered=True):
+    def search_songs(query):
         """
         Busca canciones por término
         """
-        return SongDAO.filter_by_date_range(fecha_ant, fecha_post, query)
+        return SongDAO.search(query)
 
     @staticmethod
     def filter_songs_by_genre(genre):
@@ -103,7 +103,7 @@ class SongController:
         return SongDAO.update(song_dto)
 
     @staticmethod
-    def upload_album_cover(song_id, cover_image: InMemoryUploadedFile):
+    def upload_song_cover(song_id, cover_image: InMemoryUploadedFile):
         """
         Maneja la subida de la portada del álbum
         """
@@ -111,7 +111,7 @@ class SongController:
         if not song_dto:
             return False
 
-        song_dto.album_cover = cover_image
+        song_dto.song_cover = cover_image
         return SongDAO.update(song_dto)
 
     @staticmethod
@@ -133,6 +133,19 @@ class SongController:
 
         return song
 
+    def create_song_with_artist_and_album(song_dto, artist_id, album_id):
+        try:
+            song = SongDAO.create(song_dto)
+            if song:
+                UserController.add_song_to_artist(artist_id, song.id)
+                UserController.add_album_to_artist(album_id, artist_id)
+                AlbumDAO.add_song_to_album(album_id, song.id)
+                return song
+            return None
+        except Exception as e:
+            print(f"Error creating song with artist and album: {e}")
+            return None
+
     @staticmethod
     def get_songs_recent(recent_date):
         """
@@ -145,7 +158,6 @@ class SongController:
             songs = [song for song in songs if song.release_date and song.release_date.date() >= recent_date]
         return songs
 
-    @staticmethod
     def filter_songs_by_date_range(fecha_ant, fecha_post, query):
         """
         Filtra canciones por rango de fechas y opcionalmente por un término de búsqueda.
@@ -161,3 +173,106 @@ class SongController:
         except ValueError:
             # Handle invalid date formats gracefully
             return []  # Or raise an exception, log, etc.
+
+class AlbumController:
+    @staticmethod
+    def create_album_with_artist(album_dto: AlbumDTO, artist_id: int):
+        try:
+            album = AlbumDAO.create_album(album_dto)
+            if album:
+                # Aquí podrías añadir lógica adicional para relacionar con el artista
+                return album
+            return None
+        except Exception as e:
+            print(f"Error creating album: {e}")
+            return None
+
+    @staticmethod
+    def get_album(album_id):
+        return AlbumDAO.get_album_by_id(album_id)
+
+    @staticmethod
+    def update_album(album_id, album_dto: AlbumDTO):
+        return AlbumDAO.update_album(album_id, album_dto)
+
+    @staticmethod
+    def delete_album(album_id):
+        return AlbumDAO.delete_album(album_id)
+
+    @staticmethod
+    def get_album_dto(album_id):
+        album = AlbumDAO.get_album_by_id(album_id)
+        if album:
+            return AlbumFactory.create_dto_from_album(album)
+        return None
+
+    @staticmethod
+    def get_all_albums():
+        """
+        Retorna todos los álbumes ordenados por fecha de lanzamiento (más recientes primero)
+        """
+        return Album.objects.all().order_by('-release_date')
+
+    @staticmethod
+    def filter_albums_by_query(query):
+        """
+        Filtra álbumes por texto (busca en título, artista y género)
+        Args:
+            query (str): Texto de búsqueda
+        Returns:
+            QuerySet: Álbumes que coinciden con la búsqueda
+        """
+        if not query:
+            return Album.objects.none()
+
+        return Album.objects.filter(
+            Q(title__icontains=query) |
+            Q(artist_name__icontains=query) |
+            Q(genre__icontains=query)
+        ).order_by('-release_date')
+
+    @staticmethod
+    def filter_albums_by_genre(genre):
+        """
+        Filtra álbumes por género exacto (case insensitive)
+        Args:
+            genre (str): Género a filtrar
+        Returns:
+            QuerySet: Álbumes del género especificado
+        """
+        if not genre:
+            return Album.objects.none()
+
+        return Album.objects.filter(genre__iexact=genre).order_by('-release_date')
+
+    @staticmethod
+    def filter_albums_by_artist(artist):
+        """
+        Filtra álbumes por nombre de artista (case insensitive)
+        Args:
+            artist (str): Nombre del artista
+        Returns:
+            QuerySet: Álbumes del artista especificado
+        """
+        if not artist:
+            return Album.objects.none()
+
+        return Album.objects.filter(artist_name__iexact=artist).order_by('-release_date')
+
+    @staticmethod
+    def get_albums_recent(since_date):
+        """
+        Retorna álbumes lanzados desde la fecha especificada
+        Args:
+            since_date (date): Fecha mínima de lanzamiento
+        Returns:
+            QuerySet: Álbumes recientes ordenados por fecha
+        """
+        if not since_date:
+            return Album.objects.none()
+
+        # Asegurarse que since_date es un objeto date
+        if isinstance(since_date, str):
+            since_date = datetime.strptime(since_date, '%Y-%m-%d').date()
+
+        return Album.objects.filter(release_date__gte=since_date).order_by('-release_date')

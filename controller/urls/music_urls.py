@@ -13,7 +13,13 @@ urlpatterns = [
     path('artist/panel/', login_required(views.artist_panel), name='artist_panel'),
 
     # CRUD de canciones (protegidas por login y rol de artista)
-    path('music/add/', login_required(views.add_song), name='add_song'),
+    path('music/add_song/', login_required(views.add_song), name='add_song'),
+    path('music/add_album/', login_required(views.add_album), name='add_album'),
+    path('album/<int:album_id>/edit/', views.edit_album, name='edit_album'),
+    path('album/<int:album_id>/add_song/', views.add_song_to_album, name='add_song_to_album'),
+    path('album/<int:album_id>/', views.album_detail, name='album_detail'),
+    path('album/<int:album_id>/delete/', views.delete_album, name='delete_album'),
+    path('song/<int:song_id>/remove-from-album/<int:album_id>/', views.remove_song_from_album, name='remove_song_from_album'),
     path('music/edit/<int:song_id>/', login_required(views.edit_song), name='edit_song'),
     path('music/delete/<int:song_id>/', login_required(views.delete_song), name='delete_song'),
     path('save-song/', views.save_song, name='save_song'),

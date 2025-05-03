@@ -32,8 +32,8 @@
     <h2 class="items-title">Tus canciones</h2>
     {% for item in order.items.all %}
     <div class="purchase-item">
-        {% if item.song.album_cover %}
-        <img src="{{ item.song.album_cover.url }}" alt="{{ item.song.title }}" class="item-image">
+        {% if item.song.song_cover %}
+        <img src="{{ item.song.song_cover.url }}" alt="{{ item.song.title }}" class="item-image">
         {% else %}
         <img src="{% static 'images/default_album.jpg' %}" alt="Álbum" class="item-image">
         {% endif %}
