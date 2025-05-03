@@ -1,13 +1,14 @@
 # music/controllers/song_controller.py
 from datetime import date, datetime
-
-from model.Dao.music_dao import SongDAO, AlbumDAO
-from model.Dto.music_dto import SongDTO, AlbumDTO
+from django.contrib.auth import get_user_model
+from model.Dao.music_dao import SongDAO, AlbumDAO, FavoriteDAO
+from model.Dto.music_dto import SongDTO, AlbumDTO, FavoriteDTO, FavoriteItemDTO
 from django.core.files.uploadedfile import InMemoryUploadedFile
 from model.Dao.user_dao import UserDAO
+from user.models import User
 from controller.user_controller import UserController
-from model.Factory.music_factory import SongFactory, AlbumFactory
-from model.music.music_models import Song, Album
+from model.Factory.music_factory import SongFactory, AlbumFactory, FavoriteFactory
+from model.music.music_models import Song, Album, Favorite
 
 class SongController:
     @staticmethod
@@ -276,3 +277,45 @@ class AlbumController:
             since_date = datetime.strptime(since_date, '%Y-%m-%d').date()
 
         return Album.objects.filter(release_date__gte=since_date).order_by('-release_date')
+
+
+User = get_user_model()
+
+
+class FavoriteController:
+    @staticmethod
+    def add_favorite(user_id: int, item_type: str, item_id: int) -> FavoriteItemDTO:
+        filters = {'user_id': user_id}
+
+        if item_type == 'song':
+            item = Song.objects.get(id=item_id)
+            filters['song_id'] = item_id
+        elif item_type == 'album':
+            item = Album.objects.get(id=item_id)
+            filters['album_id'] = item_id
+        elif item_type == 'artist':
+            item = User.objects.get(id=item_id, role='artist')
+            filters['artist_id'] = item_id
+        else:
+            raise ValueError("Invalid item type")
+
+        if FavoriteDAO.is_item_favorited(**filters):
+            raise ValueError("Item already in favorites")
+
+        favorite_dto = FavoriteDTO(user_id=user_id, **{f"{item_type}_id": item_id})
+        favorite = FavoriteDAO.create_favorite(favorite_dto)
+        return FavoriteFactory.model_to_item_dto(Favorite.objects.get(id=favorite.id))
+
+    @staticmethod
+    def remove_favorite(user_id: int, item_type: str, item_id: int) -> bool:
+        favorite_dto = FavoriteDTO(user_id=user_id, **{f"{item_type}_id": item_id})
+        return FavoriteDAO.delete_favorite(favorite_dto)
+
+    @staticmethod
+    def get_user_favorites(user_id: int) -> list[FavoriteItemDTO]:
+        favorites = FavoriteDAO.get_user_favorites(user_id)
+        return [FavoriteFactory.model_to_item_dto(fav) for fav in favorites]
+
+    @staticmethod
+    def is_item_favorited(user_id: int, item_type: str, item_id: int) -> bool:
+        return FavoriteDAO.is_item_favorited(user_id=user_id, **{f"{item_type}_id": item_id})

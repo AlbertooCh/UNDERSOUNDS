@@ -1,5 +1,6 @@
-from model.Dto.music_dto import SongDTO, AlbumDTO
-from model.music.music_models import Song, Album
+from model.Dto.music_dto import SongDTO, AlbumDTO, FavoriteDTO, FavoriteItemDTO
+from model.music.music_models import Song, Album, Favorite
+from user.models import User
 
 class SongFactory:
     @staticmethod
@@ -54,4 +55,62 @@ class AlbumFactory:
             album_cover=album.album_cover,
             artist_id=getattr(album, 'artist_id', None),
             price=album.price
+        )
+
+class FavoriteFactory:
+    @staticmethod
+    def dto_to_model(favorite_dto: FavoriteDTO) -> Favorite:
+        return Favorite(
+            user_id=favorite_dto.user_id,
+            song_id=favorite_dto.song_id,
+            album_id=favorite_dto.album_id,
+            artist_id=favorite_dto.artist_id
+        )
+
+    @staticmethod
+    def model_to_dto(favorite: Favorite) -> FavoriteDTO:
+        return FavoriteDTO(
+            id=favorite.id,
+            user_id=favorite.user_id,
+            song_id=favorite.song_id,
+            album_id=favorite.album_id,
+            artist_id=favorite.artist_id,
+            created_at=favorite.created_at
+        )
+
+    @staticmethod
+    def model_to_item_dto(favorite: Favorite) -> FavoriteItemDTO:
+        if favorite.song:
+            item = {
+                'id': favorite.song.id,
+                'title': favorite.song.title,
+                'artist_name': favorite.song.artist_name,
+                'cover_url': favorite.song.song_cover.url if favorite.song.song_cover else None
+            }
+            item_type = 'song'
+        elif favorite.album:
+            item = {
+                'id': favorite.album.id,
+                'title': favorite.album.title,
+                'artist_name': favorite.album.artist_name,
+                'cover_url': favorite.album.album_cover.url if favorite.album.album_cover else None
+            }
+            item_type = 'album'
+        elif favorite.artist_id:
+            # Obtenemos el artista usando get_user_model()
+            artist = User.objects.get(id=favorite.artist_id)
+            item = {
+                'id': artist.id,
+                'name': artist.username,
+                'avatar_url': artist.avatar.url if artist.avatar else None
+            }
+            item_type = 'artist'
+        else:
+            raise ValueError("Invalid favorite item")
+
+        return FavoriteItemDTO(
+            id=favorite.id,
+            type=item_type,
+            item=item,
+            created_at=favorite.created_at
         )

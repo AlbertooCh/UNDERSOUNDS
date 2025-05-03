@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 from datetime import date, datetime
 from django.core.files import File
+from typing import Optional
 
 @dataclass
 class SongDTO:
@@ -40,3 +41,19 @@ class AlbumDTO:
             'price': self.price
 
         }
+
+@dataclass
+class FavoriteDTO:
+    user_id: int
+    song_id: Optional[int] = None
+    album_id: Optional[int] = None
+    artist_id: Optional[int] = None
+    created_at: Optional[datetime] = None
+    id: Optional[int] = None
+
+@dataclass
+class FavoriteItemDTO:
+    id: int
+    type: str  # 'song', 'album', 'artist'
+    item: dict  # Los datos del item favorito
+    created_at: datetime

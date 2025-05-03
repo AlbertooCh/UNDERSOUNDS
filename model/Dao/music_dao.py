@@ -2,9 +2,9 @@
 from datetime import datetime
 from django.core.files import File
 from django.core.exceptions import ObjectDoesNotExist
-from model.music.music_models import Song, Album
+from model.music.music_models import Song, Album, Favorite
 from django.db import models
-from model.Dto.music_dto import SongDTO, AlbumDTO
+from model.Dto.music_dto import SongDTO, AlbumDTO, FavoriteDTO
 from model.Factory.music_factory import SongFactory
 
 class SongDAO:
@@ -200,3 +200,53 @@ class AlbumDAO:
             return True
         except Song.DoesNotExist:
             return False
+
+
+class FavoriteDAO:
+    @staticmethod
+    def create_favorite(favorite_dto: FavoriteDTO) -> FavoriteDTO:
+        favorite = Favorite.objects.create(
+            user_id=favorite_dto.user_id,
+            song_id=favorite_dto.song_id,
+            album_id=favorite_dto.album_id,
+            artist_id=favorite_dto.artist_id
+        )
+        return FavoriteDTO(
+            id=favorite.id,
+            user_id=favorite.user_id,
+            song_id=favorite.song_id,
+            album_id=favorite.album_id,
+            artist_id=favorite.artist_id,
+            created_at=favorite.created_at
+        )
+
+    @staticmethod
+    def get_user_favorites(user_id: int):
+        # Modificamos para usar user_id directamente
+        return Favorite.objects.filter(user_id=user_id).select_related('song', 'album')
+
+    @staticmethod
+    def delete_favorite(favorite_dto: FavoriteDTO) -> bool:
+        try:
+            filters = {
+                'user_id': favorite_dto.user_id,
+                'song_id': favorite_dto.song_id,
+                'album_id': favorite_dto.album_id,
+                'artist_id': favorite_dto.artist_id
+            }
+            # Eliminamos None values para que no interfieran con la búsqueda
+            filters = {k: v for k, v in filters.items() if v is not None}
+
+            favorite = Favorite.objects.get(**filters)
+            favorite.delete()
+            return True
+        except ObjectDoesNotExist:
+            return False
+
+    @staticmethod
+    def is_item_favorited(user_id: int, **kwargs):
+        # Aseguramos que el user_id siempre esté incluido
+        kwargs['user_id'] = user_id
+        # Eliminamos posibles valores None
+        kwargs = {k: v for k, v in kwargs.items() if v is not None}
+        return Favorite.objects.filter(**kwargs).exists()

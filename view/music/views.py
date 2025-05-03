@@ -473,7 +473,7 @@ def add_comment(request, song_id):
 
 def delete_comment(request, comment_id):
     if request.method == 'POST':
-        comentario = Comments.get_object_or_404(Comments, id=comment_id)
+        comentario = get_object_or_404(Comments, id=comment_id)
         comentario.delete()
         return redirect(reverse('music_detail_id', args=[comment.song_id.id]))
     else:

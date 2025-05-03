@@ -41,8 +41,8 @@ INSTALLED_APPS = [
     'store',
     'music',
     'user',
+    'social_django',# Agregado para manejar OAuth
     'favoritos',
-    'social_django',  # Agregado para manejar OAuth
 
 ]
 
