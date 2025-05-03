@@ -102,24 +102,36 @@
 
 <div class="comments-section">
     <div class="new-comment">
+        <h2><strong>Nuevo Comentario</strong></h2>
         <div class="introducir-comment">
             {% if request.user.id %}
-                <img src="{{ request.user.avatar.url }}" alt="Perfil" class="nav-icon">
-                {{ request.user.username }}
-                <p>
-                <form action="{% url 'add_comment' song.id %}" method="POST" style="display: flex; align-items: center;">
-    {% csrf_token %}
-                    <input type="text" name="comment_text" id="Comment-text" placeholder="Escribe aquí tu comentario" class="introducir-comment-text" style="flex: 1; margin-right: 10px;">
-
-                    <input type="number" name="rating" placeholder="Valoracion/5" min="0" max="5">
-                    <button type="submit" class="add-to-cart-btn">Publicar</button>
+                <div class="introducir-comment-header">
+                    <img src="{{ request.user.avatar.url }}" alt="Perfil" class="introducir-comment-avatar">
+                    <strong class="introducir-comment-username">{{ request.user.username }}</strong>
+                </div>
+                <form action="{% url 'add_comment' song.id %}" method="POST" class="new-comment-form">
+                    {% csrf_token %}
+                    <textarea name="comment_text" id="Comment-text" placeholder="Escribe aquí tu comentario" class="introducir-comment-text"></textarea>
+                    <div class="rating-section">
+                        <label for="rating">Valoración:</label>
+                        <div class="star-rating">
+                            <input type="radio" id="star5" name="rating" value="5" /><label for="star5">★</label>
+                            <input type="radio" id="star4" name="rating" value="4" /><label for="star4">★</label>
+                            <input type="radio" id="star3" name="rating" value="3" /><label for="star3">★</label>
+                            <input type="radio" id="star2" name="rating" value="2" /><label for="star2">★</label>
+                            <input type="radio" id="star1" name="rating" value="1" /><label for="star1">★</label>
+                        </div>
+                    </div>
+                    <div class="introducir-comment-button-container">
+                        <button type="submit" class="add-to-cart-btn">Publicar Comentario</button>
+                    </div>
                 </form>
-                </p>
             {% else %}
                 <p>Inicia sesión o crea una cuenta para dejar un comentario</p>
             {% endif %}
         </div>
     </div>
+
             <div class="comments-list">
             <h2><strong>Comentarios</strong></h2>
                 {% for comment in comments %}
@@ -128,7 +140,7 @@
                              style="width: 40px; height: 40px; object-fit: cover; border-radius: 50%;">
                         <strong>{{ comment.user_id.username }}</strong>
                     <div>
-                        <p>{{ comment.rating|floatformat:0 }}/5</p>
+                        <p>{{ comment.rating|floatformat:0 }}/5 <span class="star">★</span></p>
                     </div>
                         <p>{{ comment.comment }}</p>
 
@@ -144,36 +156,38 @@
             {% endfor %}
         </div>
    <div class="author-info">
-    <h2><strong>Artista</strong></h2>
-    {% if song.artist %}
-    <div class="artist-card">
-        <div class="artist-avatar">
-            <img src="{{ song.artist.avatar.url }}" alt="{{ song.artist_name }}" class="artist-avatar-img">
-        </div>
-        <div class="artist-details">
-            <h3>{{ song.artist.artist_name }}</h3>
-            <p><strong>Género:</strong> {{ song.artist.genre|default:"No especificado" }}</p>
-            <p><strong>País:</strong> {{ song.artist.country|default:"No especificado" }}</p>
-            {% if song.artist.bio %}
-                <p class="artist-bio">{{ song.artist.bio }}</p>
-            {% endif %}
-
-            <a href="{% url 'artist_detail' artist_name=song.artist_name %}" class="btn" style="text-decoration: none; margin-top: 10px;">
-                <i class="fas fa-user"></i> Ver perfil completo
-            </a>
-              <p>MAS DEL ARTISTA</p>
-        {% for song in artist_songs %}
-            <div>
-            <a class="btn" style="text-decoration: none; margin-top: 10px;" onclick="location.href='{% url 'music_detail_id' song.id %}'">
-        <i class="fas fa-user"></i> {{ song.title}}
-      </a>
+        <h2><strong>Artista</strong></h2>
+        {% if song.artist %}
+        <div class="artist-card">
+            <div class="artist-avatar">
+                <img src="{{ song.artist.avatar.url }}" alt="{{ song.artist_name }}" class="artist-avatar-img">
             </div>
-    {% endfor %}
+            <div class="artist-details">
+                <h3>{{ song.artist.artist_name }}</h3>
+                <p><strong>Género:</strong> {{ song.artist.genre|default:"No especificado" }}</p>
+                <p><strong>País:</strong> {{ song.artist.country|default:"No especificado" }}</p>
+                {% if song.artist.bio %}
+                    <p class="artist-bio">{{ song.artist.bio }}</p>
+                {% endif %}
+                <a href="{% url 'artist_detail' artist_name=song.artist_name %}" class="btn" style="text-decoration: none; margin-top: 10px;">
+                    <i class="fas fa-user"></i> Ver perfil completo
+                </a>
+            </div>
         </div>
+        <div class="artist-more">
+            <p>MAS DEL ARTISTA</p>
+            {% for song in artist_songs %}
+                <div>
+                    <a class="btn" style="text-decoration: none; margin-top: 10px;" onclick="location.href='{% url 'music_detail_id' song.id %}'">
+                        <i class="fas fa-user"></i> {{ song.title}}
+                    </a>
+                </div>
+            {% endfor %}
+        </div>
+        {% else %}
+            <p>Información del artista no disponible</p>
+        {% endif %}
     </div>
-    {% else %}
-        <p>Información del artista no disponible</p>
-    {% endif %}
 </div>
 
     <script>
