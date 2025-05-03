@@ -4,98 +4,67 @@
 
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'music/css/album_detail.css' %}">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 {% endblock %}
 
 {% block content %}
-<main>
-    <div class="album-info">
-        <div class="album-details">
-            <h1>{{ album.title }}</h1>
-            <p><strong>Artista:</strong> {{ album.artist_name }}</p>
-            <p><strong>Fecha de lanzamiento:</strong> {{ album.release_date|date:"Y" }}</p>
-            <p><strong>Género:</strong> {{ album.genre }}</p>
-            <p><strong>Precio del álbum:</strong> €{{ album.price }}</p>
-            <p><strong>Canciones:</strong> {{ songs.count }}</p>
+<div class="album-detail">
+    <div class="album-header">
+        {% if album.album_cover %}
+            <img src="{{ album.album_cover.url }}" alt="{{ album.title }}" class="album-cover">
+        {% else %}
+            <img src="{% static 'images/default_album.png' %}" alt="Álbum sin portada" class="album-cover">
+        {% endif %}
+
+        <div class="album-info">
+            <h1 class="album-title">{{ album.title }}</h1>
+            <h2 class="album-artist">{{ album.artist_name }}</h2>
+
+            <div class="album-meta">
+                <span>{{ album.release_date|date:"Y" }}</span>
+                <span>{{ songs.count }} canción{{ songs.count|pluralize:"es" }}</span>
+                <span>{{ album.genre }}</span>
+            </div>
+
+            {% if album.description %}
+                <div class="album-description">
+                    <p>{{ album.description }}</p>
+                </div>
+            {% endif %}
 
             <div class="action-buttons">
                 {% if request.user.is_authenticated and request.user.artist_name == album.artist_name %}
-                    <a href="{% url 'edit_album' album.id %}" class="btn btn-edit">
-                        <i class="fas fa-edit"></i> Editar Álbum
-                    </a>
+                    <a href="{% url 'edit_album' album.id %}" class="btn btn-secondary">Editar Álbum</a>
                 {% endif %}
-                <button class="btn btn-buy">
-                    <i class="fas fa-shopping-cart"></i> Comprar Álbum
-                </button>
+                <a href="#" class="btn btn-primary">Comprar Álbum ({{ album.price }}€)</a>
             </div>
         </div>
-        <div class="album-cover">
-            {% if album.album_cover %}
-                <img src="{{ album.album_cover.url }}" alt="{{ album.title }}">
-            {% else %}
-                <img src="{% static 'images/default_album.jpg' %}" alt="Sin portada">
-            {% endif %}
-        </div>
     </div>
 
-    {% if album.description %}
-    <div class="album-description">
-        <h3>Descripción</h3>
-        <p>{{ album.description }}</p>
-    </div>
-    {% endif %}
+   <div class="song-list">
+    <h3>Lista de canciones</h3>
 
-    <div class="song-list-section">
-        <h2><strong>Lista de canciones</strong></h2>
-
-        {% if songs %}
-            <div class="song-list">
-                {% for song in songs %}
-                <div class="song-item">
-                    <div class="song-number">{{ forloop.counter }}</div>
-                    <div class="song-info">
-                        <div class="song-title">{{ song.title }}</div>
-                        <div class="song-meta">
-                            <span class="song-duration">3:45</span> <!-- Puedes añadir duración si está disponible -->
-                        </div>
-                    </div>
-                    <div class="song-price">€{{ song.price }}</div>
-                    <div class="song-actions">
-                        <a href="{% url 'music_detail_id' song.id %}" class="btn btn-view">
-                            <i class="fas fa-eye"></i> Ver
-                        </a>
-                    </div>
+    {% if songs %}
+        {% for song in songs %}
+            <div class="song-item">
+                <div class="song-number">{{ forloop.counter }}</div>
+                {% if song.song_cover %}
+                    <img src="{{ song.song_cover.url }}" alt="{{ song.title }}" class="song-cover">
+                {% else %}
+                    <img src="{% static 'images/default_song.png' %}" alt="Canción sin portada" class="song-cover">
+                {% endif %}
+                <div class="song-info">
+                    <div class="song-title">{{ song.title }}</div>
+                    <div class="song-artist">{{ song.artist_name }}</div>
                 </div>
-                {% endfor %}
+                <div class="song-price">{{ song.price }}€</div>
+                <div class="song-actions">
+                    <a href="{% url 'music_detail_id' song.id %}" class="btn btn-secondary">Ver canción</a>
+                </div>
             </div>
-        {% else %}
-            <p class="empty-message">Este álbum no contiene canciones aún.</p>
-        {% endif %}
-    </div>
-
-    <div class="author-info">
-        <h2><strong>Artista</strong></h2>
-        {% if album.artist %}
-        <div class="artist-card">
-            <div class="artist-avatar">
-                <img src="{{ album.artist.avatar.url }}" alt="{{ album.artist_name }}" class="artist-avatar-img">
-            </div>
-            <div class="artist-details">
-                <h3>{{ album.artist.artist_name }}</h3>
-                <p><strong>Género:</strong> {{ album.artist.genre|default:"No especificado" }}</p>
-                <p><strong>País:</strong> {{ album.artist.country|default:"No especificado" }}</p>
-                {% if album.artist.bio %}
-                    <p class="artist-bio">{{ album.artist.bio }}</p>
-                {% endif %}
-
-                <a href="{% url 'artist_detail' artist_name=album.artist_name %}" class="btn btn-artist">
-                    <i class="fas fa-user"></i> Ver perfil completo
-                </a>
-            </div>
-        </div>
-        {% else %}
-            <p>Información del artista no disponible</p>
-        {% endif %}
-    </div>
-</main>
+        {% endfor %}
+    {% else %}
+        <p class="empty-message">Este álbum no contiene canciones aún.</p>
+    {% endif %}
+</div>
+</div>
 {% endblock %}

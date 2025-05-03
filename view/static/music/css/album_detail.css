@@ -1,303 +1,253 @@
-/* Estilos base consistentes con music_detail */
-body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    margin: 0;
-    background-color: #f4f4f8;
-    color: #333;
-    line-height: 1.6;
-    -webkit-font-smoothing: antialiased;
-}
-
-main {
-    padding: 2em;
-    margin: 0 auto;
+/* Contenedor principal */
+.album-detail {
     max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem 1rem;
+    color: #333;
+    font-family: 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
 }
 
-/* Estilo para la información del álbum */
+/* Encabezado del álbum */
+.album-header {
+    display: flex;
+    gap: 2.5rem;
+    margin-bottom: 3rem;
+    align-items: flex-start;
+    background: #fff;
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+/* Portada del álbum */
+.album-cover {
+    width: 280px;
+    height: 280px;
+    object-fit: cover;
+    border-radius: 12px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+    flex-shrink: 0;
+    transition: transform 0.3s ease;
+}
+
+.album-cover:hover {
+    transform: scale(1.02);
+}
+
+/* Información del álbum */
 .album-info {
-    background-color: #fff;
-    padding: 1.5em;
-    border-radius: 16px;
+    flex: 1;
+}
+
+.album-title {
+    font-size: 2.4rem;
+    margin-bottom: 0.5rem;
+    color: #1a1a1a;
+    font-weight: 700;
+    line-height: 1.2;
+}
+
+.album-artist {
+    font-size: 1.5rem;
+    color: #4a5568;
+    margin-bottom: 1.5rem;
+    font-weight: 600;
+}
+
+/* Metadatos */
+.album-meta {
+    display: flex;
+    gap: 1.5rem;
+    margin-bottom: 1.5rem;
+    color: #6b7280;
+    font-size: 0.95rem;
+}
+
+.album-meta span {
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    margin-bottom: 2em;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+    gap: 0.5rem;
 }
 
-.album-info img {
-    height: 25vw;
-    max-height: 300px;
-    border-radius: 12px;
-    box-shadow: 3px 3px 8px rgba(0, 0, 0, 0.1);
+.album-meta span::before {
+    content: "•";
+    color: #9ca3af;
 }
 
-.album-details {
-    flex: 1;
-    text-align: left;
-    margin-right: 1.5em;
+.album-meta span:first-child::before {
+    content: none;
 }
 
-.album-details h1 {
-    font-size: 2em;
-    margin-bottom: 0.5em;
-    color: #2c3e50;
-}
-
-.album-details p {
-    font-size: 1.1em;
-    color: #666;
-    margin-bottom: 0.75em;
-}
-
-/* Descripción del álbum */
+/* Descripción */
 .album-description {
-    background-color: #fff;
-    padding: 1.5em;
-    border-radius: 12px;
-    margin-bottom: 2em;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+    margin-bottom: 2rem;
+    line-height: 1.7;
+    color: #4b5563;
+    font-size: 1.05rem;
 }
 
-.album-description h3 {
-    font-size: 1.5em;
-    margin-bottom: 0.5em;
-    color: #2c3e50;
+/* Botones de acción */
+.action-buttons {
+    display: flex;
+    gap: 1rem;
+    margin-top: 2rem;
 }
 
-.album-description p {
-    color: #555;
-    line-height: 1.6;
+.btn {
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.95rem;
+    transition: all 0.3s ease;
+    display: inline-block;
+    text-align: center;
+}
+
+.btn-primary {
+    background-color: #1db954;
+    color: white;
+    border: none;
+}
+
+.btn-primary:hover {
+    background-color: #179a46;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(29, 185, 84, 0.2);
+}
+
+.btn-secondary {
+    background-color: white;
+    color: #1f2937;
+    border: 1px solid #d1d5db;
+}
+
+.btn-secondary:hover {
+    background-color: #f9fafb;
+    border-color: #9ca3af;
+    transform: translateY(-2px);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
 }
 
 /* Lista de canciones */
-.song-list-section {
-    background-color: #fff;
-    padding: 1.5em;
-    border-radius: 12px;
-    margin-bottom: 2em;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
-}
-
-.song-list-section h2 {
-    font-size: 1.75em;
-    margin-bottom: 1em;
-    color: #2c3e50;
-    border-bottom: 2px solid #eaeaea;
-    padding-bottom: 0.5em;
-}
-
 .song-list {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5em;
+    background: white;
+    border-radius: 12px;
+    padding: 2rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    margin-top: 2rem;
+}
+
+.song-list h3 {
+    font-size: 1.5rem;
+    margin-bottom: 1.5rem;
+    color: #1f2937;
+    font-weight: 700;
+    padding-bottom: 0.8rem;
+    border-bottom: 2px solid #f3f4f6;
 }
 
 .song-item {
     display: flex;
     align-items: center;
-    padding: 0.75em;
-    background-color: #f9f9f9;
+    padding: 1rem;
     border-radius: 8px;
-    transition: background-color 0.2s ease;
+    transition: all 0.2s ease;
+    cursor: pointer;
 }
 
 .song-item:hover {
-    background-color: #f0f0f0;
+    background-color: #f9fafb;
+    transform: translateX(5px);
+}
+
+.song-cover {
+    width: 50px;
+    height: 50px;
+    object-fit: cover;
+    border-radius: 6px;
+    margin-right: 1rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .song-number {
     width: 30px;
+    color: #6b7280;
+    font-size: 0.9rem;
     text-align: center;
-    color: #777;
-    font-size: 0.9em;
+    margin-right: 1rem;
 }
 
 .song-info {
     flex: 1;
-    margin-left: 1em;
+    padding: 0 0.5rem;
 }
 
 .song-title {
-    font-weight: 500;
-    color: #2c3e50;
+    font-weight: 600;
+    margin-bottom: 0.3rem;
+    color: #1f2937;
+    font-size: 1.05rem;
 }
 
-.song-meta {
-    font-size: 0.85em;
-    color: #777;
+.song-artist {
+    color: #6b7280;
+    font-size: 0.9rem;
 }
 
 .song-price {
-    width: 80px;
+    font-weight: 600;
+    color: #1db954;
+    min-width: 80px;
     text-align: right;
-    font-weight: 500;
+    font-size: 1rem;
 }
 
-.song-actions {
-    margin-left: 1em;
-}
-
+/* Estado vacío */
 .empty-message {
-    color: #777;
     text-align: center;
-    padding: 1em;
+    color: #9ca3af;
+    padding: 2rem 0;
+    font-size: 1.1rem;
 }
 
-/* Botones */
-.btn {
-    display: inline-block;
-    padding: 0.6em 1.2em;
-    border-radius: 6px;
-    text-decoration: none;
-    font-weight: 500;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    border: none;
-    font-size: 0.9em;
-    margin-right: 0.5em;
-}
-
-.btn i {
-    margin-right: 0.5em;
-}
-
-.btn-buy {
-    background-color: #1db954;
-    color: white;
-}
-
-.btn-buy:hover {
-    background-color: #179644;
-}
-
-.btn-edit {
-    background-color: #3498db;
-    color: white;
-}
-
-.btn-edit:hover {
-    background-color: #2980b9;
-}
-
-.btn-view {
-    background-color: #555;
-    color: white;
-    padding: 0.4em 0.8em;
-    font-size: 0.85em;
-}
-
-.btn-view:hover {
-    background-color: #333;
-}
-
-.btn-artist {
-    background-color: #555;
-    color: white;
-    margin-top: 0.75em;
-    display: inline-block;
-}
-
-.btn-artist:hover {
-    background-color: #333;
-}
-
-/* Información del artista (consistente con music_detail) */
-.author-info {
-    background-color: #fff;
-    padding: 1.5em;
-    border-radius: 16px;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
-}
-
-.author-info h2 {
-    font-size: 1.75em;
-    margin-bottom: 1em;
-    color: #2c3e50;
-    border-bottom: 2px solid #eaeaea;
-    padding-bottom: 0.5em;
-}
-
-.artist-card {
-    display: flex;
-    gap: 1.25em;
-    align-items: center;
-    background: #f9fafc;
-    padding: 1.25em;
-    border-radius: 12px;
-    margin-top: 1.25em;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
-}
-
-.artist-avatar img {
-    width: 70px;
-    height: 70px;
-    border-radius: 50%;
-    object-fit: cover;
-    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
-}
-
-.artist-details {
-    flex: 1;
-}
-
-.artist-details h3 {
-    margin: 0 0 0.25em 0;
-    color: #2c3e50;
-    font-size: 1.25em;
-}
-
-.artist-details p {
-    margin: 0.25em 0;
-    color: #666;
-    font-size: 1em;
-}
-
-.artist-bio {
-    margin-top: 0.5em;
-    font-size: 0.9em;
-    line-height: 1.5;
-}
-
-/* Responsive */
-@media screen and (max-width: 768px) {
-    .album-info {
+/* Diseño responsive */
+@media (max-width: 768px) {
+    .album-header {
         flex-direction: column;
-        text-align: center;
+        gap: 1.5rem;
+        padding: 1.5rem;
     }
 
-    .album-details {
-        margin-right: 0;
-        margin-bottom: 1.5em;
-    }
-
-    .album-info img {
-        width: 80%;
+    .album-cover {
+        width: 100%;
+        max-width: 250px;
         height: auto;
+        margin: 0 auto;
+    }
+
+    .album-title {
+        font-size: 2rem;
+    }
+
+    .album-artist {
+        font-size: 1.3rem;
+    }
+
+    .action-buttons {
+        flex-direction: column;
+    }
+
+    .btn {
+        width: 100%;
     }
 
     .song-item {
-        flex-wrap: wrap;
-        gap: 0.5em;
+        padding: 0.8rem;
     }
 
-    .song-number, .song-price, .song-actions {
-        width: auto;
-    }
-
-    .song-info {
-        flex: 100%;
-        margin-left: 0;
-        margin-top: 0.5em;
-    }
-
-    .artist-card {
-        flex-direction: column;
-        text-align: center;
-    }
-
-    .artist-details {
-        text-align: center;
+    .song-cover {
+        width: 40px;
+        height: 40px;
     }
 }
