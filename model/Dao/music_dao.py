@@ -84,6 +84,10 @@ class SongDAO:
         songs = Song.objects.filter(genre__iexact=genre)
         return [SongFactory.create_dto_from_model(song) for song in songs]
 
+    @staticmethod
+    def filter_by_album(album_id):
+        songs = Song.objects.filter(album_id=album_id)
+        return [SongFactory.create_dto_from_model(song) for song in songs]
 
     @staticmethod
     def search(query):
@@ -114,13 +118,11 @@ class SongDAO:
             songs = songs.filter(
                 models.Q(title__icontains=query) |
                 models.Q(artist_name__icontains=query) |
-                models.Q(album_title__icontains=query) |
+                models.Q(song_cover__icontains=query) |
                 models.Q(genre__icontains=query)
             )
 
-        print(f"Query: {songs.query}")  # Very important debugging!
         results = [SongFactory.create_dto_from_model(song) for song in songs]
-        print(f"Results count: {len(results)}")  # Debugging
         return results
 
 class AlbumDAO:
@@ -131,7 +133,6 @@ class AlbumDAO:
             artist_name=album_dto.artist_name,
             genre=album_dto.genre,
             release_date=album_dto.release_date,
-            price=album_dto.price,
         )
 
         if album_dto.album_cover:
@@ -159,7 +160,6 @@ class AlbumDAO:
             album.artist_name = album_dto.artist_name
             album.genre = album_dto.genre
             album.release_date = album_dto.release_date
-            album.price = album_dto.price
 
             if album_dto.album_cover:
                 album.album_cover.save(
