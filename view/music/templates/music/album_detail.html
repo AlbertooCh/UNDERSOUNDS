@@ -1,0 +1,293 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}{{ album.title }} - Undersounds{% endblock %}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'music/css/album_detail.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+{% endblock %}
+
+{% block content %}
+
+<main class="album-detail-container">
+    <!-- Album Header Section -->
+    <div class="album-header">
+        <div class="album-cover">
+            {% if album.album_cover %}
+                <img src="{{ album.album_cover.url }}" alt="{{ album.title }}">
+            {% else %}
+                <img src="{% static 'images/default_album.jpg' %}" alt="Portada del álbum">
+            {% endif %}
+        </div>
+
+        <div class="album-info">
+            <h1>{{ album.title }}</h1>
+            <p class="artist-name">{{ album.artist_name }}</p>
+            <div class="album-meta">
+                <span>{{ album.release_date|date:"Y" }}</span>
+                <span>{{ songs.count }} canción{{ songs.count|pluralize:"es" }}</span>
+            </div>
+
+            <div class="album-actions">
+                {% if user.is_authenticated %}
+                    <form action="{% url 'catalogo' %}" method="post" class="add-to-cart-form">
+                        {% csrf_token %}
+                        <input type="hidden" name="quantity" value="1">
+                        {% if album_in_order %}
+                            <button type="button" class="action-btn purchased" disabled>
+                                <i class="fas fa-check-double"></i> Álbum comprado
+                            </button>
+                        {% elif album_in_cart %}
+                            <button type="button" class="action-btn in-cart" disabled>
+                                <i class="fas fa-shopping-cart"></i> En el carrito
+                            </button>
+                        {% else %}
+                            <button type="submit" class="action-btn add-to-cart">
+                                <i class="fas fa-cart-plus"></i> Añadir álbum (€{{ album.price }})
+                            </button>
+                        {% endif %}
+                    </form>
+
+                    <button id="favorite-album-btn" class="action-btn favorite {% if album_is_favorite %}active{% endif %}"
+                            data-album-id="{{ album.id }}">
+                        <i class="fas fa-heart"></i>
+                        <span id="favorite-album-text">
+                            {% if album_is_favorite %}En favoritos{% else %}Añadir a favoritos{% endif %}
+                        </span>
+                    </button>
+                {% else %}
+                    <a href="{% url 'login' %}?next={{ request.path }}" class="action-btn">
+                        <i class="fas fa-sign-in-alt"></i> Inicia sesión para comprar
+                    </a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Songs List Section -->
+    <div class="songs-list-section">
+        <h2>Canciones</h2>
+
+        <div class="songs-list">
+            {% for song in songs %}
+            <div class="song-item" data-song-id="{{ song.id }}">
+                <div class="song-number">{{ forloop.counter }}</div>
+                <div class="song-info">
+                    <div class="song-title">{{ song.title }}</div>
+                    <div class="song-details">
+                        <span class="song-duration">3:45</span> <!-- Puedes añadir duración si está en tu modelo -->
+                        <span class="song-price">€{{ song.price }}</span>
+                    </div>
+                </div>
+                <div class="song-actions">
+                    {% if user.is_authenticated %}
+                        {% if song_in_order %}
+                            <button class="song-action-btn" disabled>
+                                <i class="fas fa-check"></i> Comprado
+                            </button>
+                        {% else %}
+                            <form action="{% url 'add_to_cart' song.id %}" method="post">
+                                {% csrf_token %}
+                                <input type="hidden" name="quantity" value="1">
+                                <button type="submit" class="song-action-btn">
+                                    <i class="fas fa-cart-plus"></i> Añadir
+                                </button>
+                            </form>
+                        {% endif %}
+                    {% endif %}
+                    <a href="{% url 'music_detail_id' song.id %}" class="song-action-btn">
+                        <i class="fas fa-info-circle"></i> Detalles
+                    </a>
+                </div>
+            </div>
+            {% empty %}
+            <div class="no-songs">
+                Este álbum no tiene canciones disponibles.
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Album Description Section -->
+    {% if album.description %}
+    <div class="album-description">
+        <h2>Acerca del álbum</h2>
+        <p>{{ album.description }}</p>
+    </div>
+    {% endif %}
+
+    <!-- Comments Section -->
+    <div class="comments-section">
+        <h2>Comentarios</h2>
+
+        {% if user.is_authenticated %}
+        <div class="add-comment">
+            <form method="post" action="{% url 'catalogo'%}">
+                {% csrf_token %}
+                <textarea name="comment_text" placeholder="Escribe tu comentario sobre este álbum..." required></textarea>
+                <div class="rating-section">
+                    <label>Valoración:</label>
+                    <div class="star-rating">
+                        <input type="radio" id="album-star5" name="rating" value="5" required />
+                        <label for="album-star5">★</label>
+                        <input type="radio" id="album-star4" name="rating" value="4" />
+                        <label for="album-star4">★</label>
+                        <input type="radio" id="album-star3" name="rating" value="3" />
+                        <label for="album-star3">★</label>
+                        <input type="radio" id="album-star2" name="rating" value="2" />
+                        <label for="album-star2">★</label>
+                        <input type="radio" id="album-star1" name="rating" value="1" />
+                        <label for="album-star1">★</label>
+                    </div>
+                </div>
+                <button type="submit" class="submit-comment-btn">Enviar comentario</button>
+            </form>
+        </div>
+        {% else %}
+        <div class="login-to-comment">
+            <a href="{% url 'login' %}?next={{ request.path }}">Inicia sesión</a> para dejar un comentario.
+        </div>
+        {% endif %}
+
+        <div class="comments-list">
+            {% for comment in album_comments %}
+            <div class="comment">
+                <div class="comment-header">
+                    <img src="{{ comment.user.avatar.url }}" alt="{{ comment.user.username }}" class="comment-avatar">
+                    <div class="comment-user">
+                        <strong>{{ comment.user.username }}</strong>
+                        <div class="comment-rating">
+                            {% for _ in "12345" %}
+                                {% if forloop.counter <= comment.rating %}
+                                    <span class="star filled">★</span>
+                                {% else %}
+                                    <span class="star">★</span>
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                    </div>
+                    <span class="comment-date">{{ comment.created_at|date:"d M Y" }}</span>
+                </div>
+                <div class="comment-text">
+                    {{ comment.comment_text }}
+                </div>
+                {% if user == comment.user %}
+                <form method="post" action="{% url 'delete_album_comment' comment.id %}" class="delete-comment-form">
+                    {% csrf_token %}
+                    <input type="hidden" name="album_id" value="{{ album.id }}">
+                    <button type="submit" class="delete-comment-btn">
+                        <i class="fas fa-trash"></i> Eliminar
+                    </button>
+                </form>
+                {% endif %}
+            </div>
+            {% empty %}
+            <div class="no-comments">
+                No hay comentarios aún. Sé el primero en comentar.
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</main>
+
+<!-- Flash Messages -->
+{% if messages %}
+<div id="flash-message" style="position: fixed; top: 20px; right: 20px; background-color: #333; color: white; padding: 15px 20px; border-radius: 8px; z-index: 9999; box-shadow: 0 4px 6px rgba(0,0,0,0.1); font-family: sans-serif; opacity: 1;">
+    {% for message in messages %}
+        {{ message }}
+    {% endfor %}
+</div>
+
+<script>
+    window.addEventListener('DOMContentLoaded', () => {
+        const msg = document.getElementById('flash-message');
+        if (msg) {
+            setTimeout(() => {
+                msg.style.transition = 'opacity 0.5s ease';
+                msg.style.opacity = '0';
+                setTimeout(() => {
+                    msg.remove();
+                }, 500);
+            }, 1000);
+        }
+    });
+</script>
+{% endif %}
+
+<!-- Favorite Album Script -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const favoriteBtn = document.getElementById('favorite-album-btn');
+    if (favoriteBtn) {
+        favoriteBtn.addEventListener('click', toggleFavoriteAlbum);
+    }
+
+    function toggleFavoriteAlbum() {
+        const btn = this;
+        const albumId = btn.dataset.albumId;
+        const isFavorite = btn.classList.contains('active');
+        const url = isFavorite ? '/favorites/remove/' : '/favorites/add/';
+
+        btn.disabled = true;
+
+        fetch(url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': '{{ csrf_token }}',
+            },
+            body: JSON.stringify({
+                type: 'album',
+                id: albumId
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success') {
+                btn.classList.toggle('active');
+                const favoriteText = document.getElementById('favorite-album-text');
+                favoriteText.textContent = btn.classList.contains('active') ? 'En favoritos' : 'Añadir a favoritos';
+                showFlashMessage(isFavorite ? 'Álbum eliminado de favoritos' : 'Álbum añadido a favoritos');
+            } else {
+                showFlashMessage('Error: ' + data.message, true);
+            }
+        })
+        .catch(error => {
+            showFlashMessage('Error al actualizar favoritos', true);
+            console.error('Error:', error);
+        })
+        .finally(() => {
+            btn.disabled = false;
+        });
+    }
+
+    function showFlashMessage(message, isError = false) {
+        const flash = document.createElement('div');
+        flash.id = 'flash-message';
+        flash.textContent = message;
+        flash.style.backgroundColor = isError ? '#ff4757' : '#2ed573';
+
+        Object.assign(flash.style, {
+            position: 'fixed',
+            top: '20px',
+            right: '20px',
+            color: 'white',
+            padding: '15px 20px',
+            borderRadius: '8px',
+            zIndex: '9999',
+            boxShadow: '0 4px 6px rgba(0,0,0,0.1)',
+            fontFamily: 'sans-serif',
+            opacity: '1',
+            transition: 'opacity 0.5s ease'
+        });
+
+        document.body.appendChild(flash);
+
+        setTimeout(() => {
+            flash.style.opacity = '0';
+            setTimeout(() => flash.remove(), 500);
+        }, 2000);
+    }
+});
+</script>
+{% endblock %}

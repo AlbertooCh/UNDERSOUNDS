@@ -93,13 +93,5 @@ class AlbumForm(forms.Form):
         required=True
     )
 
-    description = forms.CharField(
-        label="Descripción",
-        widget=forms.Textarea(attrs={
-            'class': 'form-control',
-            'rows': 3
-        }),
-        required=False
-    )
 
 

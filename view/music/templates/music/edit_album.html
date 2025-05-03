@@ -1,0 +1,142 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Editar Álbum - Undersounds{% endblock %}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'music/css/edit_album.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<div class="album-edit-container">
+    <!-- Mensajes de feedback -->
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }}">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    <h1>Editar Álbum: {{ album.title }}</h1>
+
+    <div class="album-edit-section">
+        <h2>Información del Álbum</h2>
+
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <input type="hidden" name="update_album" value="true">
+
+            <div class="form-group">
+                <label for="id_title">Título*</label>
+                <input type="text" name="title" id="id_title" class="form-control"
+                       value="{{ form.title.value|default_if_none:'' }}" required>
+                {% if form.title.errors %}
+                    <div class="error-message">{{ form.title.errors }}</div>
+                {% endif %}
+            </div>
+
+            <div class="form-group">
+                <label for="id_genre">Género*</label>
+                <input type="text" name="genre" id="id_genre" class="form-control"
+                       value="{{ form.genre.value|default_if_none:'' }}" required>
+                {% if form.genre.errors %}
+                    <div class="error-message">{{ form.genre.errors }}</div>
+                {% endif %}
+            </div>
+
+            <div class="form-group">
+                <label for="id_release_date">Fecha de lanzamiento*</label>
+                <input type="date" name="release_date" id="id_release_date" class="form-control"
+                       value="{{ form.release_date.value|date:'Y-m-d'|default_if_none:'' }}" required>
+                {% if form.release_date.errors %}
+                    <div class="error-message">{{ form.release_date.errors }}</div>
+                {% endif %}
+            </div>
+
+            <div class="form-group">
+                <label for="id_album_cover">Portada del álbum</label>
+                <input type="file" name="album_cover" id="id_album_cover" class="form-control file-input"
+                       accept="image/*">
+                {% if album.album_cover %}
+                    <div class="current-file">
+                        Actual: <a href="{{ album.album_cover.url }}" target="_blank">{{ album.album_cover.name }}</a>
+                    </div>
+                {% endif %}
+                {% if form.album_cover.errors %}
+                    <div class="error-message">{{ form.album_cover.errors }}</div>
+                {% endif %}
+            </div>
+
+            <button type="submit" class="btn-submit">Actualizar Álbum</button>
+        </form>
+    </div>
+
+    <div class="songs-section">
+        <h2>Canciones del Álbum</h2>
+
+        {% if songs %}
+            <div class="songs-list">
+                {% for song in songs %}
+                    <div class="song-item">
+                        <div class="song-info">
+                            <span class="song-title">{{ song.title }}</span>
+                            <span class="song-details">{{ song.genre }} | {{ song.price }}€</span>
+                        </div>
+                        <div class="song-actions">
+                            <a href="{% url 'edit_song' song.id %}" class="btn-edit">Editar</a>
+                            <a href="{% url 'delete_song' song.id %}" class="btn-delete">Eliminar</a>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p class="no-songs">Este álbum no tiene canciones aún.</p>
+        {% endif %}
+
+        <h3>Añadir Nueva Canción</h3>
+
+        <form method="post" enctype="multipart/form-data" class="add-song-form">
+            {% csrf_token %}
+            <input type="hidden" name="add_song" value="true">
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="song_title">Título*</label>
+                    <input type="text" name="title" id="song_title" class="form-control" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="song_genre">Género*</label>
+                    <input type="text" name="genre" id="song_genre" class="form-control" required>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="song_price">Precio (€)*</label>
+                    <input type="number" name="price" id="song_price" class="form-control" step="0.01" min="0" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="song_release_date">Fecha de lanzamiento*</label>
+                    <input type="date" name="release_date" id="song_release_date" class="form-control" required>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="song_cover">Portada (opcional)</label>
+                <input type="file" name="song_cover" id="song_cover" class="form-control file-input" accept="image/*">
+            </div>
+
+            <div class="form-group">
+                <label for="song_file">Archivo de audio*</label>
+                <input type="file" name="song_file" id="song_file" class="form-control file-input" accept="audio/*" required>
+            </div>
+
+            <button type="submit" class="btn-add-song">Añadir Canción</button>
+        </form>
+    </div>
+</div>
+
+{% endblock %}
