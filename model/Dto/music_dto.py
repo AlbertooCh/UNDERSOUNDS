@@ -18,7 +18,7 @@ class SongDTO:
         self.album_id = kwargs.get('album_id')
 
 class AlbumDTO:
-    def __init__(self, title: str, artist_name: str, genre: str,price: float,  # Cambiado a float
+    def __init__(self, title: str, artist_name: str, genre: str,  # Cambiado a float
                  release_date: datetime, album_cover=None, artist_id=None, album_id=None, **kwargs):
         self.album_id = album_id
         self.title = title
@@ -27,7 +27,6 @@ class AlbumDTO:
         self.release_date = release_date
         self.album_cover = album_cover
         self.artist_id = artist_id
-        self.price = price
 
     def to_dict(self):
         return {
@@ -38,7 +37,6 @@ class AlbumDTO:
             'album_cover': self.album_cover,
             'artist_id': self.artist_id,
             'album_id': self.album_id,
-            'price': self.price
 
         }
 

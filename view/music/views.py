@@ -26,7 +26,6 @@ def music_detail_redirect(request):
     song_id = request.GET.get("id")
     return redirect("music_detail_id", id=song_id)
 
-
 def music_detail(request, id):
     song_dto = SongController.get_song(id)
 
@@ -35,6 +34,7 @@ def music_detail(request, id):
 
     User = get_user_model()
     artist = User.objects.filter(artist_name=song_dto.artist_name).first()
+
 
     song = {
         'id': song_dto.id,
@@ -53,6 +53,15 @@ def music_detail(request, id):
     comments_ratings = list(Comments.objects.filter(song_id=id))
     comments_ratings.reverse()
     artist_songs = UserController.get_artist_with_songs(artist.id)
+
+    ratings = []
+    for comment in comments_ratings:  # Asegúrate de que el rating sea un número
+        ratings.append(comment.rating)
+
+    if ratings:
+        rating = sum(ratings) / len(ratings)
+    else:
+        rating = 0
 
     order_data = None
     in_cart = False
@@ -97,7 +106,8 @@ def music_detail(request, id):
         'in_order': in_order,
         'artist_songs': artist_songs.songs.all(),
         'album_id': song_dto.album_id,
-        'is_favorite': is_favorite
+        'is_favorite': is_favorite,
+        'rating': rating
     }
     return render(request, 'music/music_detail.html', context)
 
@@ -466,16 +476,19 @@ def artist_detail(request, artist_name=None):
 
     return render(request, 'music/artist_detail.html', context)
 
-def add_comment(request, song_id):
+@login_required
+def add_commentSong(request, song_id):
     new_comment = None  # Initialize new_comment
     if request.method == 'POST':
         comment_text = request.POST.get('comment_text')
+        comment_rating = request.POST.get('rating')
         if comment_text:
             try:
                 song = Song.objects.get(pk=song_id)
                 new_comment = Comments.objects.create(
                     user_id=request.user,
                     song_id=song,
+                    rating=comment_rating,
                     comment=comment_text
                 )
             except Song.DoesNotExist:
@@ -487,13 +500,49 @@ def add_comment(request, song_id):
     else:
         return redirect(reverse('music_detail_id', args=[song_id]) + '?error=empty_comment')
 
-def delete_comment(request, comment_id):
+@login_required
+def delete_commentSong(request, comment_id):
     if request.method == 'POST':
         comentario = get_object_or_404(Comments, id=comment_id)
+        song_id = comentario.song_id.id
         comentario.delete()
-        return redirect(reverse('music_detail_id', args=[comment.song_id.id]))
+        return redirect(reverse('music_detail_id', args=[song_id]))
     else:
-        return redirect(reverse('music_detail_id', args=[comment.song_id.id]))
+        return redirect(reverse('catalogo'))
+
+@login_required
+def add_commentAlbum(request, album_id):
+    new_comment = None  # Initialize new_comment
+    if request.method == 'POST':
+        comment_text = request.POST.get('comment_text')
+        comment_rating = request.POST.get('rating')
+        if comment_text:
+            try:
+                album = Album.objects.get(pk=album_id)
+                new_comment = Comments.objects.create(
+                    user_id=request.user,
+                    album_id_id=album.id,
+                    rating=comment_rating,
+                    comment=comment_text
+                )
+            except album.DoesNotExist:
+                # Handle the case where the song does not exist.
+                return redirect(reverse('home'))  # Or some other appropriate error handling
+    # new_comment will be None if it wasn't created
+    if new_comment:
+        return redirect(f"{reverse('album_detail', args=[album_id])}#comment-{new_comment.id}")
+    else:
+        return redirect(reverse('album_detail', args=[album_id]) + '?error=empty_comment')
+
+@login_required
+def delete_commentAlbum(request, comment_id):
+    if request.method == 'POST':
+        comentario = get_object_or_404(Comments, id=comment_id)
+        album_id = comentario.album_id.id
+        comentario.delete()
+        return redirect(reverse('music_detail_id', args=[album_id]))
+    else:
+        return redirect(reverse('catalogo'))
 
 @login_required
 def edit_album(request, album_id):
@@ -581,12 +630,24 @@ def album_detail(request, album_id):
     if not album_dto:
         return render(request, '404.html', status=404)
 
-    songs = Song.objects.filter(album_id=album_id).order_by('id')
+    songs = SongController.get_songs_by_album(album_id)
+
+    valor = []
+    for song in songs:  # Asegúrate de que el rating sea un número
+        valor.append(song.price)
+
+    if valor:
+        price = sum(valor) / len(valor)
+    else:
+        price = 0
+
+
 
     context = {
         'album': album_dto,
         'songs': songs,
-        'user': request.user
+        'user': request.user,
+        'price': price
     }
     return render(request, 'music/album_detail.html', context)
 

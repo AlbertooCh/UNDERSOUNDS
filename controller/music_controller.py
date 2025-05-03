@@ -1,6 +1,8 @@
 # music/controllers/song_controller.py
 from datetime import date, datetime
 from django.contrib.auth import get_user_model
+from django.db.models import Q
+
 from model.Dao.music_dao import SongDAO, AlbumDAO, FavoriteDAO
 from model.Dto.music_dto import SongDTO, AlbumDTO, FavoriteDTO, FavoriteItemDTO
 from django.core.files.uploadedfile import InMemoryUploadedFile
@@ -158,6 +160,11 @@ class SongController:
         if recent_date:
             songs = [song for song in songs if song.release_date and song.release_date.date() >= recent_date]
         return songs
+
+    @staticmethod
+    def get_songs_by_album(album_id):
+
+        return SongDAO.filter_by_album(album_id)
 
     def filter_songs_by_date_range(fecha_ant, fecha_post, query):
         """
