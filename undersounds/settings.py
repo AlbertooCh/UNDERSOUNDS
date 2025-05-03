@@ -42,7 +42,6 @@ INSTALLED_APPS = [
     'music',
     'user',
     'social_django',# Agregado para manejar OAuth
-    'favoritos',
 
 ]
 

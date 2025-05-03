@@ -4,6 +4,47 @@
 {% block extra_css %}
     <link rel="stylesheet" href="{% static 'user/css/cuenta.css' %}">
     <link rel="stylesheet" href="{% static 'music/css/artist_detail.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        /* Estilos para el botón de favoritos */
+        .favorite-section {
+            display: inline-block;
+            margin-left: 10px;
+        }
+
+        .favorite-btn {
+            background-color: transparent;
+            border: 2px solid #ff4757;
+            color: #ff4757;
+            padding: 8px 15px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .favorite-btn:hover {
+            background-color: rgba(255, 71, 87, 0.1);
+        }
+
+        .favorite-btn.active {
+            background-color: #ff4757;
+            color: white;
+        }
+
+        .favorite-btn i {
+            font-size: 16px;
+        }
+
+        .favorite-btn:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+        }
+    </style>
 {% endblock %}
 
 {% block content %}
@@ -15,7 +56,7 @@
     <!-- Cabecera del perfil -->
     <div class="profile-header">
         {% if artist.avatar %}
-            <img src="{{ artist.avatar }}" alt="Avatar" class="profile-avatar">
+            <img src="{{ artist.avatar.url }}" alt="Avatar" class="profile-avatar">
         {% endif %}
 
         {% if is_own_profile %}
@@ -49,6 +90,20 @@
                 </div>
             </div>
         </div>
+            {% if not is_own_profile and request.user.is_authenticated %}
+            <div class="favorite-section">
+                <button id="favorite-btn" class="favorite-btn {% if is_favorite %}active{% endif %}" data-artist-id="{{ artist.id }}">
+                    <i class="fas fa-heart"></i>
+                    <span id="favorite-text">
+                        {% if is_favorite %}En favoritos{% else %}Añadir a favoritos{% endif %}
+                    </span>
+                </button>
+            </div>
+        {% elif not is_own_profile %}
+            <a href="{% url 'login' %}?next={{ request.path }}" class="favorite-btn">
+                <i class="fas fa-heart"></i> Inicia sesión para guardar
+            </a>
+        {% endif %}
     </div>
 
     <!-- Información del artista -->
@@ -124,5 +179,84 @@
 
 {% if is_own_profile %}
 <script src="{% static 'music/js/artist.js' %}"></script>
+{% endif %}
+
+{% if not is_own_profile and request.user.is_authenticated %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const favoriteBtn = document.getElementById('favorite-btn');
+    if (favoriteBtn) {
+        favoriteBtn.addEventListener('click', function () {
+            const isFavorite = favoriteBtn.classList.contains('active');
+            const artistId = favoriteBtn.dataset.artistId;
+            const url = isFavorite ? '/favorites/remove/' : '/favorites/add/';
+
+            favoriteBtn.disabled = true;
+
+            fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': '{{ csrf_token }}',
+                },
+                body: JSON.stringify({
+                    type: 'artist',
+                    id: artistId
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    favoriteBtn.classList.toggle('active');
+                    const text = document.getElementById('favorite-text');
+                    text.textContent = favoriteBtn.classList.contains('active') ? 'En favoritos' : 'Añadir a favoritos';
+
+                    // Mostrar notificación
+                    const message = isFavorite ? 'Eliminado de favoritos' : 'Añadido a favoritos';
+                    showFlashMessage(message);
+                } else {
+                    showFlashMessage('Error: ' + data.message, true);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showFlashMessage('Error al actualizar favoritos', true);
+            })
+            .finally(() => {
+                favoriteBtn.disabled = false;
+            });
+        });
+    }
+
+    function showFlashMessage(message, isError = false) {
+        const flash = document.createElement('div');
+        flash.className = 'flash-message';
+        flash.textContent = message;
+        flash.style.backgroundColor = isError ? '#ff4757' : '#2ed573';
+
+        // Estilos del mensaje flash
+        Object.assign(flash.style, {
+            position: 'fixed',
+            top: '20px',
+            right: '20px',
+            color: 'white',
+            padding: '15px 20px',
+            borderRadius: '8px',
+            zIndex: '9999',
+            boxShadow: '0 4px 6px rgba(0,0,0,0.1)',
+            fontFamily: 'sans-serif',
+            opacity: '1',
+            transition: 'opacity 0.5s ease'
+        });
+
+        document.body.appendChild(flash);
+
+        setTimeout(() => {
+            flash.style.opacity = '0';
+            setTimeout(() => flash.remove(), 500);
+        }, 2000);
+    }
+});
+</script>
 {% endif %}
 {% endblock %}

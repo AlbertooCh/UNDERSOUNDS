@@ -27,4 +27,10 @@ urlpatterns = [
     path('add_comment/<int:song_id>/', login_required(views.add_comment), name='add_comment'),
     path('delete_comment/<int:comment_id>/', login_required(views.delete_comment), name='delete_comment'),
 
+    path('favorites/add/', views.add_favorite, name='add_favorite'),
+    path('favorites/remove/', views.remove_favorite, name='remove_favorite'),
+    path('favorites/list/', views.list_favorites, name='list_favorites'),
+    path('favorites/check/<str:item_type>/<int:item_id>/', views.check_favorite, name='check_favorite'),
+    path('favoritos/', views.favorites_view, name='favoritos'),
+
 ]

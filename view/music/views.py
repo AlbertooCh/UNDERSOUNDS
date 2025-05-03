@@ -7,16 +7,19 @@ from django.contrib import messages
 from django.shortcuts import render, redirect, get_object_or_404
 from django.template.defaulttags import comment
 from django.urls import reverse
+from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.http import require_http_methods
 
-from controller.music_controller import SongController, AlbumController
+from controller.music_controller import SongController, AlbumController, FavoriteController
 from controller.user_controller import UserController
 from model.Dto.music_dto import SongDTO, AlbumDTO
 from model.Dao.music_dao import AlbumDAO
 from model.music.comments_model import Comments
 from model.music.forms import SongForm, AlbumForm
 from django.http import JsonResponse
-from model.music.music_models import Song, Album
+from model.music.music_models import Song, Album, Favorite
 from model.store.store_models import CartItem, Order, Purchase, OrderItem
+import json
 
 
 def music_detail_redirect(request):
@@ -26,8 +29,10 @@ def music_detail_redirect(request):
 
 def music_detail(request, id):
     song_dto = SongController.get_song(id)
+
     if not song_dto:
         return render(request, '404.html', status=404)
+
     User = get_user_model()
     artist = User.objects.filter(artist_name=song_dto.artist_name).first()
 
@@ -52,29 +57,38 @@ def music_detail(request, id):
     order_data = None
     in_cart = False
     in_order = False
+    is_favorite = False
 
     if request.user.is_authenticated:
-        # Obtener los items en el carrito del usuario
+        # Carrito
         items_in_cart = CartItem.objects.filter(user=request.user)
 
-        # Obtener la última orden completada del usuario (o la orden actual si estás en proceso de compra)
+        # Órdenes
         user_purchases = Purchase.objects.filter(user=request.user)
-        order_data  = set()
+        order_data = set()
         for purchase in user_purchases:
             if purchase.order:
                 for item in purchase.order.items.all():
                     order_data.add(item.song)
 
-        for items in items_in_cart:
-            if (items.song.id == id):
+        # En carrito
+        for item in items_in_cart:
+            if item.song.id == id:
                 in_cart = True
-                break;
+                break
 
-        for order in order_data:
-            if (order.id == id):
+        # Ya comprado
+        for song_in_order in order_data:
+            if song_in_order.id == id:
                 in_order = True
-                break;
+                break
 
+        # ¿Es favorito?
+        is_favorite = FavoriteController.is_item_favorited(
+            request.user.id,
+            'song',
+            id
+        )
 
     context = {
         'song': song,
@@ -82,7 +96,8 @@ def music_detail(request, id):
         'in_cart': in_cart,
         'in_order': in_order,
         'artist_songs': artist_songs.songs.all(),
-        'album_id': song_dto.album_id
+        'album_id': song_dto.album_id,
+        'is_favorite': is_favorite
     }
     return render(request, 'music/music_detail.html', context)
 
@@ -440,12 +455,13 @@ def artist_detail(request, artist_name=None):
             })
         artist = UserController.get_artist_with_songs(request.user.id)
         is_own_profile = True
-
+    is_favorite=Favorite.objects.filter(user_id=request.user.id, artist_id=artist.id).exists()
     # Preparar contexto simplificado
     context = {
         'artist': artist,  # Pasamos el objeto completo directamente
         'is_own_profile': is_own_profile,
-        'songs': artist.songs.all()  # Accedemos a las canciones desde el artista
+        'songs': artist.songs.all(),  # Accedemos a las canciones desde el artista
+        'is_favorite': is_favorite
     }
 
     return render(request, 'music/artist_detail.html', context)
@@ -594,3 +610,107 @@ def remove_song_from_album(request, song_id, album_id):
         messages.error(request, "Error al quitar la canción del álbum")
 
     return redirect('edit_album', album_id=album_id)
+
+
+@csrf_exempt
+@require_http_methods(["POST"])
+@login_required
+def add_favorite(request):
+    try:
+        data = json.loads(request.body)
+        item_type = data.get('type')
+        item_id = data.get('id')
+
+        if not item_type or not item_id:
+            return JsonResponse({'status': 'error', 'message': 'Type and ID are required'}, status=400)
+
+        favorite = FavoriteController.add_favorite(request.user.id, item_type, item_id)
+        return JsonResponse({
+            'status': 'success',
+            'favorite': {
+                'id': favorite.id,
+                'type': favorite.type,
+                'item': favorite.item,
+                'created_at': favorite.created_at.isoformat()
+            }
+        })
+    except Exception as e:
+        return JsonResponse({'status': 'error', 'message': str(e)}, status=400)
+
+
+@csrf_exempt
+@require_http_methods(["POST"])
+@login_required
+def remove_favorite(request):
+    try:
+        data = json.loads(request.body)
+        item_type = data.get('type')
+        item_id = data.get('id')
+
+        if not item_type or not item_id:
+            return JsonResponse({'status': 'error', 'message': 'Type and ID are required'}, status=400)
+
+        success = FavoriteController.remove_favorite(request.user.id, item_type, item_id)
+        if success:
+            return JsonResponse({'status': 'success', 'message': 'Favorite removed'})
+        else:
+            return JsonResponse({'status': 'error', 'message': 'Favorite not found'}, status=404)
+    except Exception as e:
+        return JsonResponse({'status': 'error', 'message': str(e)}, status=400)
+
+
+@require_http_methods(["GET"])
+@login_required
+def list_favorites(request):
+    try:
+        favorites = FavoriteController.get_user_favorites(request.user.id)
+        favorites_data = [{
+            'id': fav.id,
+            'type': fav.type,
+            'item': fav.item,
+            'created_at': fav.created_at.isoformat()
+        } for fav in favorites]
+
+        return JsonResponse({
+            'status': 'success',
+            'favorites': favorites_data
+        })
+    except Exception as e:
+        return JsonResponse({'status': 'error', 'message': str(e)}, status=400)
+
+
+@require_http_methods(["GET"])
+@login_required
+def check_favorite(request, item_type, item_id):
+    try:
+        is_favorited = FavoriteController.is_item_favorited(request.user.id, item_type, item_id)
+        return JsonResponse({
+            'status': 'success',
+            'is_favorited': is_favorited
+        })
+    except Exception as e:
+        return JsonResponse({'status': 'error', 'message': str(e)}, status=400)
+
+
+@login_required
+def favorites_view(request):
+    favorites = FavoriteController.get_user_favorites(request.user.id)
+
+    # Separar favoritos por tipo
+    songs = []
+    albums = []
+    artists = []
+
+    for fav in favorites:
+        if fav.type == 'song' and fav.item:
+            songs.append(fav.item)
+        elif fav.type == 'album' and fav.item:
+            albums.append(fav.item)
+        elif fav.type == 'artist' and fav.item:
+            artists.append(fav.item)
+
+    return render(request, 'music/favoritos.html', {
+        'songs': songs,
+        'albums': albums,
+        'artists': artists
+    })

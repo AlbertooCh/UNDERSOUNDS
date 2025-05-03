@@ -540,3 +540,40 @@ footer {
     color: #555;
     margin-top: 0.5em;
 }
+
+.favorite-section {
+    margin: 15px 0;
+}
+
+.favorite-btn {
+    background-color: transparent;
+    border: 2px solid #ff4757;
+    color: #ff4757;
+    padding: 8px 15px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: bold;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.favorite-btn:hover {
+    background-color: rgba(255, 71, 87, 0.1);
+}
+
+.favorite-btn.active {
+    background-color: #ff4757;
+    color: white;
+}
+
+.favorite-btn i {
+    font-size: 16px;
+}
+
+.favorite-btn:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+}

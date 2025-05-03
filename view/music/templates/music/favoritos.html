@@ -1,0 +1,223 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Mis Favoritos - Undersounds{% endblock %}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'music/css/favoritos.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+{% endblock %}
+
+{% block content %}
+<div class="favorites-container">
+    <h1 class="favorites-title">Mis Favoritos</h1>
+
+    <div class="favorites-tabs">
+        <button class="tab-button active" data-tab="songs">Canciones</button>
+        <button class="tab-button" data-tab="albums">Álbumes</button>
+        <button class="tab-button" data-tab="artists">Artistas</button>
+    </div>
+
+    <div class="favorites-content">
+        <!-- Pestaña de Canciones -->
+        <div id="songs" class="tab-content active">
+            <h2>Canciones Favoritas</h2>
+            {% if songs %}
+                <div class="favorites-grid">
+                    {% for song in songs %}
+                        <div class="favorite-item">
+                            <a href="{% url 'music_detail_id' song.id %}">
+                                <div class="item-cover">
+                                    {% if song.cover_url %}
+                                        <img src="{{ song.cover_url }}" alt="{{ song.title }}">
+                                    {% else %}
+                                        <img src="{% static 'images/default_album.jpg' %}" alt="Portada predeterminada">
+                                    {% endif %}
+                                    <div class="play-overlay">
+                                        <i class="fas fa-play"></i>
+                                    </div>
+                                </div>
+                                <div class="item-info">
+                                    <h3>{{ song.title }}</h3>
+                                    <p>{{ song.artist_name }}</p>
+                                </div>
+                            </a>
+                            <button class="remove-favorite" data-type="song" data-id="{{ song.id }}">
+                                <i class="fas fa-times"></i> Eliminar
+                            </button>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <p class="no-favorites">No tienes canciones en favoritos</p>
+            {% endif %}
+        </div>
+
+        <!-- Pestaña de Álbumes -->
+        <div id="albums" class="tab-content">
+            <h2>Álbumes Favoritos</h2>
+            {% if albums %}
+                <div class="favorites-grid">
+                    {% for album in albums %}
+                        <div class="favorite-item">
+                            <a href="{% url 'album_detail' album.id %}">
+                                <div class="item-cover">
+                                    {% if album.cover_url %}
+                                        <img src="{{ album.cover_url }}" alt="{{ album.title }}">
+                                    {% else %}
+                                        <img src="{% static 'images/default_album.jpg' %}" alt="Portada predeterminada">
+                                    {% endif %}
+                                </div>
+                                <div class="item-info">
+                                    <h3>{{ album.title }}</h3>
+                                    <p>{{ album.artist_name }}</p>
+                                </div>
+                            </a>
+                            <button class="remove-favorite" data-type="album" data-id="{{ album.id }}">
+                                <i class="fas fa-times"></i> Eliminar
+                            </button>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <p class="no-favorites">No tienes álbumes en favoritos</p>
+            {% endif %}
+        </div>
+
+        <!-- Pestaña de Artistas -->
+        <div id="artists" class="tab-content">
+            <h2>Artistas Favoritos</h2>
+            {% if artists %}
+                <div class="favorites-grid">
+                    {% for artist in artists %}
+                        <div class="favorite-item">
+                            <a href="{% url 'artist_detail' artist_name=artist.name %}">
+                                <div class="item-cover">
+                                    {% if artist.cover_url %}
+                                        <img src="{{ artist.cover_url }}" alt="{{ artist.username }}" class="artist-avatar">
+                                    {% else %}
+                                        <img src="{% static 'images/default_avatar.jpg' %}" alt="Avatar predeterminado" class="artist-avatar">
+                                    {% endif %}
+                                </div>
+                                <div class="item-info">
+                                    <h3>{{ artist.username }}</h3>
+                                    <p>{{ artist.genre|default:"Sin género especificado" }}</p>
+                                </div>
+                            </a>
+                            <button class="remove-favorite" data-type="artist" data-id="{{ artist.id }}">
+                                <i class="fas fa-times"></i> Eliminar
+                            </button>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <p class="no-favorites">No tienes artistas en favoritos</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<div id="flash-message" style="display: none;"></div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Manejo de pestañas
+    const tabButtons = document.querySelectorAll('.tab-button');
+    const tabContents = document.querySelectorAll('.tab-content');
+
+    tabButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            // Remover clase active de todos los botones y contenidos
+            tabButtons.forEach(btn => btn.classList.remove('active'));
+            tabContents.forEach(content => content.classList.remove('active'));
+
+            // Añadir clase active al botón clickeado
+            button.classList.add('active');
+
+            // Mostrar el contenido correspondiente
+            const tabId = button.getAttribute('data-tab');
+            document.getElementById(tabId).classList.add('active');
+        });
+    });
+
+    // Manejo de eliminar favoritos
+    const removeButtons = document.querySelectorAll('.remove-favorite');
+
+    removeButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            const itemType = this.getAttribute('data-type');
+            const itemId = this.getAttribute('data-id');
+            const itemElement = this.closest('.favorite-item');
+
+            fetch('/favorites/remove/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': '{{ csrf_token }}',
+                },
+                body: JSON.stringify({
+                    type: itemType,
+                    id: itemId
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    // Eliminar el elemento del DOM
+                    itemElement.remove();
+
+                    // Mostrar mensaje de éxito
+                    showFlashMessage('Eliminado de favoritos');
+
+                    // Si no quedan elementos, mostrar mensaje
+                    const currentTab = document.querySelector('.tab-content.active');
+                    if (currentTab.querySelectorAll('.favorite-item').length === 0) {
+                        const noFavoritesMsg = currentTab.querySelector('.no-favorites') ||
+                            document.createElement('p');
+                        noFavoritesMsg.className = 'no-favorites';
+                        noFavoritesMsg.textContent = `No tienes ${itemType}s en favoritos`;
+                        currentTab.appendChild(noFavoritesMsg);
+                    }
+                } else {
+                    showFlashMessage('Error: ' + data.message, true);
+                }
+            })
+            .catch(error => {
+                showFlashMessage('Error al eliminar de favoritos', true);
+                console.error('Error:', error);
+            });
+        });
+    });
+
+    function showFlashMessage(message, isError = false) {
+        const flash = document.getElementById('flash-message');
+        flash.textContent = message;
+        flash.style.display = 'block';
+        flash.style.backgroundColor = isError ? '#ff4757' : '#2ed573';
+
+        // Aplicar estilos
+        Object.assign(flash.style, {
+            position: 'fixed',
+            top: '20px',
+            right: '20px',
+            color: 'white',
+            padding: '15px 20px',
+            borderRadius: '8px',
+            zIndex: '9999',
+            boxShadow: '0 4px 6px rgba(0,0,0,0.1)',
+            fontFamily: 'sans-serif',
+            opacity: '1',
+            transition: 'opacity 0.5s ease'
+        });
+
+        setTimeout(() => {
+            flash.style.opacity = '0';
+            setTimeout(() => {
+                flash.style.display = 'none';
+                flash.style.opacity = '1';
+            }, 500);
+        }, 2000);
+    }
+});
+</script>
+
+{% endblock %}

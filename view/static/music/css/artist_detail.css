@@ -85,6 +85,10 @@
 
         .profile-header {
             position: relative;
+            align-items: center;
+           justify-content: space-between; /* Esto empuja los elementos a los extremos */
+             flex-wrap: wrap; /* Por si en pantallas pequeñas se necesita envolver */
+            gap: 20px; /* Espacio entre elementos */
         }
 
         .edit-profile-btn {
@@ -95,3 +99,14 @@
      .artist-works-section {
             margin-top: 40px;
         }
+
+     .favorite-btn {
+    background: none;
+    border: none;
+    font-size: 16px;
+    cursor: pointer;
+    color: #f39c12;
+}
+.favorite-btn.active {
+    font-weight: bold;
+}
