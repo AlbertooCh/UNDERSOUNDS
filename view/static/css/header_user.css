@@ -72,6 +72,8 @@
     .profile-dropdown {
         position: relative;
         display: inline-block;
+        border-radius: 50%;
+        object-fit: cover;
     }
 
     .profile-dropdown .dropdown-content {
@@ -87,6 +89,7 @@
         overflow: hidden;
         margin-top: 10px;
     }
+
 
     .profile-dropdown .dropdown-content a {
         color: #333;

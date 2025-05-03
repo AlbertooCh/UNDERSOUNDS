@@ -1,4 +1,4 @@
-document.getElementById('avatarInput').addEventListener('change', function(e) {
+  document.getElementById('avatarInput').addEventListener('change', function(e) {
     const file = e.target.files[0];
     if (!file) return;
 

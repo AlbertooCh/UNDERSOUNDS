@@ -9,6 +9,7 @@
         align-items: center;
         position: fixed;
         top: 0;
+
         left: 0;
         z-index: 1000;
     }
@@ -17,6 +18,7 @@
         height: 50px;
         width: auto;
         transition: transform 0.3s ease;
+        border-radius: 50%;
     }
 
     .logo img:hover {
