@@ -15,9 +15,7 @@
     <!-- Cabecera del perfil -->
     <div class="profile-header">
         {% if artist.avatar %}
-            <img src="{{ artist.avatar.url }}" alt="Avatar" class="profile-avatar">
-        {% else %}
-            <img src="avatars/usuario.png" alt="Avatar" class="profile-avatar">
+            <img src="{{ artist.avatar }}" alt="Avatar" class="profile-avatar">
         {% endif %}
 
         {% if is_own_profile %}
