@@ -1,121 +1,159 @@
- /* Estilos generales */
-body {
-    font-family: 'Montserrat', sans-serif;
-    background-color: #f8f9fa;
-    color: #333;
-    line-height: 1.6;
-}
+/* store/css/pago.css */
 
 .payment-container {
-    max-width: 800px;
+    max-width: 1000px;
     margin: 2rem auto;
-    padding: 2rem;
-    background: white;
+    padding: 1.5rem;
+    background: #fff;
     border-radius: 10px;
-    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+    font-family: 'Montserrat', sans-serif;
 }
 
 .payment-title {
-    font-size: 2rem;
-    font-weight: 700;
-    color: #2c3e50;
-    margin-bottom: 2rem;
+    font-size: 1.8rem;
+    color: #2a2a2a;
+    margin-bottom: 1.5rem;
     text-align: center;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid #eee;
 }
 
-/* Resumen de compra */
 .payment-summary {
     margin-bottom: 2rem;
-    padding: 1.5rem;
-    background: #f8f9fa;
-    border-radius: 8px;
 }
 
 .payment-summary h2 {
-    font-size: 1.5rem;
-    margin-bottom: 1.5rem;
-    color: #2c3e50;
-    border-bottom: 1px solid #eee;
-    padding-bottom: 0.5rem;
+    font-size: 1.4rem;
+    color: #333;
+    margin-bottom: 1rem;
+}
+
+.empty-cart-message {
+    text-align: center;
+    padding: 2rem;
+    color: #666;
+}
+
+.empty-cart-message p {
+    margin-bottom: 1rem;
 }
 
 .cart-items {
-    margin-bottom: 1.5rem;
+    margin-top: 1.5rem;
 }
 
 .cart-item {
     display: flex;
-    justify-content: space-between;
-    padding: 1rem 0;
-    border-bottom: 1px solid #eee;
+    align-items: center;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    background: #f9f9f9;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+.cart-item:hover {
+    background: #f0f0f0;
+}
+
+.item-image {
+    width: 80px;
+    height: 80px;
+    flex-shrink: 0;
+    margin-right: 1.5rem;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.item-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.item-info {
+    flex-grow: 1;
 }
 
 .item-info h3 {
     font-size: 1.1rem;
-    margin-bottom: 0.3rem;
+    margin: 0 0 0.3rem 0;
+    color: #333;
 }
 
 .item-info .artist {
-    color: #7f8c8d;
+    color: #666;
     font-size: 0.9rem;
+    margin: 0.2rem 0;
 }
 
 .item-price {
     text-align: right;
+    min-width: 150px;
 }
 
 .item-price span {
     display: block;
-    color: #7f8c8d;
+    color: #666;
     font-size: 0.9rem;
 }
 
 .item-price strong {
     font-size: 1.1rem;
+    color: green;
 }
 
 .total-section {
     display: flex;
-    justify-content: space-between;
+    justify-content: flex-end;
     padding: 1rem 0;
-    font-size: 1.3rem;
-    font-weight: 600;
+    margin-top: 1rem;
+    border-top: 1px solid #eee;
+    font-size: 1.2rem;
 }
 
-.total-price {
-    color: #27ae60;
-}
-
-/* Métodos de pago */
-.payment-methods {
-    margin-bottom: 2rem;
-}
-
-.payment-methods h2 {
-    font-size: 1.5rem;
-    margin-bottom: 1.5rem;
-    color: #2c3e50;
-}
-
-.payment-method {
-    margin-bottom: 1rem;
-    padding: 1rem;
-    background: #f8f9fa;
-    border-radius: 5px;
-    display: flex;
-    align-items: center;
-}
-
-.payment-method input[type="radio"] {
+.total-section span {
     margin-right: 1rem;
 }
 
-.payment-method label {
-    font-weight: 500;
-    cursor: pointer;
+.total-price {
+    font-weight: bold;
+    color: green;
 }
 
-/* Botones */
+.payment-form {
+    margin-top: 2rem;
+    padding-top: 2rem;
+    border-top: 1px solid #eee;
+}
+
+.payment-methods {
+    margin-bottom: 1.5rem;
+}
+
+.payment-methods h2 {
+    font-size: 1.3rem;
+    margin-bottom: 1rem;
+    color: #333;
+}
+
+.payment-method {
+    margin-bottom: 0.8rem;
+    padding: 0.8rem;
+    background: #f5f5f5;
+    border-radius: 5px;
+}
+
+.payment-method input[type="radio"] {
+    margin-right: 0.8rem;
+}
+
+.payment-method label {
+    cursor: pointer;
+    font-size: 0.95rem;
+}
+
 .payment-actions {
     display: flex;
     justify-content: space-between;
@@ -124,29 +162,62 @@ body {
 
 .btn {
     padding: 0.8rem 1.5rem;
-    border-radius: 5px;
-    font-weight: 600;
-    text-decoration: none;
-    transition: all 0.3s ease;
     border: none;
+    border-radius: 5px;
+    font-size: 1rem;
     cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    display: inline-block;
+    text-align: center;
 }
 
 .btn-secondary {
-    background: #95a5a6;
-    color: white;
+    background: #f0f0f0;
+    color: #333;
 }
 
 .btn-secondary:hover {
-    background: #7f8c8d;
+    background: #e0e0e0;
 }
 
 .btn-primary {
-    background: #3498db;
+    background: green;
     color: white;
 }
 
 .btn-primary:hover {
-    background: #2980b9;
+    background: green;
 }
 
+/* Responsive design */
+@media (max-width: 768px) {
+    .payment-container {
+        padding: 1rem;
+    }
+    
+    .cart-item {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .item-image {
+        margin-bottom: 1rem;
+        margin-right: 0;
+    }
+    
+    .item-price {
+        text-align: left;
+        margin-top: 1rem;
+        width: 100%;
+    }
+    
+    .payment-actions {
+        flex-direction: column;
+    }
+    
+    .btn {
+        width: 100%;
+        margin-bottom: 0.5rem;
+    }
+}

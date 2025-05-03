@@ -1,12 +1,11 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import get_object_or_404, redirect
-from model.store.store_models import CartItem, Order, Purchase, PurchaseDetail
-from model.music.music_models import Song
+from model.store.store_models import CartItem, Order, Purchase
+from model.music.music_models import Song, Album
+from user.models import User
 from controller.store_controller import PurchaseController, CartController, OrderController
+from model.Dto.store_dto import CartItemDTO
 
-
-# Create your views here.
 
 @login_required
 def order_confirmation(request, order_id):
@@ -14,97 +13,111 @@ def order_confirmation(request, order_id):
     Vista de confirmación de compra que muestra los detalles basados en el modelo Purchase
     pero vinculado a un Order específico del usuario.
     """
-    # Primero verificar que el Order existe y pertenece al usuario
     order = get_object_or_404(Order, id=order_id, user=request.user)
-
-    # Obtener el purchase relacionado con este order
     purchase = get_object_or_404(Purchase, order=order)
 
     return render(request, 'order_confirmation.html', {
-        'purchase': purchase,  # Mantenemos ambas variables por si las necesitas en el template
+        'order': order,
+        'purchase': purchase,
     })
+
 
 @login_required
 def carrito(request):
-    # Obtenemos los items del carrito para el usuario autenticado
-    cart_items = CartItem.objects.filter(user=request.user)
-
-    # Calculamos el total sumando los subtotales de cada ítem
-    total = sum(item.subtotal() for item in cart_items)
+    """Vista del carrito de compras que muestra items de ambos tipos"""
+    cart_items = CartController.get_cart(request.user.id)  # Esto ahora incluye artist_name y cover_url
+    total = CartController.calculate_cart_total(request.user.id)
 
     context = {
-        'items': cart_items,
+        'items': cart_items,  # Ahora podemos pasar los DTOs directamente
         'total': total,
     }
     return render(request, "carrito.html", context)
 
 
 @login_required
-def add_to_cart(request, song_id):
-    song = get_object_or_404(Song, id=song_id)
-    cart_item, created = CartItem.objects.get_or_create(
-        user=request.user,
-        song=song,
-        defaults={'quantity': 1}
-    )
-    if not created:
-        # Si ya existe, incrementamos la cantidad
-        cart_item.quantity += 1
-        cart_item.save()
-
-    return redirect('carrito')
+def add_song_to_cart(request, song_id):
+    """Añade una canción al carrito"""
+    return CartController.add_song_to_cart(request, song_id)
 
 
 @login_required
-def remove_from_cart(request, song_id):
-    cart_item = CartItem.objects.filter(user=request.user, song__id=song_id).first()
-    if cart_item:
-        cart_item.delete()
+def add_album_to_cart(request, album_id):
+    """Añade un álbum al carrito"""
+    return CartController.add_album_to_cart(request, album_id)
 
+
+@login_required
+def remove_from_cart(request, item_id, item_type):
+    """Elimina un item del carrito (puede ser canción o álbum)"""
+    return CartController.remove_from_cart(request, item_id, item_type)
+
+
+@login_required
+def update_cart_item(request, item_id, item_type):
+    """Actualiza la cantidad de un item en el carrito"""
+    if request.method == 'POST':
+        new_quantity = int(request.POST.get('quantity', 1))
+        return CartController.update_quantity(request, item_id, item_type, new_quantity)
     return redirect('carrito')
 
 
 @login_required
 def pago(request):
-    # Obtenemos los items del carrito
-    cart_items = CartItem.objects.filter(user=request.user)
+    # Procesar el pago si es POST
+    if request.method == 'POST':
+        return PurchaseController.process_purchase(request)
 
-    if not cart_items.exists():
-        # Si no hay items, redirigimos al catálogo o mostramos un mensaje
+    # Obtener items del carrito (ahora con toda la información necesaria)
+    cart_items = CartController.get_cart(request.user.id)
+
+    if not cart_items:
         return redirect('catalogo')
 
-    total = sum(item.subtotal() for item in cart_items)
+    total = sum(float(item.subtotal) for item in cart_items)
 
-    if request.method == 'POST':
-        # Una vez confirmado el pago, creamos la orden
-        order = Order.objects.create(user=request.user, total=total)
-        # Creación de los detalles de compra para cada ítem
-        for item in cart_items:
-            # Aquí se asume el modelo PurchaseDetail y que 'item.song.price' es el precio en el momento de la compra.
-            PurchaseDetail.objects.create(
-                purchase=order,
-                song=item.song,
-                price=item.song.price
-            )
-
-        # Eliminamos los items del carrito (si se desea limpiar después de la compra)
-        cart_items.delete()
-
-        # Redirigimos a una página de confirmación de pedido
-        return redirect('order_confirmation', order_id=order.id)
+    # Métodos de pago
+    payment_methods = [
+        {'value': 'credit_card', 'label': 'Tarjeta de crédito'},
+        {'value': 'paypal', 'label': 'PayPal'},
+        {'value': 'bank_transfer', 'label': 'Transferencia bancaria'},
+    ]
 
     context = {
-        'items': cart_items,
+        'cart_items': cart_items,
         'total': total,
+        'payment_methods': payment_methods,
     }
+
     return render(request, 'pago.html', context)
 
+@login_required
 def purchase_success(request, purchase_id):
+    """Vista de éxito de compra (similar a order_confirmation pero por purchase_id)"""
     purchase = get_object_or_404(Purchase, id=purchase_id, user=request.user)
-    return render(request, 'order_confirmation.html', {'purchase': purchase})
+    return render(request, 'order_confirmation.html', {
+        'purchase': purchase,
+        'order': purchase.order  # Asumiendo que Purchase tiene relación con Order
+    })
+
 
 @login_required
 def order_detail(request, order_id):
-    order = get_object_or_404(Order, id=order_id, user=request.user)
-    return render(request, 'order_detail.html', {'order': order})
+    """Detalle de una orden específica"""
+    order = OrderController.get_order_details(order_id)
+    if not order or order.user_id != request.user.id:
+        return redirect('catalogo')
 
+    return render(request, 'order_detail.html', {
+        'order': order,
+        'items': order.items  # Los items ya vienen incluidos en el OrderDTO
+    })
+
+
+@login_required
+def purchase_history(request):
+    """Historial de compras del usuario"""
+    purchases = PurchaseController.get_purchase_history(request.user.id)
+    return render(request, 'purchase_history.html', {
+        'purchases': purchases
+    })

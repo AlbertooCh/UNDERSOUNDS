@@ -30,7 +30,7 @@
 
             <div class="album-actions">
                 {% if user.is_authenticated %}
-                    <form action="{% url 'catalogo' %}" method="post" class="add-to-cart-form">
+                    <form action="{% url 'add_album_to_cart' album.id %}" method="post" class="add-to-cart-form">
                         {% csrf_token %}
                         <input type="hidden" name="quantity" value="1">
                         {% if album_in_order %}
@@ -86,7 +86,7 @@
                                 <i class="fas fa-check"></i> Comprado
                             </button>
                         {% else %}
-                            <form action="{% url 'add_to_cart' song.id %}" method="post">
+                            <form action="{% url 'add_song_to_cart' song.id %}" method="post">
                                 {% csrf_token %}
                                 <input type="hidden" name="quantity" value="1">
                                 <button type="submit" class="song-action-btn">

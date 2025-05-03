@@ -15,27 +15,53 @@
 
     {% if items %}
         {% for item in items %}
-            <div class="cart-item">
-                <a href="{% url 'music_detail_id' item.song.id %}">
-                    {% if item.song.song_cover %}
-                        <img src="{{ item.song.song_cover.url }}" alt="{{ item.song.title }}" class="item-image">
+        <div class="cart-item">
+            {% if item.item_type == 'song' %}
+                <!-- Item es una canción -->
+                <a href="{% url 'music_detail_id' item.song_id %}">
+                    {% if item.cover_url %}
+                        <img src="{{ item.cover_url }}" alt="{{ item.song_title }}" class="item-image">
                     {% else %}
                         <img src="{% static 'images/default_album.jpg' %}" alt="Portada" class="item-image">
                     {% endif %}
                 </a>
 
                 <div class="item-details">
-                    <p>Canción: <strong><a href="{% url 'music_detail_id' item.song.id %}">{{ item.song.title }}</a></strong></p>
-                    <p>Total: {{ item.subtotal|floatformat:2 }} €</p>
+                    <p>Canción: <strong><a href="{% url 'music_detail_id' item.song_id %}">{{ item.song_title }}</a></strong></p>
+                    <p>Artista: {{ item.artist_name }}</p>
+                    <p>Precio unitario: {{ item.song_price|floatformat:2 }} €</p>
+                    <p>Cantidad: {{ item.quantity }}</p>
+                    <p>Subtotal: {{ item.subtotal|floatformat:2 }} €</p>
                 </div>
 
-                <form action="{% url 'remove_from_cart' item.song.id %}" method="post" style="margin-left: auto;">
+            {% elif item.item_type == 'album' %}
+                <!-- Item es un álbum -->
+                <a href="{% url 'album_detail' item.album_id %}">
+                    {% if item.cover_url %}
+                        <img src="{{ item.cover_url }}" alt="{{ item.album_title }}" class="item-image">
+                    {% else %}
+                        <img src="{% static 'images/default_album.jpg' %}" alt="Portada" class="item-image">
+                    {% endif %}
+                </a>
+
+                <div class="item-details">
+                    <p>Álbum: <strong><a href="{% url 'album_detail' item.album_id %}">{{ item.album_title }}</a></strong></p>
+                    <p>Artista: {{ item.artist_name }}</p>
+                    <p>Precio unitario: {{ item.album_price|floatformat:2 }} €</p>
+                    <p>Cantidad: {{ item.quantity }}</p>
+                    <p>Subtotal: {{ item.subtotal|floatformat:2 }} €</p>
+                </div>
+            {% endif %}
+
+            <div class="item-actions">
+                <form action="{% url 'remove_from_cart' item.item_type item.song_id|default:item.album_id %}" method="post">
                     {% csrf_token %}
                     <button type="submit" class="remove-item">
                         <i class="fas fa-trash-alt"></i> Eliminar
                     </button>
                 </form>
             </div>
+        </div>
         {% endfor %}
 
         <div class="cart-total">

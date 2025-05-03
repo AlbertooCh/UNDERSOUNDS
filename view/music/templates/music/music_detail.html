@@ -18,9 +18,9 @@
             <p><strong>Fecha de lanzamiento:</strong> {{ song.release_date }}</p>
             <p><strong>Precio:</strong> €{{ song.price }}</p>
             <p><strong>Valoracion Media:</strong> {{ valoracion|floatformat:2 }} / 5</p>
-            <form action="{% url 'add_to_cart' song.id %}" method="post" class="add-to-cart-form">
-    {% csrf_token %}
-    <input type="hidden" name="quantity" value="1">
+            <form action="{% url 'add_song_to_cart' song.id %}" method="post" class="add-to-cart-form">
+            {% csrf_token %}
+        <input type="hidden" name="quantity" value="1">
             {% if in_order %}
             <button type="button" class="add-to-cart-btn" disabled>
                 <i class="fas fa-check-double"></i> Ya comprado
