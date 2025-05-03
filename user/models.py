@@ -23,6 +23,7 @@ class User(AbstractUser):
     genre = models.CharField(max_length=50, blank=True, null=True)
     country = models.CharField(max_length=100, blank=True, null=True)
     songs = models.ManyToManyField('music.Song', related_name='artists', blank=True)
+    albums = models.ManyToManyField('music.Album', related_name='artists', blank=True)
 
     class Meta:
         app_label = 'user'

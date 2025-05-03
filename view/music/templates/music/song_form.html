@@ -29,12 +29,6 @@
         </div>
 
         <div class="form-group">
-            <label for="id_album_title">Álbum</label>
-            <input type="text" name="album_title" id="id_album_title" class="form-control"
-                   value="{{ form.album_title.value|default_if_none:'' }}">
-        </div>
-
-        <div class="form-group">
             <label for="id_genre">Género*</label>
             <input type="text" name="genre" id="id_genre" class="form-control"
                    value="{{ form.genre.value|default_if_none:'' }}" required>

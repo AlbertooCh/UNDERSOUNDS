@@ -10,7 +10,7 @@ class Song(models.Model):
     release_date = models.DateTimeField()
     song_cover = models.ImageField(upload_to='song_covers/', blank=True, null=True)
     song_file = models.FileField(upload_to='songs/', blank=True, null=True)  # <-- New field
-    album_id = models.ForeignKey('Album', on_delete=models.CASCADE, related_name='songs', blank=True, null=True)
+    album_id = models.IntegerField(blank=True, null=True, verbose_name="ID del álbum")
 
     class Meta:
         app_label = 'music'  # ¡Esto es crucial!
@@ -23,6 +23,7 @@ class Album(models.Model):
     artist_name = models.CharField(max_length=100)
     genre = models.CharField(max_length=50)
     release_date = models.DateTimeField()
+    price = models.DecimalField(max_digits=8, decimal_places=2)
     album_cover = models.ImageField(upload_to='album_covers/', blank=True, null=True)
 
     class Meta:

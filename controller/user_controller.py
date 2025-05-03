@@ -90,6 +90,13 @@ class UserController:
         return False
 
     @staticmethod
+    def add_album_to_artist(album_id, artist_id):
+        artist = UserDAO.get_by_id(artist_id)
+        if artist and artist.role == 'artist':
+            artist.albums.add(album_id)
+            return True
+
+    @staticmethod
     def get_user_settings(user_id):
         user = UserDAO.get_by_id(user_id)
         return UserFactory.create_from_model(user) if user else None

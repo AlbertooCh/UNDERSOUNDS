@@ -1,10 +1,10 @@
 # music/dao/song_dao.py
 from datetime import datetime
-
+from django.core.files import File
 from django.core.exceptions import ObjectDoesNotExist
-from model.music.music_models import Song
+from model.music.music_models import Song, Album
 from django.db import models
-from model.Dto.music_dto import SongDTO
+from model.Dto.music_dto import SongDTO, AlbumDTO
 from model.Factory.music_factory import SongFactory
 
 class SongDAO:
@@ -123,3 +123,81 @@ class SongDAO:
         results = [SongFactory.create_dto_from_model(song) for song in songs]
         print(f"Results count: {len(results)}")  # Debugging
         return results
+
+class AlbumDAO:
+    @staticmethod
+    def create_album(album_dto: AlbumDTO):
+        album = Album(
+            title=album_dto.title,
+            artist_name=album_dto.artist_name,
+            genre=album_dto.genre,
+            release_date=album_dto.release_date,
+            price=album_dto.price,
+        )
+
+        if album_dto.album_cover:
+            album.album_cover.save(
+                album_dto.album_cover.name,
+                File(album_dto.album_cover),
+                save=True
+            )
+
+        album.save()
+        return album
+
+    @staticmethod
+    def get_album_by_id(album_id):
+        try:
+            return Album.objects.get(pk=album_id)
+        except Album.DoesNotExist:
+            return None
+
+    @staticmethod
+    def update_album(album_id, album_dto: AlbumDTO):
+        album = AlbumDAO.get_album_by_id(album_id)
+        if album:
+            album.title = album_dto.title
+            album.artist_name = album_dto.artist_name
+            album.genre = album_dto.genre
+            album.release_date = album_dto.release_date
+            album.price = album_dto.price
+
+            if album_dto.album_cover:
+                album.album_cover.save(
+                    album_dto.album_cover.name,
+                    File(album_dto.album_cover),
+                    save=True
+                )
+
+            album.save()
+            return album
+        return None
+
+    @staticmethod
+    def delete_album(album_id):
+        album = AlbumDAO.get_album_by_id(album_id)
+        if album:
+            album.delete()
+            return True
+        return False
+
+    @staticmethod
+    def add_song_to_album(album_id, song_id):
+        try:
+            album = Album.objects.get(pk=album_id)
+            song = Song.objects.get(pk=song_id)
+            song.album = album
+            song.save()
+            return True
+        except (Album.DoesNotExist, Song.DoesNotExist):
+            return False
+
+    @staticmethod
+    def remove_song_from_album(song_id, album_id):
+        try:
+            song = Song.objects.get(pk=song_id, album_id=album_id)
+            song.album = None
+            song.save()
+            return True
+        except Song.DoesNotExist:
+            return False

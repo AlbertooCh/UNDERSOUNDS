@@ -36,8 +36,8 @@
 </form>
         </div>
         <div class="track-cover">
-            {% if song.album_cover %}
-                <img src="{{ song.album_cover.url }}" alt="{{ song.title }}">
+            {% if song.song_cover %}
+                <img src="{{ song.song_cover.url }}" alt="{{ song.title }}">
             {% else %}
                 <img src="{% static 'images/default_album.jpg' %}" alt="Sin portada">
             {% endif %}

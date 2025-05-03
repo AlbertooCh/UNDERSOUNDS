@@ -1,0 +1,102 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}{{ action }} Álbum - Undersounds{% endblock %}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'music/css/song_form.css' %}">
+    <style>
+        /* Estilos adicionales específicos para álbumes */
+        .track-list {
+            margin-top: 20px;
+        }
+        .track-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+
+<div class="form-wrapper">
+    <h2>{{ action }} Álbum</h2>
+
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+
+        <div class="artist-name">
+            Artista: {{ request.user.artist_name }}
+        </div>
+
+        <!-- Campos del formulario -->
+        <div class="form-group">
+            <label for="id_title">Título del Álbum*</label>
+            <input type="text" name="title" id="id_title" class="form-control"
+                   value="{{ form.title.value|default_if_none:'' }}" required>
+            {% if form.title.errors %}
+                <div class="error-message">{{ form.title.errors }}</div>
+            {% endif %}
+        </div>
+
+        <div class="form-group">
+            <label for="id_genre">Género*</label>
+            <input type="text" name="genre" id="id_genre" class="form-control"
+                   value="{{ form.genre.value|default_if_none:'' }}" required>
+        </div>
+
+        <div class="form-group">
+            <label for="id_price">Precio (€)*</label>
+            <input type="number" name="price" id="id_price" class="form-control"
+                   value="{{ form.price.value|default_if_none:'' }}" step="0.01" min="0" required>
+        </div>
+
+        <div class="form-group">
+            <label for="id_release_date">Fecha de lanzamiento*</label>
+            <input type="date" name="release_date" id="id_release_date" class="form-control"
+                   value="{{ form.release_date.value|date:'Y-m-d'|default_if_none:'' }}" required>
+        </div>
+
+        <div class="form-group">
+            <label for="id_cover_image">Portada del álbum*</label>
+            <input type="file" name="cover_image" id="id_cover_image" class="form-control file-input"
+                   accept="image/*" {% if action != 'Editar' %}required{% endif %}>
+            {% if action == 'Editar' and album.cover_image %}
+                <div class="current-file">
+                    Actual: <a href="{{ album.cover_image.url }}" target="_blank">{{ album.cover_image.name }}</a>
+                </div>
+            {% endif %}
+        </div>
+
+        <div class="form-group">
+            <label for="id_description">Descripción</label>
+            <textarea name="description" id="id_description" class="form-control" 
+                      rows="3">{{ form.description.value|default_if_none:'' }}</textarea>
+        </div>
+
+        {% if action == 'Editar' %}
+        <div class="track-list">
+            <h4>Lista de canciones</h4>
+            {% for song in album.songs.all %}
+                <div class="track-item">
+                    <span>{{ forloop.counter }}. {{ song.title }}</span>
+                    <a href="{% url 'edit_song' song.id %}" class="btn-edit">Editar</a>
+                </div>
+            {% empty %}
+                <p>No hay canciones en este álbum aún.</p>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <div class="form-actions">
+            <button type="submit" class="btn-submit">{{ action }}</button>
+            <a href="{% if action == 'Editar' %}{% url 'album_detail' album.id %}{% else %}{% url 'catalogo' %}{% endif %}"
+               class="btn-cancel">Cancelar</a>
+            {% if action == 'Editar' %}
+                <a href="{% url 'add_song_to_album' album.id %}" class="btn-add-song">➕ Añadir Canción</a>
+            {% endif %}
+        </div>
+    </form>
+</div>
+
+{% endblock %}

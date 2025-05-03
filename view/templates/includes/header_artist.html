@@ -1,6 +1,6 @@
 {% load static %}
 {% block extra_css %}
-<link  rel="stylesheet" href="{% static 'css/header_artist.css' %}">
+<link rel="stylesheet" href="{% static 'css/header_artist.css' %}">
 {% endblock %}
 
 <header class="header">
@@ -17,14 +17,20 @@
             <li><a href="{% url 'novedades' %}">Novedades</a></li>
             <li><a href="{% url 'contacto' %}">Contacto</a></li>
             <li><a href="{% url 'artist_panel' %}">🎵 Panel de Artista</a></li>
-            <li><a href="{% url 'add_song' %}">➕ Nueva Canción</a></li>
+            <li class="profile-dropdown" id="albumSongDropdown">
+                <a href="#" onclick="toggleDropdown(event, 'albumSongDropdown')" class="icon-link">➕ Nuevo Álbum/Canción</a>
+                <div class="dropdown-content">
+                    <a href="{% url 'add_album' %}">➕ Nuevo Álbum</a>
+                    <a href="{% url 'add_song' %}">➕ Nueva Canción</a>
+                </div>
+            </li>
             <li>
                 <a href="{% url 'carrito' %}" class="icon-link">
                     <img src="{% static 'images/carrito.png' %}" alt="Carrito" class="nav-icon">
                 </a>
             </li>
             <li class="profile-dropdown" id="profileDropdown">
-                <a href="#" onclick="toggleDropdown(event)" class="icon-link">
+                <a href="#" onclick="toggleDropdown(event, 'profileDropdown')" class="icon-link">
                     <img src="{% static 'images/perfil.png' %}" alt="Perfil" class="nav-icon">
                 </a>
                 <div class="dropdown-content">

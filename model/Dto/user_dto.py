@@ -39,3 +39,4 @@ class UserDTO:
         if hasattr(self, 'backend'):
             data['backend'] = self.backend
         return data
+

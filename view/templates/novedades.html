@@ -15,8 +15,8 @@
         <div class="album">
             <div class="cuadrado" style="animation-delay: {{ forloop.counter0|add:"0.1"|floatformat:1 }}s;" onclick="location.href='{% url 'music_detail_id' song.id %}'">
                 <p class="album-title">{{ song.title }}</p>
-                {% if song.album_cover %}
-                    <img src="{{ song.album_cover.url }}" alt="{{ song.title }}">
+                {% if song.song_cover %}
+                    <img src="{{ song.song_cover.url }}" alt="{{ song.title }}">
                 {% else %}
                     <img src="{% static 'images/default_album.jpg' %}" alt="Sin portada">
                 {% endif %}

@@ -1,0 +1,139 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Editar Álbum - {{ album.title }}{% endblock %}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'music/css/album_form.css' %}">
+    <style>
+        .song-list {
+            margin: 30px 0;
+        }
+        .song-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            border-bottom: 1px solid #eee;
+        }
+        .song-actions a {
+            margin-left: 10px;
+        }
+        .add-song-section {
+            margin-top: 30px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 5px;
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+
+<div class="form-wrapper">
+    <h2>Editar Álbum: {{ album.title }}</h2>
+
+    <div class="album-info">
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            
+            <div class="form-group">
+                <label for="id_title">Título del Álbum*</label>
+                <input type="text" name="title" id="id_title" class="form-control"
+                       value="{{ album.title }}" required>
+            </div>
+
+            <div class="form-group">
+                <label for="id_genre">Género*</label>
+                <input type="text" name="genre" id="id_genre" class="form-control"
+                       value="{{ album.genre }}" required>
+            </div>
+
+            <div class="form-group">
+                <label for="id_release_date">Fecha de lanzamiento*</label>
+                <input type="date" name="release_date" id="id_release_date" class="form-control"
+                       value="{{ album.release_date|date:'Y-m-d' }}" required>
+            </div>
+
+            <div class="form-group">
+                <label for="id_album_cover">Portada del álbum</label>
+                <input type="file" name="album_cover" id="id_album_cover" class="form-control file-input"
+                       accept="image/*">
+                {% if album.album_cover %}
+                    <div class="current-file">
+                        Actual: <a href="{{ album.album_cover.url }}" target="_blank">Ver portada</a>
+                    </div>
+                {% endif %}
+            </div>
+
+            <button type="submit" class="btn-submit">Guardar Cambios</button>
+            <a href="{% url 'album_detail' album.id %}" class="btn-cancel">Ver Álbum</a>
+        </form>
+    </div>
+
+    <div class="song-list">
+        <h3>Canciones en este álbum</h3>
+        {% if songs %}
+            {% for song in songs %}
+                <div class="song-item">
+                    <div class="song-info">
+                        <span>{{ forloop.counter }}. {{ song.title }}</span>
+                        <small>({{ song.genre }}) - {{ song.price }}€</small>
+                    </div>
+                    <div class="song-actions">
+                        <a href="{% url 'edit_song' song.id %}" class="btn-edit">✏️ Editar</a>
+                        <a href="{% url 'delete_song' song.id %}" class="btn-remove">🗑️ Quitar</a>
+                    </div>
+                </div>
+            {% endfor %}
+        {% else %}
+            <p>No hay canciones en este álbum aún.</p>
+        {% endif %}
+    </div>
+
+    <div class="add-song-section">
+        <h4>Añadir canción al álbum</h4>
+        <form method="post" action="{% url 'add_song_to_album' album.id %}" enctype="multipart/form-data">
+            {% csrf_token %}
+            
+            <div class="form-group">
+                <label for="id_title">Título*</label>
+                <input type="text" name="title" id="id_title" class="form-control" required>
+            </div>
+
+            <div class="form-group">
+                <label for="id_genre">Género*</label>
+                <input type="text" name="genre" id="id_genre" class="form-control" value="{{ album.genre }}" required>
+            </div>
+
+            <div class="form-group">
+                <label for="id_price">Precio (€)*</label>
+                <input type="number" name="price" id="id_price" class="form-control" step="0.01" min="0" required>
+            </div>
+
+            <div class="form-group">
+                <label for="id_release_date">Fecha de lanzamiento*</label>
+                <input type="date" name="release_date" id="id_release_date" class="form-control"
+                       value="{{ album.release_date|date:'Y-m-d' }}" required>
+            </div>
+
+            <div class="form-group">
+                <label for="id_song_cover">Portada (opcional)</label>
+                <input type="file" name="song_cover" id="id_song_cover" class="form-control file-input"
+                       accept="image/*">
+            </div>
+
+            <div class="form-group">
+                <label for="id_song_file">Archivo de audio*</label>
+                <input type="file" name="song_file" id="id_song_file" class="form-control file-input"
+                       accept="audio/*" required>
+            </div>
+
+            <input type="hidden" name="album_id" value="{{ album.id }}">
+
+            <button type="submit" class="btn-submit">Añadir Canción</button>
+            <a href="{% url 'add_song' %}" class="btn-cancel">Añadir Canción Independiente</a>
+        </form>
+    </div>
+</div>
+
+{% endblock %}

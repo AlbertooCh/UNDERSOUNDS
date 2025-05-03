@@ -85,8 +85,8 @@
             {% for song in artist.songs.all %}
             <div class="work-item" onclick="window.location='{% url 'music_detail_id' song.id %}'" style="cursor: pointer;">
                 <div class="cuadrado" style="width: 200px; height: 200px; margin: 0;">
-                    {% if song.album_cover %}
-                        <img src="{{ song.album_cover.url }}" alt="{{ song.title }}" class="work-cover">
+                    {% if song.song_cover %}
+                        <img src="{{ song.song_cover.url }}" alt="{{ song.title }}" class="work-cover">
                     {% else %}
                         <img src="{% static 'images/default_album.jpg' %}" alt="Portada predeterminada" class="work-cover">
                     {% endif %}
