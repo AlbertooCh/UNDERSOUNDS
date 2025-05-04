@@ -6,6 +6,8 @@ from model.music.music_models import Song, Album, Favorite
 from django.db import models
 from model.Dto.music_dto import SongDTO, AlbumDTO, FavoriteDTO
 from model.Factory.music_factory import SongFactory
+from music.models.song_version import SongVersion
+
 import logging
 logger = logging.getLogger(__name__)
 
@@ -50,9 +52,22 @@ class SongDAO:
 
     @staticmethod
     def update(song_dto):
-        """Actualiza una canción existente"""
         try:
             song = Song.objects.get(id=song_dto.id)
+
+            # ✅ Save version before updating
+            SongVersion.objects.create(
+                song=song,
+                title=song.title,
+                artist_name=song.artist_name,
+                genre=song.genre,
+                price=song.price,
+                release_date=song.release_date,
+                song_cover=song.song_cover,
+                song_file=song.song_file,
+            )
+
+            # ✅ Apply updates
             song.title = song_dto.title
             song.artist_name = song_dto.artist_name
             song.genre = song_dto.genre
@@ -62,11 +77,11 @@ class SongDAO:
                 song.song_cover = song_dto.song_cover
             if song_dto.song_file:
                 song.song_file = song_dto.song_file
+
             song.save()
             return True
         except ObjectDoesNotExist:
             return False
-
     @staticmethod
     def delete(song_id):
         """Elimina una canción por su ID"""

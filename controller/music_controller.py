@@ -11,6 +11,8 @@ from user.models import User
 from controller.user_controller import UserController
 from model.Factory.music_factory import SongFactory, AlbumFactory, FavoriteFactory
 from model.music.music_models import Song, Album, Favorite
+from music.models.song_version import SongVersion
+
 
 class SongController:
     @staticmethod
@@ -30,6 +32,26 @@ class SongController:
                 # Si falla la asociación, borra la canción
                 SongDAO.delete(created_song.id)
         return None
+
+    @staticmethod
+    def restore_song_version(song_id, version_id):
+        try:
+            version = SongVersion.objects.get(pk=version_id, song_id=song_id)
+            song = Song.objects.get(pk=song_id)
+
+            song.title = version.title
+            song.artist_name = version.artist_name
+            song.genre = version.genre
+            song.price = version.price
+            song.release_date = version.release_date
+            song.song_cover = version.song_cover
+            song.song_file = version.song_file
+            song.save()
+            return True
+        except SongVersion.DoesNotExist:
+            return False
+
+
 
     @staticmethod
     def get_song(song_id):
@@ -330,3 +352,5 @@ class FavoriteController:
     @staticmethod
     def get_artist_favorite_count(artist_id: int) -> int:
         return FavoriteDAO.get_artist_favorite_count(artist_id)
+
+    # added restore song version for history of songs

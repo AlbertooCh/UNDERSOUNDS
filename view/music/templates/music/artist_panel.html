@@ -135,11 +135,7 @@
                         <td><span class="badge">{{ album.genre }}</span></td>
                         <td>{{ album.release_date|date:"d M Y" }}</td>
                         <td>{{ album.song_count }}</td>
-                        <td>
-                            <a href="{% url 'edit_album' album.id %}" class="action-btn edit-btn" title="Editar">✏️</a>
-                            <a href="{% url 'delete_album' album.id %}" class="action-btn delete-btn" title="Eliminar">🗑️</a>
-                            <a href="{% url 'album_detail' album.id %}" class="action-btn view-btn" title="Ver">👁️</a>
-                        </td>
+
                     </tr>
                     {% empty %}
                     <tr>
@@ -202,7 +198,9 @@
                         <td>
                             <a href="{% url 'edit_song' song.id %}" class="action-btn edit-btn" title="Editar">✏️</a>
                             <a href="{% url 'delete_song' song.id %}" class="action-btn delete-btn" title="Eliminar">🗑️</a>
+                            <a href="{% url 'song_versions' song.id %}" class="action-btn view-btn" title="Versiones Anteriores">📜</a>
                         </td>
+
                     </tr>
                     {% empty %}
                     <tr>
@@ -210,7 +208,9 @@
                             No tienes canciones registradas.
                             <a href="{% url 'add_song' %}" class="text-link">Añade tu primera canción</a>
                         </td>
-                    </tr>
+
+
+
                     {% endfor %}
                 </tbody>
             </table>

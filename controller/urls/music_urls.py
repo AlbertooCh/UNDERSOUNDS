@@ -34,5 +34,8 @@ urlpatterns = [
     path('favorites/list/', views.list_favorites, name='list_favorites'),
     path('favorites/check/<str:item_type>/<int:item_id>/', views.check_favorite, name='check_favorite'),
     path('favoritos/', views.favorites_view, name='favoritos'),
+    path('song/<int:song_id>/versions/', views.song_versions, name='song_versions'),
+    path('song/<int:song_id>/restore/<int:version_id>/', views.restore_version, name='restore_version'),
+
 
 ]

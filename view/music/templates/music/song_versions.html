@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Versiones de "{{ song.title }}" - Undersounds{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'music/css/artist_panel.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="dashboard-container">
+    <div class="panel-card">
+        <div class="card-header">
+            <h2 class="card-title">Versiones anteriores de "{{ song.title }}"</h2>
+            <a href="{% url 'artist_panel' %}" class="btn-add">⬅ Volver al panel</a>
+        </div>
+
+        <div class="table-responsive">
+            <table class="music-table">
+                <thead>
+                    <tr>
+                        <th>Título</th>
+                        <th>Género</th>
+                        <th>Lanzamiento</th>
+                        <th>Archivo</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for version in versions %}
+                    <tr>
+                        <td>{{ version.title }}</td>
+                        <td>{{ version.genre }}</td>
+                        <td>{{ version.release_date|date:"d M Y" }}</td>
+                        <td>
+                            {% if version.song_file %}
+                                <a href="{{ version.song_file.url }}" download>🎵 Descargar</a>
+                            {% else %}
+                                No disponible
+                            {% endif %}
+                        </td>
+                        <td>
+                            <form method="POST" action="{% url 'restore_version' song.id version.id %}">
+                                {% csrf_token %}
+                                <button type="submit" class="btn-add">🔄 Restaurar</button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr><td colspan="5" class="empty-state">No hay versiones anteriores.</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

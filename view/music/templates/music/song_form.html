@@ -68,7 +68,7 @@
         <div class="form-group">
             <label for="id_title">Título*</label>
             <input type="text" name="title" id="id_title" class="form-control"
-                   value="{{ form.title.value|default_if_none:song.title }}" required>
+                   value="{{ form.title.value|default:'' }}" required>
             {% if form.title.errors %}
                 <div class="error-message">{{ form.title.errors }}</div>
             {% endif %}
@@ -77,19 +77,21 @@
         <div class="form-group">
             <label for="id_genre">Género*</label>
             <input type="text" name="genre" id="id_genre" class="form-control"
-                   value="{{ form.genre.value|default_if_none:song.genre }}" required>
+            value="{{ form.genre.value|default:'' }}" required>
+
         </div>
 
         <div class="form-group">
             <label for="id_price">Precio (€)*</label>
             <input type="number" name="price" id="id_price" class="form-control"
-                   value="{{ form.price.value|default_if_none:song.price }}" step="0.01" min="0" required>
+                  value="{{ form.price.value|default:'' }}" step="0.01" min="0" required>
         </div>
 
         <div class="form-group">
             <label for="id_release_date">Fecha de lanzamiento*</label>
             <input type="date" name="release_date" id="id_release_date" class="form-control"
-                   value="{{ form.release_date.value|date:'Y-m-d'|default_if_none:song.release_date }}" required>
+                   value="{{ form.release_date.value|date:'Y-m-d'|default:'' }}"
+ required>
         </div>
 
         <!-- Portada de la canción -->

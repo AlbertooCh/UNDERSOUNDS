@@ -21,7 +21,11 @@ from model.music.forms import SongForm, AlbumForm
 from django.http import JsonResponse
 from model.music.music_models import Song, Album, Favorite
 from model.store.store_models import CartItem, Order, Purchase, OrderItem, PurchaseDetail
+from music.models.song_version import SongVersion
+from controller.music_controller import SongController  # ✅ Correct
+
 import json
+
 
 
 def music_detail_redirect(request):
@@ -621,6 +625,21 @@ def edit_album(request, album_id):
         'user': request.user
     })
 
+def song_versions(request, song_id):
+    song = get_object_or_404(Song, pk=song_id)
+    versions = song.versions.order_by('-saved_at')
+    return render(request, 'music/song_versions.html', {
+        'song': song,
+        'versions': versions
+    })
+
+
+def restore_version(request, song_id, version_id):
+    if request.method == 'POST':
+        success = SongController.restore_song_version(song_id, version_id)
+        if success:
+            return redirect('artist_panel')
+    return redirect('song_versions', song_id=song_id)
 
 def album_detail(request, album_id):
     album_dto = AlbumController.get_album(album_id)
@@ -795,6 +814,7 @@ def list_favorites(request):
         })
     except Exception as e:
         return JsonResponse({'status': 'error', 'message': str(e)}, status=400)
+
 
 
 @require_http_methods(["GET"])
