@@ -9,6 +9,10 @@ from django.template.defaulttags import comment
 from django.urls import reverse
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
+from django.utils.timezone import make_aware, is_naive
+from datetime import datetime
+from django.utils import timezone
+
 import logging
 logger = logging.getLogger(__name__)
 
@@ -242,9 +246,9 @@ def add_song_to_album(request, album_id):
     # Si es GET o hay errores, mostrar el formulario en edit_album
     return redirect('edit_album', album_id=album_id)
 
+
 @login_required
 def add_album(request):
-    # Verificar que el usuario es artista
     if not request.user.is_authenticated or request.user.role != 'artist':
         messages.error(request, "Solo los artistas pueden añadir álbumes")
         return redirect('home')
@@ -252,18 +256,38 @@ def add_album(request):
     if request.method == 'POST':
         form = AlbumForm(request.POST, request.FILES)
         if form.is_valid():
-            # Creamos el DTO desde el formulario
+            # Extract and sanitize fields
+            price = form.cleaned_data.get('price')
+            if price is None:
+                messages.error(request, "Precio es obligatorio.")
+                return render(request, 'music/album_form.html', {
+                    'form': form,
+                    'action': 'Crear',
+                    'user': request.user
+                })
+            release_date_raw = form.cleaned_data['release_date']
+
+            # Convert to datetime if it's a date
+            if isinstance(release_date_raw, datetime):
+                release_date = release_date_raw
+            else:
+                release_date = datetime.combine(release_date_raw, datetime.min.time())
+
+            # Make timezone-aware
+            release_date = timezone.make_aware(release_date)
+
+            # Create DTO
             album_dto = AlbumDTO(
                 title=form.cleaned_data['title'],
                 artist_name=request.user.artist_name,
                 genre=form.cleaned_data['genre'],
-                release_date=form.cleaned_data['release_date'],
+                release_date=release_date,
                 album_cover=request.FILES.get('cover_image'),
                 artist_id=request.user.id,
-                price=float(form.cleaned_data['price']),
+                price=float(price),
             )
 
-            # Usamos el controller para crear el álbum
+            # Use controller
             album = AlbumController.create_album_with_artist(
                 album_dto=album_dto,
                 artist_id=request.user.id
@@ -277,7 +301,7 @@ def add_album(request):
         else:
             for field, errors in form.errors.items():
                 for error in errors:
-                    messages.error(request, '{field} is required.'.format(field=field))
+                    messages.error(request, f"{field}: {error}")
     else:
         form = AlbumForm()
 
@@ -286,7 +310,6 @@ def add_album(request):
         'action': 'Crear',
         'user': request.user
     })
-
 
 @login_required
 def edit_song(request, song_id):

@@ -153,6 +153,7 @@ class AlbumDAO:
             artist_name=album_dto.artist_name,
             genre=album_dto.genre,
             release_date=album_dto.release_date,
+            price=album_dto.price,
         )
 
         if album_dto.album_cover:
