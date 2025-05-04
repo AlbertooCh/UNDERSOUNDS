@@ -32,3 +32,4 @@ urlpatterns = [
     path('', include('controller.urls.store_urls')),
     path('oauth/', include('social_django.urls', namespace='social')),  # Agregado para manejar OAuth
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+

@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-*2y9tb_$subcl8isb090p2cgk18_+_fsuma3ozfdlu4lcg+j1g
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -48,6 +48,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -123,10 +124,10 @@ USE_I18N = True
 USE_TZ = True
 
 MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_ROOT = '/home/media'
 
 # Static files (CSS, JavaScript, Images)
-STATIC_URL = 'static/'
+STATIC_URL = '/static/'
 STATICFILES_DIRS=[
     os.path.join(BASE_DIR, 'view/static')
 ]
@@ -183,3 +184,12 @@ AUTH_USER_MODEL = 'user.User' # to make django use this custom user model
 
 # URL a la que se redirige el uso de @login_required si no se encuentra autenticado
 LOGIN_URL = '/login/'
+
+# Enable WhiteNoise compression and caching
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
+
+CSRF_TRUSTED_ORIGINS = [
+    "https://undersounds-app-apb2cxd8ebg5dwe9.westeurope-01.azurewebsites.net",
+]
+

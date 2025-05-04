@@ -1,21 +1,28 @@
-# Utilizamos una imagen base de Python. Puedes elegir la versión que necesites.
+# Use official Python base image
 FROM python:3.13.2-slim-bullseye
 
-# Establecemos el directorio de trabajo dentro del contenedor.
-WORKDIR /UNDERSOUNDS
+# Environment variables
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV PYTHONUNBUFFERED=1
 
-# Copiamos nuestro código en el contenedor
+# Set working directory inside the container
+WORKDIR /app
+COPY requirements.txt /app/requirements.txt
 
-COPY ../.. .
+# Copy the full project from the parent directory (UNDERSOUNDS root)
+COPY .. /app
 
-# Instalamos las dependencias de la aplicación.
+# Install dependencies
 RUN pip install --upgrade pip
-RUN pip install --no-cache-dir -r requirements.txt
-RUN python -m pip install Pillow
+RUN pip install --no-cache-dir -r /app/requirements.txt
+RUN pip install gunicorn Pillow
 
-# Exponemos el puerto en el que la aplicación Django escuchará (por defecto es el 8000).
+# Collect static files
+RUN python manage.py collectstatic --noinput
+
+# Expose port
 EXPOSE 8000
 
-# Comando para ejecutar la aplicación Django.
+# Start using Gunicorn with correct module path
+CMD ["gunicorn", "--bind", "0.0.0.0:8000", "undersounds.wsgi:application"]
 
-CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
