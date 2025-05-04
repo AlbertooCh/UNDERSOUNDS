@@ -362,7 +362,6 @@ footer {
 .audio-player audio {
     width: 100%;
     max-width: 600px; /* Wider player */
-    display: none; /* Hide default player */
 }
 
 .player-controls {
@@ -407,35 +406,11 @@ footer {
     cursor: pointer;
 }
 
-.volume-controls {
-    display: flex;
-    align-items: center;
-}
-
-.volume-controls button {
-    font-size: 1.2em;
-}
-
 .current-time,
 .total-duration {
     font-size: 0.9em;
     color: #777;
     margin: 0 10px;
-}
-
-.audio-player p {
-    margin-top: 10px;
-    font-size: 0.9em;
-    color: #777;
-}
-
-.audio-player p a {
-    color: #219200;
-    text-decoration: none;
-}
-
-.audio-player p a:hover {
-    text-decoration: underline;
 }
 
 #flash-message {
