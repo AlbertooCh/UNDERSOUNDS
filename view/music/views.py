@@ -1,6 +1,6 @@
 # views.py
 from datetime import date
-from django.db.models import Q, Count, Subquery, OuterRef, IntegerField
+from django.db.models import Q, Count, Subquery, OuterRef, IntegerField, Avg
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
@@ -19,6 +19,7 @@ from model.Dao.music_dao import AlbumDAO
 from model.music.comments_model import Comments
 from model.music.forms import SongForm, AlbumForm
 from django.http import JsonResponse
+
 from model.music.music_models import Song, Album, Favorite
 from model.store.store_models import CartItem, Order, Purchase, OrderItem, PurchaseDetail
 import json
@@ -52,6 +53,7 @@ def music_detail(request, id):
     }
     album = UserController.get_album_by_id(song_dto.album_id) if song_dto.album_id else None
     comments_ratings = list(Comments.objects.filter(song_id=id))
+    average_rating = Comments.objects.filter(song_id=id).aggregate(avg_rating=Avg('rating'))['avg_rating']
     comments_ratings.reverse()
 
     # Verificación adicional para evitar None en artist
@@ -81,6 +83,7 @@ def music_detail(request, id):
         'artist_songs': artist_songs.songs.all() if artist_songs else [],
         'album_id': song_dto.album_id,
         'album': album,
+        'rating': average_rating,
     }
     return render(request, 'music/music_detail.html', context)
 
@@ -636,6 +639,7 @@ def album_detail(request, album_id):
     # Comentarios del álbum
     album_comments = list(Comments.objects.filter(album_id=album_id))
     album_comments.reverse()  # Para mostrar los más recientes primero
+    average_rating = Comments.objects.filter(album_id=album_id).aggregate(avg_rating=Avg('rating'))['avg_rating']
 
     # Verificación de estado en carrito/comprado
     album_in_cart = False
@@ -688,6 +692,7 @@ def album_detail(request, album_id):
         'album_is_favorite': album_is_favorite,
         'artist_songs': artist_songs,
         'user': request.user,
+        'rating': average_rating,
     }
     return render(request, 'music/album_detail.html', context)
 
