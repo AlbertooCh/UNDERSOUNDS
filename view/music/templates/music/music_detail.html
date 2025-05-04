@@ -164,11 +164,11 @@
 
                         {% if request.user == comment.user_id %}
                     <form method="post" action="{% url 'delete_comment' comment.id %}">
-    {% csrf_token %}
+                    {% csrf_token %}
                             <input type="hidden" name="song_id" value="{{ comment.song_id_id }}">
-    <button type="submit">Eliminar</button>
+                            <button type="submit">Eliminar</button>
                         {% endif %}
-</form>
+                    </form>
                     </div>
 
             {% endfor %}

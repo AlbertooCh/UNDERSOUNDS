@@ -202,25 +202,95 @@ body {
     font-style: italic;
 }
 
+.comment .star {
+    color: #ffc107;         /* Color de la estrella (amarillo) */
+    margin-left: 0.2em;    /* Espacio entre la valoración y la estrella */
+}
 /* Sección de descripción */
-.comments-section {
+.comments-list {
+    flex: 2;
     background-color: #fff;
-    padding: 30px;
-    border-radius: 16px;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
-    margin-bottom: 30px;
+    padding: 1em;
+    border-radius: 12px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+    margin-bottom: 1em;
 }
 
-.comments-section h2 {
-    font-size: 1.8em;
-    margin-bottom: 20px;
-    color: #2c3e50;
+#comments-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    width: 100%;
+    max-height: 400px;
+    overflow-y: auto;
 }
 
-.comments-section p {
+.comment {
+    background-color: #f9f9f9;
+    padding: 0.75em;
+    margin-bottom: 0.75em;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    display: grid;
+    grid-template-columns: auto 1fr auto; /* Añadimos una tercera columna para el botón */
+    grid-template-rows: auto auto auto;      /* Añadimos una tercera fila */
+    grid-template-areas:
+        "avatar username ."       /* Avatar y nombre arriba */
+        ". text text"         /* Comentario centrado */
+        "rating rating delete"; /* Valoración y botón abajo */
+    align-items: center;
+}
+
+.comment img {
+    grid-area: avatar;
+    width: 40px;  /* Aumentado un poco el tamaño */
+    height: 40px; /* Aumentado un poco el tamaño */
+    border-radius: 50%;
+    margin-right: 0.5em;
+    object-fit: cover;
+}
+
+.comment strong {
+    grid-area: username;
+    font-size: 1.0em;
+    margin-right: 0.5em;
+}
+
+.comment p {
+    grid-area: text;
+    font-size: 0.9em; /* Ajustado el tamaño de la fuente */
     color: #555;
-    line-height: 1.7;
-    margin-bottom: 15px;
+    margin: 0.5em 0; /* Añadido un poco de margen vertical */
+}
+
+.comment div:first-of-type { /* Selecciona el primer div dentro de .comment (la valoración) */
+    grid-area: rating;
+    font-size: 0.85em;
+    color: #888;
+}
+
+.comment form {           /* Selecciona el formulario (botón de borrar) */
+    grid-area: delete;
+    text-align: right;
+}
+
+.comment form button {    /* Estilo para el botón de borrar */
+    background: none;
+    border: none;
+    color: #e74c3c;
+    cursor: pointer;
+    font-size: 0.85em;
+    padding: 0.25em 0.5em;
+    border-radius: 4px;
+    transition: background-color 0.2s;
+}
+
+.comment form button:hover {
+    background-color: #f5f5f5;
+}
+.comment .star {
+    color: #ffc107;         /* Color de la estrella (amarillo) */
+    margin-left: 0.2em;    /* Espacio entre la valoración y la estrella */
 }
 
 /* Formulario de comentarios */
@@ -283,8 +353,10 @@ body {
 
 .star-rating {
     display: flex;
-    gap: 5px;
-    margin-bottom: 15px;
+    justify-content: center;
+    align-items: center;
+    direction: rtl;
+    unicode-bidi: bidi-override;
 }
 
 .star-rating input {
@@ -292,17 +364,23 @@ body {
 }
 
 .star-rating label {
-    font-size: 1.8em;
-    color: #ddd;
+    color: #ccc;
+    font-size: 2em;
+    padding: 0 0.1em;
     cursor: pointer;
-    transition: color 0.2s;
-    margin: 0;
+    transition: color 0.2s, transform 0.2s; /* Added transform */
+    display: inline-block; /* Make labels behave like blocks */
+    text-align: center; /* Center the star */
 }
 
-.star-rating input:checked ~ label,
 .star-rating label:hover,
 .star-rating label:hover ~ label {
-    color: #f1c40f;
+    color: #ffc107;
+    transform: scale(1.2); /* Slightly enlarge on hover */
+}
+
+.star-rating input:checked ~ label {
+    color: #ffc107;
 }
 
 .introducir-comment-button-container {

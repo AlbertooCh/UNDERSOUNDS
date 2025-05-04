@@ -27,7 +27,7 @@ urlpatterns = [
     path('add_comment/song/<int:song_id>/', login_required(views.add_commentSong), name='add_comment_to_song'),
     path('add_comment/album/<int:album_id>/', login_required(views.add_commentAlbum), name='add_comment_to_album'),
     path('delete_comment/<int:comment_id>/', login_required(views.delete_commentSong), name='delete_comment'),
-    path('delete_comment/<int:comment_id>/', login_required(views.delete_commentAlbum), name='delete_comment'),
+    path('delete_comment_album/<int:comment_id>/', login_required(views.delete_commentAlbum), name='delete_comment_album'),
 
     path('favorites/add/', views.add_favorite, name='add_favorite'),
     path('favorites/remove/', views.remove_favorite, name='remove_favorite'),

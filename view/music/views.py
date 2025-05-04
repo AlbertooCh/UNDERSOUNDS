@@ -532,7 +532,7 @@ def delete_commentAlbum(request, comment_id):
         comentario = get_object_or_404(Comments, id=comment_id)
         album_id = comentario.album_id.id
         comentario.delete()
-        return redirect(reverse('music_detail_id', args=[album_id]))
+        return redirect(reverse('album_detail', args=[album_id]))
     else:
         return redirect(reverse('catalogo'))
 
