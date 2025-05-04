@@ -1,11 +1,12 @@
-# Utilizamos una imagen base de Python.
-FROM python:3.11-slim-buster
+# Utilizamos una imagen base de Python. Puedes elegir la versión que necesites.
+FROM python:3.13.2-slim-bullseye
 
 # Establecemos el directorio de trabajo dentro del contenedor.
 WORKDIR /UNDERSOUNDS
 
 # Copiamos nuestro código en el contenedor
-COPY ../ .
+
+COPY ../.. .
 
 # Instalamos las dependencias de la aplicación.
 RUN pip install --upgrade pip
@@ -16,4 +17,5 @@ RUN python -m pip install Pillow
 EXPOSE 8000
 
 # Comando para ejecutar la aplicación Django.
+
 CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
