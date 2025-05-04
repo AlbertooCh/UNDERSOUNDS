@@ -9,6 +9,7 @@ class Comments(models.Model):
     comment = models.TextField(max_length=255)
     rating = models.DecimalField(max_digits=5, decimal_places=2, default='0.00')
     song_id = models.ForeignKey(Song, on_delete=models.CASCADE, related_name='song_comments', null=True, blank=True)
+    album_id = models.ForeignKey(Album, on_delete=models.CASCADE, related_name='album_comments', null=True, blank=True)
 
 
     class Meta:

@@ -2,82 +2,59 @@
 {% load static %}
 {% load humanize %}
 
-{% block title %}Proceso de Pago{% endblock %}
+{% block title %}Detalle del Pedido{% endblock %}
 
 {% block extra_css %}
-    <link rel="stylesheet" href="{% static 'store/css/pago.css' %}">
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{% static 'store/css/order_detail.css' %}">
 {% endblock %}
 
 {% block content %}
-<div class="payment-container">
-    <h1 class="payment-title">Proceso de Pago</h1>
+<div class="order-container">
+    <h1 class="order-title">Detalles del Pedido</h1>
 
-    <div class="payment-summary">
-        <h2>Resumen de tu compra</h2>
-
-        {% if not cart_items %}
-            <div class="empty-cart-message">
-                <p>No hay items en tu carrito</p>
-                <a href="{% url 'catalogo' %}" class="btn btn-primary">Ir al catálogo</a>
-            </div>
-        {% else %}
-            <div class="cart-items">
-                {% for item in cart_items %}
-                <div class="cart-item">
-                    <div class="item-image">
-                        {% if item.cover_url %}
-                            <img src="{{ item.cover_url }}" alt="{% if item.item_type == 'song' %}{{ item.song_title }}{% else %}{{ item.album_title }}{% endif %}">
-                        {% else %}
-                            <img src="{% static 'images/default_album.jpg' %}" alt="Portada">
-                        {% endif %}
-                    </div>
-                    <div class="item-info">
-                        <h3>
-                            {% if item.item_type == 'song' %}
-                                {{ item.song_title }}
-                            {% else %}
-                                {{ item.album_title }} (Álbum completo)
-                            {% endif %}
-                        </h3>
-                        <p class="artist">{{ item.artist_name }}</p>
-                    </div>
-                    <div class="item-price">
-                        <span>{{ item.quantity }} × {{ item.song_price|default:item.album_price|floatformat:2|intcomma }} €</span>
-                        <strong>{{ item.subtotal|floatformat:2|intcomma }} €</strong>
-                    </div>
-                </div>
-                {% endfor %}
-            </div>
-
-            <div class="total-section">
-                <span>Total:</span>
-                <strong class="total-price">{{ total|floatformat:2|intcomma }} €</strong>
-            </div>
-        {% endif %}
+    <div class="order-summary">
+        <p><strong>ID del Pedido:</strong> {{ order.id }}</p>
+        <p><strong>Fecha:</strong> {{ order.created_at|date:"d/m/Y H:i" }}</p>
+        <p><strong>Método de Pago:</strong> {{ order.payment_method|capfirst }}</p>
     </div>
 
-    {% if cart_items %}
-    <form method="POST" class="payment-form">
-        {% csrf_token %}
+    <div class="order-items">
+        <h2>Productos Comprados</h2>
 
-        <div class="payment-methods">
-            <h2>Método de pago</h2>
-
-            {% for method in payment_methods %}
-            <div class="payment-method">
-                <input type="radio" id="{{ method.value }}" name="payment_method"
-                       value="{{ method.value }}" {% if forloop.first %}checked{% endif %}>
-                <label for="{{ method.value }}">{{ method.label }}</label>
+        {% for item in items %}
+        <div class="order-item">
+            <div class="item-image">
+                {% if item.cover_url %}
+                    <img src="{{ item.cover_url }}" alt="Portada">
+                {% else %}
+                    <img src="{% static 'images/default_album.jpg' %}" alt="Portada">
+                {% endif %}
             </div>
-            {% endfor %}
+            <div class="item-details">
+                <h3>
+                    {% if item.item_type == 'song' %}
+                        {{ item.song_title }}
+                    {% else %}
+                        {{ item.album_title }} (Álbum completo)
+                    {% endif %}
+                </h3>
+                <p class="artist">Artista: {{ item.artist_name }}</p>
+                <p class="quantity">Cantidad: {{ item.quantity }}</p>
+                <p class="price-unit">Precio unitario: {{ item.price|floatformat:2|intcomma }} €</p>
+                <p class="subtotal">Subtotal: {{ item.price|floatformat:2|intcomma|floatformat:2 }} €</p>
+            </div>
         </div>
+        {% endfor %}
+    </div>
 
-        <div class="payment-actions">
-            <a href="{% url 'carrito' %}" class="btn btn-secondary">Volver al carrito</a>
-            <button type="submit" class="btn btn-primary">Confirmar y pagar</button>
-        </div>
-    </form>
-    {% endif %}
+    <div class="order-total">
+        <span>Total pagado:</span>
+        <strong>{{ order.total|floatformat:2|intcomma }} €</strong>
+    </div>
+
+    <div class="order-actions">
+        <a href="{% url 'historial_compras' %}" class="btn btn-secondary">Volver al Historial</a>
+        <a href="{% url 'catalogo' %}" class="btn btn-primary">Seguir Comprando</a>
+    </div>
 </div>
 {% endblock %}

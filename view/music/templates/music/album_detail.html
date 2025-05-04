@@ -9,55 +9,55 @@
 
 {% block content %}
 
-<main class="album-detail-container">
+<body>
+    <main class="main-container">
     <!-- Album Header Section -->
-    <div class="album-header">
-        <div class="album-cover">
-            {% if album.album_cover %}
-                <img src="{{ album.album_cover.url }}" alt="{{ album.title }}">
-            {% else %}
-                <img src="{% static 'images/default_album.jpg' %}" alt="Portada del álbum">
-            {% endif %}
+    <div class="track-info">
+        <div class="track-details">
+            <h1>{{ album.title }}</h1>
+            <p><strong>Artista:</strong> {{ album.artist_name }}</p>
+            <p><strong>Fecha de lanzamiento:</strong> {{ album.release_date|date:"Y" }}</p>
+            <p><strong>Género:</strong> {{ album.genre }}</p>
+            <p><strong>Precio:</strong> €{{ album.price }}</p>
+            <p><strong>Canciones:</strong> {{ songs.count }}</p>
+
+            <form action="{% url 'add_album_to_cart' album.id %}" method="post" class="add-to-cart-form">
+                {% csrf_token %}
+                <input type="hidden" name="quantity" value="1">
+                {% if album_in_order %}
+                    <button type="button" class="add-to-cart-btn" disabled>
+                        <i class="fas fa-check-double"></i> Álbum comprado
+                    </button>
+                {% elif album_in_cart %}
+                    <button type="button" class="add-to-cart-btn" disabled>
+                        <i class="fas fa-shopping-cart"></i> En el carrito
+                    </button>
+                {% else %}
+                    <button type="submit" class="add-to-cart-btn">
+                        <i class="fas fa-cart-plus"></i> Añadir álbum al carrito
+                    </button>
+                {% endif %}
+            </form>
         </div>
 
-        <div class="album-info">
-            <h1>{{ album.title }}</h1>
-            <p class="artist-name">{{ album.artist_name }}</p>
-            <div class="album-meta">
-                <span>{{ album.release_date|date:"Y" }}</span>
-                <span>{{ songs.count }} canción{{ songs.count|pluralize:"es" }}</span>
+        <div class="track-right">
+            <div class="track-cover">
+                {% if album.album_cover %}
+                    <img src="{{ album.album_cover.url }}" alt="{{ album.title }}">
+                {% else %}
+                    <img src="{% static 'images/default_album.jpg' %}" alt="Sin portada">
+                {% endif %}
             </div>
-
-            <div class="album-actions">
-                {% if user.is_authenticated %}
-                    <form action="{% url 'add_album_to_cart' album.id %}" method="post" class="add-to-cart-form">
-                        {% csrf_token %}
-                        <input type="hidden" name="quantity" value="1">
-                        {% if album_in_order %}
-                            <button type="button" class="action-btn purchased" disabled>
-                                <i class="fas fa-check-double"></i> Álbum comprado
-                            </button>
-                        {% elif album_in_cart %}
-                            <button type="button" class="action-btn in-cart" disabled>
-                                <i class="fas fa-shopping-cart"></i> En el carrito
-                            </button>
-                        {% else %}
-                            <button type="submit" class="action-btn add-to-cart">
-                                <i class="fas fa-cart-plus"></i> Añadir álbum (€{{ price }})
-                            </button>
-                        {% endif %}
-                    </form>
-
-                    <button id="favorite-album-btn" class="action-btn favorite {% if album_is_favorite %}active{% endif %}"
-                            data-album-id="{{ album.id }}">
-                        <i class="fas fa-heart"></i>
-                        <span id="favorite-album-text">
-                            {% if album_is_favorite %}En favoritos{% else %}Añadir a favoritos{% endif %}
+            <div class="favorite-section">
+                {% if request.user.is_authenticated %}
+                    <button id="favorite-btn" class="favorite-btn {% if album_is_favorite %}active{% endif %}" data-album-id="{{ album.id }}">
+                        <span id="favorite-text">
+                            {% if album_is_favorite %}<i class="fas fa-heart"></i>{% else %}<i class="far fa-heart"></i>{% endif %}
                         </span>
                     </button>
                 {% else %}
-                    <a href="{% url 'login' %}?next={{ request.path }}" class="action-btn">
-                        <i class="fas fa-sign-in-alt"></i> Inicia sesión para comprar
+                    <a href="{% url 'login' %}?next={{ request.path }}" class="favorite-btn">
+                        <i class="fas fa-heart"></i>
                     </a>
                 {% endif %}
             </div>
@@ -65,36 +65,19 @@
     </div>
 
     <!-- Songs List Section -->
-    <div class="songs-list-section">
-        <h2>Canciones</h2>
-
-        <div class="songs-list">
+    <div class="wide-section">
+        <h2>Canciones del Álbum</h2>
+        <div class="songs-list-container">
             {% for song in songs %}
-            <div class="song-item" data-song-id="{{ song.id }}">
+            <div class="song-item">
                 <div class="song-number">{{ forloop.counter }}</div>
                 <div class="song-info">
                     <div class="song-title">{{ song.title }}</div>
                     <div class="song-details">
-                        <span class="song-duration">3:45</span> <!-- Puedes añadir duración si está en tu modelo -->
                         <span class="song-price">€{{ song.price }}</span>
                     </div>
                 </div>
                 <div class="song-actions">
-                    {% if user.is_authenticated %}
-                        {% if song_in_order %}
-                            <button class="song-action-btn" disabled>
-                                <i class="fas fa-check"></i> Comprado
-                            </button>
-                        {% else %}
-                            <form action="{% url 'add_song_to_cart' song.id %}" method="post">
-                                {% csrf_token %}
-                                <input type="hidden" name="quantity" value="1">
-                                <button type="submit" class="song-action-btn">
-                                    <i class="fas fa-cart-plus"></i> Añadir
-                                </button>
-                            </form>
-                        {% endif %}
-                    {% endif %}
                     <a href="{% url 'music_detail_id' song.id %}" class="song-action-btn">
                         <i class="fas fa-info-circle"></i> Detalles
                     </a>
@@ -108,93 +91,143 @@
         </div>
     </div>
 
-    <!-- Album Description Section -->
+    <!-- Album Description -->
     {% if album.description %}
-    <div class="album-description">
-        <h2>Acerca del álbum</h2>
+    <div class="comments-section">
+        <h2>Acerca del Álbum</h2>
         <p>{{ album.description }}</p>
     </div>
     {% endif %}
 
     <!-- Comments Section -->
     <div class="comments-section">
-        <h2>Comentarios</h2>
-
-        {% if user.is_authenticated %}
-        <div class="add-comment">
-            <form method="POST" action="{% url 'album_detail' album.id %}">
-                {% csrf_token %}
-                <textarea name="comment_text" placeholder="Escribe tu comentario sobre este álbum..." required></textarea>
-                <div class="rating-section">
-                    <label>Valoración:</label>
-                    <div class="star-rating">
-                        <input type="radio" id="album-star5" name="rating" value="5" required />
-                        <label for="album-star5">★</label>
-                        <input type="radio" id="album-star4" name="rating" value="4" />
-                        <label for="album-star4">★</label>
-                        <input type="radio" id="album-star3" name="rating" value="3" />
-                        <label for="album-star3">★</label>
-                        <input type="radio" id="album-star2" name="rating" value="2" />
-                        <label for="album-star2">★</label>
-                        <input type="radio" id="album-star1" name="rating" value="1" />
-                        <label for="album-star1">★</label>
+        <div class="new-comment">
+            <h2><strong>Nuevo Comentario</strong></h2>
+            <div class="introducir-comment">
+                {% if request.user.is_authenticated %}
+                    <div class="introducir-comment-header">
+                        <img src="{{ request.user.avatar.url }}" alt="Perfil" class="introducir-comment-avatar">
+                        <strong class="introducir-comment-username">{{ request.user.username }}</strong>
                     </div>
-                </div>
-                <button type="submit" class="submit-comment-btn">Enviar comentario</button>
-            </form>
-        </div>
-        {% else %}
-        <div class="login-to-comment">
-            <a href="{% url 'login' %}?next={{ request.path }}">Inicia sesión</a> para dejar un comentario.
-        </div>
-        {% endif %}
-
-        <div class="comments-list">
-            {% for comment in album_comments %}
-            <div class="comment">
-                <div class="comment-header">
-                    <img src="{{ comment.user.avatar.url }}" alt="{{ comment.user.username }}" class="comment-avatar">
-                    <div class="comment-user">
-                        <strong>{{ comment.user.username }}</strong>
-                        <div class="comment-rating">
-                            {% for _ in "12345" %}
-                                {% if forloop.counter <= comment.rating %}
-                                    <span class="star filled">★</span>
-                                {% else %}
-                                    <span class="star">★</span>
-                                {% endif %}
-                            {% endfor %}
+                    <form action="{% url 'add_comment_to_album' album.id %}" method="POST" class="new-comment-form">
+                        {% csrf_token %}
+                        <textarea name="comment_text" id="Comment-text" placeholder="Escribe aquí tu comentario" class="introducir-comment-text"></textarea>
+                        <div class="rating-section">
+                            <label for="rating">Valoración:</label>
+                            <div class="star-rating">
+                                <input type="radio" id="star5" name="rating" value="5" required /><label for="star5">★</label>
+                                <input type="radio" id="star4" name="rating" value="4" /><label for="star4">★</label>
+                                <input type="radio" id="star3" name="rating" value="3" /><label for="star3">★</label>
+                                <input type="radio" id="star2" name="rating" value="2" /><label for="star2">★</label>
+                                <input type="radio" id="star1" name="rating" value="1" /><label for="star1">★</label>
+                            </div>
                         </div>
-                    </div>
-                    <span class="comment-date">{{ comment.created_at|date:"d M Y" }}</span>
-                </div>
-                <div class="comment-text">
-                    {{ comment.comment_text }}
-                </div>
-                {% if user == comment.user %}
-                <form method="post" action="{% url 'delete_album_comment' comment.id %}" class="delete-comment-form">
-                    {% csrf_token %}
-                    <input type="hidden" name="album_id" value="{{ album.id }}">
-                    <button type="submit" class="delete-comment-btn">
-                        <i class="fas fa-trash"></i> Eliminar
-                    </button>
-                </form>
+                        <div class="introducir-comment-button-container">
+                            <button type="submit" class="add-to-cart-btn">Publicar Comentario</button>
+                        </div>
+                    </form>
+                {% else %}
+                    <p>Inicia sesión o crea una cuenta para dejar un comentario</p>
                 {% endif %}
             </div>
+        </div>
+
+        <div class="comments-list">
+            <h2><strong>Comentarios</strong></h2>
+            {% for comment in album_comments %}
+                <div class="comment">
+                    <img src="{{ comment.user_id.avatar.url }}" alt="Perfil" class="user">
+                    <strong>{{ comment.user_id.username }}</strong>
+                    <div>
+                        <p>{{ comment.rating|floatformat:0 }}/5 <span class="star">★</span></p>
+                    </div>
+                    <p>{{ comment.comment }}</p>
+
+                    {% if request.user == comment.user %}
+                    <form method="post" action="{% url 'delete_album_comment' comment.id %}">
+                        {% csrf_token %}
+                        <input type="hidden" name="album_id" value="{{ album.id }}">
+                        <button type="submit">Eliminar</button>
+                    </form>
+                    {% endif %}
+                </div>
             {% empty %}
-            <div class="no-comments">
-                No hay comentarios aún. Sé el primero en comentar.
+                <div class="no-comments">
+                    No hay comentarios aún. Sé el primero en comentar.
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Artist Info Section -->
+    <div class="author-info">
+    <h2><strong>Artista</strong></h2>
+    {% if artist %}
+    <div class="artist-card">
+        <div class="artist-avatar">
+            <img src="{{ artist.avatar.url }}" alt="{{ album.artist_name }}" class="artist-avatar-img">
+        </div>
+        <div class="artist-details">
+            <h3>{{ artist.artist_name }}</h3>
+            <p><strong>Género:</strong> {{ artist.genre|default:"No especificado" }}</p>
+            <p><strong>País:</strong> {{ artist.country|default:"No especificado" }}</p>
+            {% if artist.bio %}
+                <p class="artist-bio">{{ artist.bio }}</p>
+            {% endif %}
+            <a href="{% url 'artist_detail' artist_name=album.artist_name %}" class="btn">
+                <i class="fas fa-user"></i> Ver perfil completo
+            </a>
+        </div>
+    </div>
+
+    <div class="artist-songs-section">
+        <h3><strong>MÁS DEL ARTISTA</strong></h3>
+        <div class="artist-songs-list">
+            {% for song in artist_songs %}
+            <div class="artist-song-item">
+                <div class="song-number">{{ forloop.counter }}</div>
+                <div class="song-info">
+                    <div class="song-title">{{ song.title }}</div>
+                    <div class="song-details">
+                        <span class="song-price">€{{ song.price }}</span>
+                    </div>
+                </div>
+                <div class="song-actions">
+                    <a href="{% url 'music_detail_id' song.id %}" class="song-action-btn">
+                        <i class="fas fa-info-circle"></i> Detalles
+                    </a>
+                </div>
+            </div>
+            {% empty %}
+            <div class="no-songs">
+                No hay más canciones de este artista.
             </div>
             {% endfor %}
         </div>
     </div>
+    {% else %}
+        <p>Información del artista no disponible</p>
+    {% endif %}
+</div>
 </main>
 
 <!-- Flash Messages -->
 {% if messages %}
-<div id="flash-message" style="position: fixed; top: 20px; right: 20px; background-color: #333; color: white; padding: 15px 20px; border-radius: 8px; z-index: 9999; box-shadow: 0 4px 6px rgba(0,0,0,0.1); font-family: sans-serif; opacity: 1;">
+<div id="flash-message" style="
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background-color: #333;
+    color: white;
+    padding: 15px 20px;
+    border-radius: 8px;
+    z-index: 9999;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    font-family: sans-serif;
+    opacity: 1;
+">
     {% for message in messages %}
-        {{ message }}
+      {{ message }}
     {% endfor %}
 </div>
 
@@ -217,12 +250,12 @@
 <!-- Favorite Album Script -->
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    const favoriteBtn = document.getElementById('favorite-album-btn');
+    const favoriteBtn = document.getElementById('favorite-btn');
     if (favoriteBtn) {
-        favoriteBtn.addEventListener('click', toggleFavoriteAlbum);
+        favoriteBtn.addEventListener('click', toggleFavorite);
     }
 
-    function toggleFavoriteAlbum() {
+    function toggleFavorite() {
         const btn = this;
         const albumId = btn.dataset.albumId;
         const isFavorite = btn.classList.contains('active');
@@ -245,8 +278,13 @@ document.addEventListener('DOMContentLoaded', function() {
         .then(data => {
             if (data.status === 'success') {
                 btn.classList.toggle('active');
-                const favoriteText = document.getElementById('favorite-album-text');
-                favoriteText.textContent = btn.classList.contains('active') ? 'En favoritos' : 'Añadir a favoritos';
+                if (btn.classList.contains('active')) {
+                    btn.classList.remove('far');
+                    btn.classList.add('fas');
+                } else {
+                    btn.classList.remove('fas');
+                    btn.classList.add('far');
+                }
                 showFlashMessage(isFavorite ? 'Álbum eliminado de favoritos' : 'Álbum añadido a favoritos');
             } else {
                 showFlashMessage('Error: ' + data.message, true);

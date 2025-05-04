@@ -10,6 +10,7 @@ from django.urls import reverse
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
 import logging
+logger = logging.getLogger(__name__)
 
 from controller.music_controller import SongController, AlbumController, FavoriteController
 from controller.user_controller import UserController
@@ -19,7 +20,7 @@ from model.music.comments_model import Comments
 from model.music.forms import SongForm, AlbumForm
 from django.http import JsonResponse
 from model.music.music_models import Song, Album, Favorite
-from model.store.store_models import CartItem, Order, Purchase, OrderItem
+from model.store.store_models import CartItem, Order, Purchase, OrderItem, PurchaseDetail
 import json
 
 
@@ -27,79 +28,61 @@ def music_detail_redirect(request):
     song_id = request.GET.get("id")
     return redirect("music_detail_id", id=song_id)
 
+
 def music_detail(request, id):
-    try:
-        song_dto = SongController.get_song(id)
-        if not song_dto:
-            return render(request, '404.html', status=404)
+    song_dto = SongController.get_song(id)
+    if not song_dto:
+        return render(request, '404.html', status=404)
 
-        User = get_user_model()
-        artist = User.objects.filter(artist_name=song_dto.artist_name).first()
+    User = get_user_model()
+    artist = User.objects.filter(artist_name=song_dto.artist_name).first()
 
-        song = {
-            'id': song_dto.id,
-            'title': song_dto.title,
-            'artist_name': song_dto.artist_name,
-            'artist_id': artist.id if artist else None,
-            'genre': song_dto.genre,
-            'price': song_dto.price,
-            'artist': artist,
-            'release_date': song_dto.release_date,
-            'song_cover': song_dto.song_cover,
-            'song_file': song_dto.song_file,
-            'album_id': song_dto.album_id,
-        }
+    song = {
+        'id': song_dto.id,
+        'title': song_dto.title,
+        'artist_name': song_dto.artist_name,
+        'artist_id': artist.id if artist else None,
+        'genre': song_dto.genre,
+        'price': song_dto.price,
+        'artist': artist,
+        'release_date': song_dto.release_date,
+        'song_cover': song_dto.song_cover,
+        'song_file': song_dto.song_file,
+        'album_id': song_dto.album_id,
+    }
 
-        # Comentarios y ratings
-        comments_ratings = list(Comments.objects.filter(song_id=id))
-        comments_ratings.reverse()
-        rating = sum(c.rating for c in comments_ratings) / len(comments_ratings) if comments_ratings else 0
+    comments_ratings = list(Comments.objects.filter(song_id=id))
+    comments_ratings.reverse()
 
-        # Estado de compra/carrito/favoritos
-        in_cart = False
-        in_order = False
-        is_favorite = False
-        artist_songs = []
+    # Verificación adicional para evitar None en artist
+    artist_songs = UserController.get_artist_with_songs(artist.id) if artist else None
 
-        if request.user.is_authenticated:
-            # Verificar si está en el carrito (con protección contra None)
-            in_cart = CartItem.objects.filter(
-                user=request.user,
-                song__id=id
-            ).exists()
+    in_cart = False
+    in_order = False
 
-            # Verificar si ya fue comprado
-            in_order = PurchaseDetail.objects.filter(
-                purchase__user=request.user,
-                song__id=id
-            ).exists()
+    if request.user.is_authenticated:
+        # Verificar si la canción está en el carrito
+        in_cart = CartItem.objects.filter(
+            user=request.user,
+            song__id=id
+        ).exists()
 
-            # Verificar si es favorito
-            is_favorite = FavoriteController.is_item_favorited(
-                request.user.id,
-                'song',
-                id
-            )
+        # Verificar si la canción fue comprada (más eficiente que tu enfoque actual)
+        in_order = PurchaseDetail.objects.filter(
+            purchase__user=request.user,
+            song__id=id
+        ).exists()
 
-            # Canciones del artista
-            if artist:
-                artist_songs = UserController.get_artist_with_songs(artist.id).songs.all()
+    context = {
+        'song': song,
+        'comments': comments_ratings,
+        'in_cart': in_cart,
+        'in_order': in_order,
+        'artist_songs': artist_songs.songs.all() if artist_songs else [],
+        'album_id': song_dto.album_id
+    }
+    return render(request, 'music/music_detail.html', context)
 
-        context = {
-            'song': song,
-            'comments': comments_ratings,
-            'in_cart': in_cart,
-            'in_order': in_order,
-            'artist_songs': artist_songs,
-            'album_id': song_dto.album_id,
-            'is_favorite': is_favorite,
-            'rating': rating
-        }
-        return render(request, 'music/music_detail.html', context)
-
-    except Exception as e:
-        logger.error(f"Error en music_detail: {str(e)}", exc_info=True)
-        return render(request, '500.html', status=500)
 
 
 def catalogo(request):
@@ -514,7 +497,7 @@ def add_commentAlbum(request, album_id):
                 album = Album.objects.get(pk=album_id)
                 new_comment = Comments.objects.create(
                     user_id=request.user,
-                    album_id_id=album.id,
+                    album_id=album,
                     rating=comment_rating,
                     comment=comment_text
                 )
@@ -623,24 +606,72 @@ def album_detail(request, album_id):
     if not album_dto:
         return render(request, '404.html', status=404)
 
+    User = get_user_model()
+    artist = User.objects.filter(artist_name=album_dto.artist_name).first()
+
     songs = SongController.get_songs_by_album(album_id)
 
+    # Cálculo del precio promedio
     valor = []
-    for song in songs:  # Asegúrate de que el rating sea un número
+    for song in songs:
         valor.append(song.price)
+    price = sum(valor) / len(valor) if valor else 0
 
-    if valor:
-        price = sum(valor) / len(valor)
+    # Comentarios del álbum
+    album_comments = list(Comments.objects.filter(album_id=album_id))
+    album_comments.reverse()  # Para mostrar los más recientes primero
+
+    # Verificación de estado en carrito/comprado
+    album_in_cart = False
+    album_in_order = False
+    album_is_favorite = False
+
+    if request.user.is_authenticated:
+        # Verificar si el álbum está en el carrito
+        album_in_cart = CartItem.objects.filter(
+            user=request.user,
+            album__id=album_id
+        ).exists()
+
+        # Verificar si el álbum fue comprado
+        album_in_order = PurchaseDetail.objects.filter(
+            purchase__user=request.user,
+            album__id=album_id
+        ).exists()
+
+        # Verificar si es favorito
+        album_is_favorite = FavoriteController.is_item_favorited(
+            request.user.id,
+            'album',
+            album_id
+        )
+
+        # Obtener canciones del artista
+        artist_songs = UserController.get_artist_with_songs(artist.id).songs.all() if artist else []
     else:
-        price = 0
-
-
+        artist_songs = []
 
     context = {
-        'album': album_dto,
+        'album': {
+            'id': album_dto.id,
+            'title': album_dto.title,
+            'artist_name': album_dto.artist_name,
+            'artist_id': artist.id if artist else None,
+            'genre': album_dto.genre,
+            'price': price,
+            'artist': artist,
+            'release_date': album_dto.release_date,
+            'album_cover': album_dto.album_cover,
+            'description': album_dto.description,
+        },
+        'artist': artist,
         'songs': songs,
+        'album_comments': album_comments,
+        'album_in_cart': album_in_cart,
+        'album_in_order': album_in_order,
+        'album_is_favorite': album_is_favorite,
+        'artist_songs': artist_songs,
         'user': request.user,
-        'price': price
     }
     return render(request, 'music/album_detail.html', context)
 

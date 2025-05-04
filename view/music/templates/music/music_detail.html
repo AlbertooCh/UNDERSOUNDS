@@ -18,7 +18,7 @@
             <p><strong>Fecha de lanzamiento:</strong> {{ song.release_date }}</p>
             <p><strong>Precio:</strong> €{{ song.price }}</p>
             <p><strong>Valoracion Media:</strong> {{ rating |floatformat:2 }} / 5</p>
-            <form action="{% url 'add_to_cart' song.id %}" method="post" class="add-to-cart-form">
+            <form action="{% url 'add_song_to_cart' song.id %}" method="post" class="add-to-cart-form">
                 {% csrf_token %}
                 <input type="hidden" name="quantity" value="1">
                 {% if in_order %}
@@ -50,19 +50,18 @@
                 {% endif %}
             </div>
             <div class="favorite-section">
-                {% if request.user.is_authenticated %}
-                    <button id="favorite-btn" class="favorite-btn {% if is_favorite %}active{% endif %}" data-song-id="{{ song.id }}">
-
-                        <span id="favorite-text">
-                            {% if is_favorite %}<i class="fas fa-heart"></i>{% else %}<i class="far fa-heart"></i>{% endif %}
-                        </span>
-                    </button>
-                {% else %}
-                    <a href="{% url 'login' %}?next={{ request.path }}" class="favorite-btn">
-                        <i class="fas fa-heart"></i>
-                    </a>
-                {% endif %}
-            </div>
+             {% if request.user.is_authenticated %}
+              <button id="favorite-btn" class="favorite-btn {% if is_favorite %}active{% endif %}" data-song-id="{{ song.id }}">
+               <span id="favorite-text">
+                {% if is_favorite %}<i class="fas fa-heart"></i> En favoritos{% else %}<i class="far fa-heart"></i> Añadir a favoritos{% endif %}
+                </span>
+              </button>
+              {% else %}
+               <a href="{% url 'login' %}?next={{ request.path }}" class="favorite-btn">
+                  <i class="fas fa-heart"></i> Añadir a favoritos
+                 </a>
+                 {% endif %}
+                </div>
         </div>
     </div>
 
@@ -129,7 +128,7 @@
                     <img src="{{ request.user.avatar.url }}" alt="Perfil" class="introducir-comment-avatar">
                     <strong class="introducir-comment-username">{{ request.user.username }}</strong>
                 </div>
-                <form action="{% url 'add_comment' song.id %}" method="POST" class="new-comment-form">
+                <form action="{% url 'add_comment_to_song' song.id %}" method="POST" class="new-comment-form">
                     {% csrf_token %}
                     <textarea name="comment_text" id="Comment-text" placeholder="Escribe aquí tu comentario" class="introducir-comment-text"></textarea>
                     <div class="rating-section">
@@ -264,18 +263,17 @@ document.addEventListener('DOMContentLoaded', function() {
         .then(response => response.json())
         .then(data => {
             if (data.status === 'success') {
-                // Actualizar el estado del botón
                 btn.classList.toggle('active');
-    if (btn.classList.contains('active')) {
-        btn.classList.remove('far');
-        btn.classList.add('fas');
-    } else {
-        btn.classList.remove('fas');
-        btn.classList.add('far');
-    }
-
-                // Mostrar mensaje flash
-                showFlashMessage(isFavorite ? 'Eliminado de favoritos' : 'Añadido a favoritos');
+                if (btn.classList.contains('active')) {
+                    btn.querySelector('i').classList.remove('far');
+                    btn.querySelector('i').classList.add('fas');
+                    document.getElementById('favorite-text').innerHTML = '<i class="fas fa-heart"></i> En favoritos';
+                } else {
+                    btn.querySelector('i').classList.remove('fas');
+                    btn.querySelector('i').classList.add('far');
+                    document.getElementById('favorite-text').innerHTML = '<i class="far fa-heart"></i> Añadir a favoritos';
+                }
+                showFlashMessage(isFavorite ? 'Canción eliminada de favoritos' : 'Canción añadida a favoritos');
             } else {
                 showFlashMessage('Error: ' + data.message, true);
             }
@@ -295,7 +293,6 @@ document.addEventListener('DOMContentLoaded', function() {
         flash.textContent = message;
         flash.style.backgroundColor = isError ? '#ff4757' : '#2ed573';
 
-        // Aplicar estilos (puedes reutilizar los que ya tienes)
         Object.assign(flash.style, {
             position: 'fixed',
             top: '20px',

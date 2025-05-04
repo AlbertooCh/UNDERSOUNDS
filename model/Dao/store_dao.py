@@ -104,6 +104,17 @@ class OrderDAO:
         ).order_by('-created_at')
         return [StoreFactory.create_order_dto_from_model(order) for order in orders]
 
+    @staticmethod
+    def get_order_by_id(order_id):
+        try:
+            order = Order.objects.get(id=order_id)
+            return StoreFactory.create_order_dto_from_model(order)
+        except ObjectDoesNotExist:
+            return None
+        except Exception as e:
+            print(f"Error retrieving order: {str(e)}")
+            return None
+
 
 class PurchaseDAO:
     @staticmethod

@@ -3,6 +3,7 @@ from django.contrib import messages
 from django.shortcuts import redirect, render, get_object_or_404
 from model.Dao.store_dao import CartDAO, OrderDAO, PurchaseDAO
 from model.music.music_models import Song, Album
+from model.store.store_models import CartItem, Order, Purchase, PurchaseDetail, OrderItem, AlbumPurchase
 from django.urls import reverse
 from django.utils import timezone
 
@@ -60,7 +61,7 @@ class CartController:
             messages.success(request, "Ítem eliminado del carrito")
         else:
             messages.error(request, "No se encontró el ítem en el carrito")
-        return redirect('cart_view')
+        return redirect('carrito')
 
     @staticmethod
     def update_quantity(request, item_id, item_type, new_quantity):
@@ -188,24 +189,36 @@ class PurchaseController:
             # Procesamos los álbumes al final para evitar problemas
             for album_data in album_items:
                 try:
-                    # Verificamos nuevamente si existe el álbum
+                    # Obtener el álbum desde la base de datos
                     album = Album.objects.get(id=album_data['album_id'])
 
-                    # Verificamos si el usuario ya lo tiene
-                    if not AlbumPurchase.objects.filter(user_id=request.user.id, album_id=album.id).exists():
+                    # Verificar si el usuario actual ya lo compró
+                    if request.user.is_authenticated:
+                        user_has_album = AlbumPurchase.objects.filter(
+                            user_id=request.user.id,
+                            album_id=album.id
+                        ).exists()
+                    else:
+                        user_has_album = False
+
+                    # Si el usuario no lo tiene, añadir al pedido
+                    if not user_has_album:
                         purchase_items.append({
                             'item_id': album.id,
                             'item_type': 'album',
                             'price': album_data['price'],
                             'quantity': album_data['quantity']
                         })
-                        total += album_data['price'] * album_data['quantity']
+                        subtotal = album_data['price'] * album_data['quantity']
+                        total += subtotal
                     else:
-                        messages.warning(request, f"Ya posees el álbum '{album_data['title']}'")
+                        messages.warning(request, f"Ya posees el álbum '{album.title}'")
+
+                except Album.DoesNotExist:
+                    messages.warning(request, f"El álbum '{album_data.get('title', '')}' ya no está disponible")
 
                 except Exception as e:
-                    print(f"Error procesando álbum {album_data['album_id']}: {str(e)}")
-                    messages.warning(request, f"Error procesando el álbum '{album_data['title']}', este álbum ya ha sido comprado")
+                    messages.warning(request, f"Error procesando el álbum '{album_data.get('title', '')}'")
 
             if not purchase_items:
                 messages.error(request, "No hay items válidos para comprar")

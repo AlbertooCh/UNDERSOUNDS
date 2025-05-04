@@ -1,133 +1,143 @@
-/* Base Styles */
-.album-detail-container {
+/* Reset y estilos base */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+    background-color: #f4f4f8;
+    color: #333;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+}
+
+.main-container {
     max-width: 1200px;
     margin: 0 auto;
     padding: 20px;
-    color: #333;
-    font-family: 'Arial', sans-serif;
-}
-
-/* Album Header */
-.album-header {
-    display: flex;
-    gap: 40px;
-    margin-bottom: 40px;
-    align-items: flex-start;
-}
-
-.album-cover {
-    flex: 0 0 300px;
-    box-shadow: 0 10px 20px rgba(0,0,0,0.2);
-    border-radius: 10px;
-    overflow: hidden;
-}
-
-.album-cover img {
     width: 100%;
-    height: auto;
-    display: block;
 }
 
-.album-info {
+/* Header del álbum */
+.track-info {
+    display: flex;
+    background-color: #fff;
+    padding: 30px;
+    border-radius: 16px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+    margin-bottom: 30px;
+    gap: 30px;
+}
+
+.track-details {
     flex: 1;
 }
 
-.album-info h1 {
-    font-size: 2.5rem;
-    margin-bottom: 10px;
-    color: #1db954;
-}
-
-.artist-name {
-    font-size: 1.5rem;
+.track-details h1 {
+    font-size: 2.2em;
     margin-bottom: 15px;
-    color: #666;
+    color: #2c3e50;
 }
 
-.album-meta {
+.track-details p {
+    font-size: 1.1em;
+    color: #555;
+    margin-bottom: 10px;
+}
+
+.track-right {
     display: flex;
-    gap: 15px;
-    margin-bottom: 25px;
-    color: #888;
-    font-size: 0.9rem;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
 }
 
-.album-actions {
-    display: flex;
-    gap: 15px;
-    margin-top: 30px;
-    flex-wrap: wrap;
+.track-cover img {
+    width: 250px;
+    height: 250px;
+    border-radius: 12px;
+    object-fit: cover;
+    box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.15);
 }
 
-.action-btn {
-    padding: 12px 20px;
-    border-radius: 8px;
+/* Botones de acción */
+.add-to-cart-form {
+    margin-top: 20px;
+}
+
+.add-to-cart-btn {
+    background-color: #27ae60;
+    color: white;
     border: none;
-    font-weight: bold;
+    padding: 12px 20px;
+    border-radius: 6px;
     cursor: pointer;
+    font-size: 1em;
+    transition: all 0.3s ease;
     display: inline-flex;
     align-items: center;
     gap: 8px;
-    transition: all 0.2s ease;
-    font-size: 0.9rem;
 }
 
-.add-to-cart {
-    background-color: #1db954;
-    color: white;
+.add-to-cart-btn:hover:not(:disabled) {
+    background-color: #219653;
+    transform: translateY(-2px);
 }
 
-.add-to-cart:hover {
-    background-color: #179a46;
-}
-
-.favorite {
-    background-color: #f8f9fa;
-    color: #333;
-    border: 1px solid #ddd;
-}
-
-.favorite:hover {
-    background-color: #e9ecef;
-}
-
-.favorite.active {
-    background-color: #ff6b81;
-    color: white;
-    border-color: #ff6b81;
-}
-
-.purchased, .in-cart {
-    background-color: #6c757d;
-    color: white;
+.add-to-cart-btn:disabled {
+    background-color: #95a5a6;
     cursor: not-allowed;
+    transform: none;
 }
 
-/* Songs List */
-.songs-list-section {
-    margin: 40px 0;
+.favorite-btn {
+    background: none;
+    border: none;
+    font-size: 1.8em;
+    color: #aaa;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    padding: 5px;
 }
 
-.songs-list-section h2 {
-    font-size: 1.8rem;
+.favorite-btn:hover {
+    color: #e74c3c;
+}
+
+.favorite-btn.active {
+    color: #e74c3c;
+}
+
+/* Lista de canciones */
+.wide-section {
+    background-color: #fff;
+    padding: 30px;
+    border-radius: 16px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+    margin-bottom: 30px;
+}
+
+.wide-section h2 {
+    font-size: 1.8em;
     margin-bottom: 20px;
+    color: #2c3e50;
     padding-bottom: 10px;
-    border-bottom: 1px solid #eee;
+    border-bottom: 2px solid #eee;
 }
 
-.songs-list {
-    border-radius: 8px;
-    overflow: hidden;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+.songs-list-container {
+    width: 100%;
 }
 
 .song-item {
     display: flex;
     align-items: center;
-    padding: 15px 20px;
-    background-color: white;
-    border-bottom: 1px solid #f1f1f1;
-    transition: background-color 0.2s ease;
+    padding: 15px;
+    border-radius: 8px;
+    transition: background-color 0.3s ease;
+    margin-bottom: 10px;
 }
 
 .song-item:hover {
@@ -136,8 +146,9 @@
 
 .song-number {
     width: 30px;
-    color: #888;
-    font-size: 0.9rem;
+    text-align: center;
+    color: #7f8c8d;
+    font-weight: bold;
 }
 
 .song-info {
@@ -146,15 +157,16 @@
 }
 
 .song-title {
-    font-weight: bold;
+    font-weight: 600;
+    color: #2c3e50;
     margin-bottom: 5px;
 }
 
 .song-details {
     display: flex;
     gap: 15px;
-    font-size: 0.8rem;
-    color: #888;
+    font-size: 0.9em;
+    color: #7f8c8d;
 }
 
 .song-actions {
@@ -163,71 +175,116 @@
 }
 
 .song-action-btn {
-    padding: 8px 12px;
-    border-radius: 6px;
-    background-color: #f1f1f1;
-    border: none;
+    background-color: #f8f9fa;
+    border: 1px solid #ddd;
+    padding: 8px 15px;
+    border-radius: 20px;
+    font-size: 0.9em;
     cursor: pointer;
+    transition: all 0.3s ease;
     display: flex;
     align-items: center;
     gap: 5px;
-    font-size: 0.8rem;
-    transition: all 0.2s ease;
+    color: #34495e;
+    text-decoration: none;
 }
 
 .song-action-btn:hover {
-    background-color: #e1e1e1;
+    background-color: #e8f4fc;
+    border-color: #3498db;
+    color: #3498db;
 }
 
 .no-songs {
-    padding: 30px;
     text-align: center;
-    color: #888;
-    background-color: white;
+    padding: 20px;
+    color: #7f8c8d;
+    font-style: italic;
 }
 
-/* Album Description */
-.album-description {
-    margin: 40px 0;
-    line-height: 1.6;
-}
-
-.album-description h2 {
-    font-size: 1.8rem;
-    margin-bottom: 15px;
-}
-
-/* Comments Section */
+/* Sección de descripción */
 .comments-section {
-    margin: 50px 0;
-}
-
-.comments-section h2 {
-    font-size: 1.8rem;
-    margin-bottom: 20px;
-}
-
-.add-comment {
+    background-color: #fff;
+    padding: 30px;
+    border-radius: 16px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
     margin-bottom: 30px;
 }
 
-.add-comment textarea {
-    width: 100%;
-    padding: 15px;
-    border-radius: 8px;
-    border: 1px solid #ddd;
-    min-height: 100px;
+.comments-section h2 {
+    font-size: 1.8em;
+    margin-bottom: 20px;
+    color: #2c3e50;
+}
+
+.comments-section p {
+    color: #555;
+    line-height: 1.7;
     margin-bottom: 15px;
-    font-family: inherit;
+}
+
+/* Formulario de comentarios */
+.new-comment {
+    margin-bottom: 30px;
+}
+
+.new-comment h2 {
+    font-size: 1.5em;
+    margin-bottom: 15px;
+    color: #2c3e50;
+}
+
+.introducir-comment {
+    background-color: #f8f9fa;
+    padding: 20px;
+    border-radius: 10px;
+}
+
+.introducir-comment-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.introducir-comment-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-right: 10px;
+}
+
+.introducir-comment-username {
+    font-weight: 600;
+    color: #2c3e50;
+}
+
+.introducir-comment-text {
+    width: 100%;
+    min-height: 100px;
+    padding: 15px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    resize: vertical;
+    font-size: 1em;
+    margin-bottom: 15px;
 }
 
 .rating-section {
-    margin-bottom: 15px;
+    margin: 15px 0;
+}
+
+.rating-section label {
+    display: block;
+    margin-bottom: 10px;
+    font-weight: 600;
+    color: #2c3e50;
 }
 
 .star-rating {
-    display: inline-block;
-    margin-left: 10px;
+    display: flex;
+    gap: 5px;
+    margin-bottom: 15px;
 }
 
 .star-rating input {
@@ -235,132 +292,186 @@
 }
 
 .star-rating label {
+    font-size: 1.8em;
     color: #ddd;
-    font-size: 1.5rem;
     cursor: pointer;
     transition: color 0.2s;
+    margin: 0;
 }
 
 .star-rating input:checked ~ label,
 .star-rating label:hover,
 .star-rating label:hover ~ label {
-    color: #ffc107;
+    color: #f1c40f;
 }
 
-.submit-comment-btn {
-    background-color: #1db954;
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 8px;
-    cursor: pointer;
-    font-weight: bold;
-    transition: background-color 0.2s;
+.introducir-comment-button-container {
+    text-align: right;
 }
 
-.submit-comment-btn:hover {
-    background-color: #179a46;
-}
-
-.login-to-comment {
-    text-align: center;
-    padding: 20px;
-    background-color: #f8f9fa;
-    border-radius: 8px;
-    margin-bottom: 30px;
-}
-
-.login-to-comment a {
-    color: #1db954;
-    text-decoration: none;
-    font-weight: bold;
-}
-
-.comments-list {
-    border-radius: 8px;
-    overflow: hidden;
+/* Lista de comentarios */
+.comments-list h2 {
+    font-size: 1.5em;
+    margin-bottom: 20px;
+    color: #2c3e50;
 }
 
 .comment {
+    background-color: #f8f9fa;
     padding: 20px;
-    background-color: white;
-    border-bottom: 1px solid #f1f1f1;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    position: relative;
 }
 
-.comment-header {
-    display: flex;
-    align-items: center;
-    margin-bottom: 10px;
-    gap: 15px;
-}
-
-.comment-avatar {
+.comment img {
     width: 40px;
     height: 40px;
     border-radius: 50%;
     object-fit: cover;
+    margin-right: 10px;
+    float: left;
 }
 
-.comment-user {
-    flex: 1;
+.comment strong {
+    font-weight: 600;
+    color: #2c3e50;
+    display: inline-block;
+    margin-bottom: 5px;
 }
 
-.comment-date {
-    color: #888;
-    font-size: 0.8rem;
+.comment p {
+    color: #555;
+    margin: 5px 0;
+    clear: both;
 }
 
-.comment-rating {
-    color: #ffc107;
-    font-size: 0.9rem;
+.comment .star {
+    color: #f1c40f;
 }
 
-.comment-text {
-    line-height: 1.5;
-    margin-bottom: 10px;
+.comment form {
+    position: absolute;
+    right: 20px;
+    top: 20px;
 }
 
-.delete-comment-form {
-    text-align: right;
-}
-
-.delete-comment-btn {
+.comment form button {
     background: none;
     border: none;
-    color: #dc3545;
+    color: #e74c3c;
     cursor: pointer;
-    font-size: 0.8rem;
-    padding: 5px 10px;
-    border-radius: 4px;
-}
-
-.delete-comment-btn:hover {
-    background-color: #f8d7da;
+    font-size: 0.9em;
 }
 
 .no-comments {
-    padding: 30px;
     text-align: center;
-    color: #888;
-    background-color: white;
+    padding: 20px;
+    color: #7f8c8d;
+    font-style: italic;
 }
 
-/* Responsive Design */
+/* Información del artista */
+.author-info {
+    background-color: #fff;
+    padding: 30px;
+    border-radius: 16px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+}
+
+.author-info h2 {
+    font-size: 1.8em;
+    margin-bottom: 20px;
+    color: #2c3e50;
+}
+
+.artist-card {
+    display: flex;
+    gap: 20px;
+    margin-bottom: 20px;
+}
+
+.artist-avatar-img {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    object-fit: cover;
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+}
+
+.artist-details h3 {
+    font-size: 1.4em;
+    margin-bottom: 10px;
+    color: #2c3e50;
+}
+
+.artist-details p {
+    color: #555;
+    margin-bottom: 8px;
+}
+
+.artist-bio {
+    font-style: italic;
+    margin-top: 10px;
+}
+
+.btn {
+    display: inline-block;
+    background-color: grey;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 6px;
+    text-decoration: none;
+    transition: background-color 0.3s ease;
+    border: none;
+    cursor: pointer;
+}
+
+.btn:hover {
+    background-color: green;
+    color: white;
+}
+
+.artist-more {
+    margin-top: 20px;
+}
+
+.artist-more p {
+    font-weight: 600;
+    margin-bottom: 10px;
+    color: #2c3e50;
+}
+
+.artist-more a {
+    display: block;
+    margin-bottom: 8px;
+    color: black;
+    text-decoration: none;
+    transition: color 0.3s ease;
+    justify-content: center;
+}
+
+.artist-more a:hover {
+    color: black;
+    text-decoration: underline;
+}
+
+/* Responsive */
 @media (max-width: 768px) {
-    .album-header {
-        flex-direction: column;
-        gap: 20px;
+    .main-container {
+        padding: 15px;
     }
 
-    .album-cover {
-        flex: 0 0 auto;
+    .track-info {
+        flex-direction: column;
+        padding: 20px;
+    }
+
+    .track-cover img {
         width: 100%;
         max-width: 300px;
+        height: auto;
         margin: 0 auto;
-    }
-
-    .album-actions {
-        flex-direction: column;
     }
 
     .song-item {
@@ -368,9 +479,47 @@
         align-items: flex-start;
     }
 
+    .song-info {
+        padding: 10px 0;
+    }
+
     .song-actions {
+        align-self: flex-end;
         margin-top: 10px;
+    }
+
+    .artist-card {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+
+    .wide-section, .comments-section, .author-info {
+        padding: 20px;
+    }
+}
+
+@media (max-width: 480px) {
+    .track-details h1 {
+        font-size: 1.8em;
+    }
+
+    .add-to-cart-btn {
         width: 100%;
-        justify-content: flex-end;
+        justify-content: center;
+    }
+
+    .song-action-btn {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .comment {
+        padding: 15px;
+    }
+
+    .comment form {
+        position: static;
+        margin-top: 10px;
     }
 }
