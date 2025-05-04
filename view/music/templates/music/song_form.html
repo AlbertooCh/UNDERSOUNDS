@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% load static %}
+
 {% block title %}{{ action }} Canción - Undersounds{% endblock %}
 
 {% block extra_css %}
@@ -18,11 +19,11 @@
             Artista: {{ request.user.artist_name }}
         </div>
 
-        <!-- Campos del formulario manuales (mejor control que form.as_p) -->
+        <!-- Campos del formulario manuales -->
         <div class="form-group">
             <label for="id_title">Título*</label>
             <input type="text" name="title" id="id_title" class="form-control"
-                   value="{{ form.title.value|default_if_none:'' }}" required>
+                   value="{{ form.title.value|default_if_none:song.title }}" required>
             {% if form.title.errors %}
                 <div class="error-message">{{ form.title.errors }}</div>
             {% endif %}
@@ -31,36 +32,36 @@
         <div class="form-group">
             <label for="id_genre">Género*</label>
             <input type="text" name="genre" id="id_genre" class="form-control"
-                   value="{{ form.genre.value|default_if_none:'' }}" required>
+                   value="{{ form.genre.value|default_if_none:song.genre }}" required>
         </div>
 
         <div class="form-group">
             <label for="id_price">Precio (€)*</label>
             <input type="number" name="price" id="id_price" class="form-control"
-                   value="{{ form.price.value|default_if_none:'' }}" step="0.01" min="0" required>
+                   value="{{ form.price.value|default_if_none:song.price }}" step="0.01" min="0" required>
         </div>
 
         <div class="form-group">
             <label for="id_release_date">Fecha de lanzamiento*</label>
             <input type="date" name="release_date" id="id_release_date" class="form-control"
-                   value="{{ form.release_date.value|date:'Y-m-d'|default_if_none:'' }}" required>
+                   value="{{ form.release_date.value|date:'Y-m-d'|default_if_none:song.release_date }}" required>
         </div>
 
+        <!-- Portada de la canción -->
         <div class="form-group">
-            <label for="id_album_cover">Portada del álbum</label>
-            <input type="file" name="album_cover" id="id_album_cover" class="form-control file-input"
-                   accept="image/*" value="{{ form.album_cover.value|default_if_none: song.album_cover.url }}">
-            {% if action == 'Editar' and song.album_cover %}
+            <label for="id_song_cover">Portada de la canción</label>
+            <input type="file" name="song_cover" id="id_song_cover" class="form-control file-input" accept="image/*">
+            {% if action == 'Editar' and song.song_cover %}
                 <div class="current-file">
-                    Actual: <a href="{{ song.album_cover.url }}" target="_blank">{{ song.album_cover.name }}</a>
+                    Actual: <a href="{{ song.song_cover.url }}" target="_blank">{{ song.song_cover.name }}</a>
                 </div>
             {% endif %}
         </div>
 
+        <!-- Archivo de audio -->
         <div class="form-group">
             <label for="id_song_file">Archivo de audio*</label>
-            <input type="file" name="song_file" id="id_song_file" class="form-control file-input"
-                   accept="audio/*" {% if action != 'Editar' %}required{% endif %}>
+            <input type="file" name="song_file" id="id_song_file" class="form-control file-input" accept="audio/*">
             {% if action == 'Editar' and song.song_file %}
                 <div class="current-file">
                     Actual: {{ song.song_file.name }}

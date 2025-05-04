@@ -10,12 +10,6 @@ class SongForm(forms.Form):
         widget=forms.TextInput(attrs={'class': 'form-control'})
     )
 
-    album_title = forms.CharField(
-        label="Álbum",
-        max_length=255,
-        widget=forms.TextInput(attrs={'class': 'form-control'})
-    )
-
     genre = forms.CharField(
         label="Género",
         max_length=50,
@@ -46,6 +40,23 @@ class SongForm(forms.Form):
         widget=forms.FileInput(attrs={'class': 'form-control'}),
         validators=[FileExtensionValidator(allowed_extensions=['mp3', 'wav', 'ogg'])]
     )
+
+    def clean_song_file(self):
+        song_file = self.cleaned_data.get('song_file', False)
+
+        # Si no se subió un nuevo archivo y la instancia ya tiene uno
+        if not song_file and hasattr(self.instance, 'song_file') and self.instance.song_file:
+            return self.instance.song_file
+
+        # Si es una creación nueva y no se subió archivo
+        if not song_file and not self.instance.pk:
+            raise forms.ValidationError("Este campo es obligatorio.")
+
+        # Si se subió un archivo vacío (por ejemplo, el usuario hizo clic en "clear")
+        if song_file is None:
+            raise forms.ValidationError("Este campo es obligatorio.")
+
+        return song_file
 
 class AlbumForm(forms.Form):
     title = forms.CharField(

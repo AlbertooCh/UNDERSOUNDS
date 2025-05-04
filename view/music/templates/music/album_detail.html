@@ -19,7 +19,7 @@
             <p><strong>Fecha de lanzamiento:</strong> {{ album.release_date|date:"Y" }}</p>
             <p><strong>Género:</strong> {{ album.genre }}</p>
             <p><strong>Precio:</strong> €{{ album.price }}</p>
-            <p><strong>Canciones:</strong> {{ songs.count }}</p>
+            <p><strong>Canciones:</strong> {{ songs|length }}</p>
 
             <form action="{% url 'add_album_to_cart' album.id %}" method="post" class="add-to-cart-form">
                 {% csrf_token %}

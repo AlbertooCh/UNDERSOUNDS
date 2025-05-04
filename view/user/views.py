@@ -3,6 +3,7 @@ from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from controller.user_controller import UserController
+from controller.music_controller import FavoriteController
 from model.user.forms import FanRegisterForm, ArtistRegisterForm
 from django.http import JsonResponse
 from user.models import User
@@ -77,12 +78,23 @@ def logout_view(request):
     return redirect('inicio')
 
 
+# Asegúrate de importar correctamente
+
 @login_required
 def perfil(request):
     user = UserController.get_current_user(request)
+
     if user and user.role == 'artist':
         user = UserController.get_artist_with_songs(request.user.id)
-    return render(request, 'perfil.html', {'user': request.user})
+        seguidores = FavoriteController.get_artist_favorite_count(request.user.id)
+    else:
+        seguidores = None
+
+    return render(request, 'perfil.html', {
+        'user': request.user,
+        'seguidores': seguidores
+    })
+
 
 
 @login_required

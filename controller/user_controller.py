@@ -78,6 +78,7 @@ class UserController:
         if user and user.role == 'artist':
             user_dto = UserFactory.create_from_model(user)
             user_dto.songs = user.songs.all()
+            user_dto.albums = user.albums.all()
             return user_dto
         return None
 

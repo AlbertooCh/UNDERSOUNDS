@@ -104,8 +104,8 @@
                     <div class="stat-label">Canciones</div>
                 </div>
                 <div class="stat-item">
-                    <div class="stat-number">156</div>
-                    <div class="stat-label">Seguidores</div>
+                     <div class="stat-number">{{ seguidores|default:"0" }}</div>
+                     <div class="stat-label">Seguidores</div>
                 </div>
 
                 <div class="stat-item">
@@ -157,37 +157,71 @@
     <!-- Sección solo para artistas -->
     {% if user.role == 'artist' %}
     <div class="my-works-section">
-        <h2 class="section-title">Mis obras</h2>
+    <h2 class="section-title">Mis obras</h2>
 
-        {% if user.songs.all %}
-        <div class="works-container">
-            {% for song in user.songs.all %}
-            <div class="work-item">
-                <div class="cuadrado" style="width: 200px; height: 200px; margin: 0;">
-                    {% if song.song_cover %}
-                        <img src="{{ song.song_cover.url }}" alt="{{ song.title }}" class="work-cover">
-                    {% else %}
-                        <img src="{% static 'images/default_album.jpg' %}" alt="Portada predeterminada" class="work-cover">
-                    {% endif %}
-                </div>
-                <div class="work-title">{{ song.title }}</div>
-                <div class="work-meta">
-                    {{ song.release_date|date:"Y" }} • {{ song.price }}€
-                </div>
-                <div class="work-actions">
-                    <a href="{% url 'edit_song' song.id %}" class="action-btn">Editar</a>
-                    <a href="{% url 'delete_song' song.id %}" class="action-btn delete">Eliminar</a>
-                </div>
+    <!-- Sección de Canciones -->
+    <h3 style="text-align: center; margin-top: 20px;">Canciones</h3>
+    {% if user.songs.all %}
+    <div class="works-container">
+        {% for song in user.songs.all %}
+        <div class="work-item">
+            <div class="cuadrado" style="width: 200px; height: 200px; margin: 0;">
+                {% if song.song_cover %}
+                    <img src="{{ song.song_cover.url }}" alt="{{ song.title }}" class="work-cover">
+                {% else %}
+                    <img src="{% static 'images/default_album.jpg' %}" alt="Portada predeterminada" class="work-cover">
+                {% endif %}
             </div>
-            {% endfor %}
+            <div class="work-title">{{ song.title }}</div>
+            <div class="work-meta">
+                {{ song.release_date|date:"Y" }} • {{ song.price }}€
+            </div>
+            <div class="work-actions">
+                <a href="{% url 'edit_song' song.id %}" class="action-btn">Editar</a>
+                <a href="{% url 'delete_song' song.id %}" class="action-btn delete">Eliminar</a>
+            </div>
         </div>
-        {% else %}
-        <p style="text-align: center; margin-top: 20px;">No has subido ninguna obra todavía.</p>
-        <div style="text-align: center; margin-top: 20px;">
-            <a href="{% url 'add_song' %}" class="action-btn">Añadir mi primera canción</a>
-        </div>
-        {% endif %}
+        {% endfor %}
     </div>
+    {% else %}
+    <p style="text-align: center;">No has subido ninguna canción todavía.</p>
+    <div style="text-align: center;">
+        <a href="{% url 'add_song' %}" class="action-btn">Añadir mi primera canción</a>
+    </div>
+    {% endif %}
+
+    <!-- Sección de Álbumes -->
+    <h3 style="text-align: center; margin-top: 40px;">Álbumes</h3>
+    {% if user.albums.all %}
+    <div class="works-container">
+        {% for album in user.albums.all %}
+        <div class="work-item">
+            <div class="cuadrado" style="width: 200px; height: 200px; margin: 0;">
+                {% if album.cover %}
+                    <img src="{{ album.album_cover.url }}" alt="{{ album.title }}" class="work-cover">
+                {% else %}
+                    <img src="{% static 'images/default_album.jpg' %}" alt="Portada predeterminada" class="work-cover">
+                {% endif %}
+            </div>
+            <div class="work-title">{{ album.title }}</div>
+            <div class="work-meta">
+                {{ album.release_date|date:"Y" }} • {{ album.price }}€
+            </div>
+            <div class="work-actions">
+                <a href="{% url 'edit_album' album.id %}" class="action-btn">Editar</a>
+                <a href="{% url 'delete_album' album.id %}" class="action-btn delete">Eliminar</a>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <p style="text-align: center;">No has creado ningún álbum todavía.</p>
+    <div style="text-align: center;">
+        <a href="{% url 'add_album' %}" class="action-btn">Crear mi primer álbum</a>
+    </div>
+    {% endif %}
+</div>
+
     {% endif %}
 </div>
 

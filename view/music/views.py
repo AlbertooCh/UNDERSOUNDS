@@ -50,7 +50,7 @@ def music_detail(request, id):
         'song_file': song_dto.song_file,
         'album_id': song_dto.album_id,
     }
-
+    album = UserController.get_album_by_id(song_dto.album_id) if song_dto.album_id else None
     comments_ratings = list(Comments.objects.filter(song_id=id))
     comments_ratings.reverse()
 
@@ -79,7 +79,8 @@ def music_detail(request, id):
         'in_cart': in_cart,
         'in_order': in_order,
         'artist_songs': artist_songs.songs.all() if artist_songs else [],
-        'album_id': song_dto.album_id
+        'album_id': song_dto.album_id,
+        'album': album,
     }
     return render(request, 'music/music_detail.html', context)
 
@@ -270,39 +271,52 @@ def add_album(request):
         'user': request.user
     })
 
+
 @login_required
 def edit_song(request, song_id):
+    # Debug: Verifica que el ID de la canción se ha recibido
+    print(f"edit_song: Song ID recibido: {song_id}")
+
     song_dto = SongController.get_song(song_id)
     if not song_dto:
+        print(f"edit_song: No se encontró canción con ID {song_id}")
         return render(request, '404.html', status=404)
 
+    # Verificación de propiedad
     if song_dto.artist_name != request.user.artist_name:
+        print(f"edit_song: El artista de la canción no coincide con el usuario. Redirigiendo al panel del artista.")
         return redirect('artist_panel')
 
     if request.method == 'POST':
+        print("edit_song: El formulario se ha enviado con el método POST.")
         form = SongForm(request.POST, request.FILES)
-        if form.is_valid():
-            # Actualizamos el DTO con los datos del formulario
-            updated_dto = SongDTO(
-                id=song_id,
-                title=form.cleaned_data['title'],
-                artist_name=request.user.artist_name,
-                genre=form.cleaned_data['genre'],
-                price=form.cleaned_data['price'],
-                release_date=form.cleaned_data['release_date'],
-                song_cover=request.FILES.get('song_cover') or song_dto.song_cover,
-                song_file=request.FILES.get('song_file') or song_dto.song_file,
-                album_id=song_dto.album_id,
-            )
 
-            # Usamos el controller para actualizar
-            success = SongController.update_song(updated_dto)
+        if form.is_valid():
+            print(f"edit_song: El formulario es válido. Procesando los datos.")
+
+            # Preparamos los datos para actualizar
+            update_data = {
+                'title': form.cleaned_data['title'],
+                'genre': form.cleaned_data['genre'],
+                'price': form.cleaned_data['price'],
+                'release_date': form.cleaned_data['release_date'],
+                'song_cover': request.FILES.get('song_cover') or song_dto.song_cover,
+                'song_file': request.FILES.get('song_file') or song_dto.song_file
+            }
+
+            # Llamamos al controller correctamente pasando los datos
+            success = SongController.update_song(song_id, **update_data)
 
             if success:
                 messages.success(request, "Canción actualizada.")
                 return redirect('catalogo')
             else:
                 messages.error(request, "Error al actualizar la canción.")
+        else:
+            print("Errores del formulario:")
+            for field, errors in form.errors.items():
+                for error in errors:
+                    print(f"Campo: {field} - Error: {error}")
     else:
         # Prellenamos el formulario con los datos actuales
         initial_data = {
@@ -312,6 +326,8 @@ def edit_song(request, song_id):
             'release_date': song_dto.release_date,
         }
         form = SongForm(initial=initial_data)
+
+    return render(request, 'music/song_form.html', {'form': form, 'song': song_dto})
 
     return render(request, 'music/song_form.html', {
         'form': form,
