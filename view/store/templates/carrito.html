@@ -69,7 +69,9 @@
         </div>
 
         <div class="cart-buttons">
-            <a href="{% url 'pago' %}"><button class="checkout"><i class="fas fa-credit-card"></i> Proceder al Pago</button></a>
+          <a href="{% url 'pago' %}" class="checkout-btn-link">
+                <button class="checkout"><i class="fas fa-credit-card"></i> Proceder al Pago</button>
+            </a>
             <a href="{% url 'catalogo' %}"><button class="continue-shopping"><i class="fas fa-arrow-left"></i> Seguir Comprando</button></a>
         </div>
     {% else %}

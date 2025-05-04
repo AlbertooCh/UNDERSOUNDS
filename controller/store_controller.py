@@ -138,61 +138,139 @@ class PurchaseController:
             messages.error(request, "Debes iniciar sesión para realizar una compra")
             return redirect('login')
 
-        cart_items = CartDAO.get_user_cart(request.user.id)
-        if not cart_items:
-            messages.error(request, "Tu carrito está vacío")
-            return redirect('cart_view')
+        try:
+            cart_items = CartDAO.get_user_cart(request.user.id)
+            if not cart_items:
+                messages.warning(request, "Tu carrito está vacío")
+                return redirect('carrito')
 
-        if request.method == 'POST':
+            if request.method != 'POST':
+                return redirect('pago')
+
+            purchase_items = []
+            total = 0.0
+            album_items = []  # Para manejar específicamente los álbumes
+
+            for item in cart_items:
+                try:
+                    if item.item_type == 'song' and item.song_id:
+                        song = Song.objects.get(id=item.song_id)
+                        price = float(song.price)
+                        purchase_items.append({
+                            'item_id': song.id,
+                            'item_type': 'song',
+                            'price': price,
+                            'quantity': int(item.quantity),
+                            'album_id': song.album_id if hasattr(song, 'album_id') else None
+                        })
+                        total += price * int(item.quantity)
+
+                    elif item.item_type == 'album' and item.album_id:
+                        album = Album.objects.get(id=item.album_id)
+                        price = float(album.price)
+
+                        # Guardamos temporalmente los datos del álbum
+                        album_items.append({
+                            'album_id': album.id,
+                            'price': price,
+                            'quantity': int(item.quantity),
+                            'title': album.title
+                        })
+
+                except (Song.DoesNotExist, Album.DoesNotExist) as e:
+                    messages.warning(request, f"Uno de los items ya no está disponible")
+                    continue
+                except Exception as e:
+                    print(f"Error procesando ítem: {str(e)}")
+                    messages.warning(request, "Error procesando un item del carrito")
+                    continue
+
+            # Procesamos los álbumes al final para evitar problemas
+            for album_data in album_items:
+                try:
+                    # Verificamos nuevamente si existe el álbum
+                    album = Album.objects.get(id=album_data['album_id'])
+
+                    # Verificamos si el usuario ya lo tiene
+                    if not AlbumPurchase.objects.filter(user_id=request.user.id, album_id=album.id).exists():
+                        purchase_items.append({
+                            'item_id': album.id,
+                            'item_type': 'album',
+                            'price': album_data['price'],
+                            'quantity': album_data['quantity']
+                        })
+                        total += album_data['price'] * album_data['quantity']
+                    else:
+                        messages.warning(request, f"Ya posees el álbum '{album_data['title']}'")
+
+                except Exception as e:
+                    print(f"Error procesando álbum {album_data['album_id']}: {str(e)}")
+                    messages.warning(request, f"Error procesando el álbum '{album_data['title']}', este álbum ya ha sido comprado")
+
+            if not purchase_items:
+                messages.error(request, "No hay items válidos para comprar")
+                return redirect('carrito')
+
             try:
-                # Crear la orden
                 order_id = OrderController.create_order_from_cart(request.user.id)
                 if not order_id:
                     raise Exception("No se pudo crear la orden")
 
-                # Preparar items para la compra
-                purchase_items = [{
-                    'item_id': item.song_id if item.item_type == 'song' else item.album_id,
-                    'item_type': item.item_type,
-                    'price': item.song_price if item.item_type == 'song' else item.album_price,
-                    'quantity': item.quantity
-                } for item in cart_items]
-
-                # Crear registro de compra
+                # Creamos la compra principal
                 purchase_id = PurchaseDAO.create_purchase(
                     user_id=request.user.id,
                     order_id=order_id,
                     payment_method=request.POST.get('payment_method', 'tarjeta'),
-                    total_price=sum(item.subtotal for item in cart_items),
+                    total_price=total,
                     items=purchase_items
                 )
 
-                # Vaciar carrito
-                CartDAO.clear_user_cart(request.user.id)
+                if not purchase_id:
+                    raise Exception("No se pudo registrar la compra")
 
-                messages.success(request, "Compra realizada con éxito")
+                # Procesamos específicamente los álbumes
+                for item in purchase_items:
+                    if item['item_type'] == 'album':
+                        try:
+                            # Verificación final antes de crear el AlbumPurchase
+                            if not AlbumPurchase.objects.filter(
+                                    user_id=request.user.id,
+                                    album_id=item['item_id']
+                            ).exists():
+                                AlbumPurchase.objects.create(
+                                    user_id=request.user.id,
+                                    album_id=item['item_id'],
+                                    purchase_id=purchase_id,
+                                    purchase_date=timezone.now()
+                                )
+                        except IntegrityError:
+                            print(f"Error de integridad al crear AlbumPurchase para álbum {item['item_id']}")
+                            continue
+                        except Exception as e:
+                            print(f"Error inesperado al crear AlbumPurchase: {str(e)}")
+                            continue
+
+                CartDAO.clear_user_cart(request.user.id)
+                messages.success(request, "¡Compra realizada con éxito!")
                 return redirect('order_confirmation', order_id=order_id)
 
+            except IntegrityError as e:
+                print(f"Error de integridad en la compra: {str(e)}")
+                if 'store_albumpurchase' in str(e):
+                    messages.error(request, "Hubo un problema registrando tus álbumes. Por favor verifica tus compras.")
+                else:
+                    messages.error(request, "Error al procesar el pago")
+                return redirect('pago')
+
             except Exception as e:
-                messages.error(request, f"Error al procesar la compra: {str(e)}")
-                return redirect('checkout')
+                print(f"Error inesperado: {str(e)}")
+                messages.error(request, "Ocurrió un error inesperado. Por favor contacta al soporte.")
+                return redirect('pago')
 
-        # Mostrar página de pago (GET) - Actualizado para usar pago.html
-        total = sum(item.subtotal for item in cart_items)
-        payment_methods = [
-            {'value': 'credit_card', 'label': 'Tarjeta de crédito'},
-            {'value': 'paypal', 'label': 'PayPal'},
-            {'value': 'bank_transfer', 'label': 'Transferencia bancaria'},
-        ]
-
-        return render(request, 'pago.html', {
-            'order_id': 'US-' + str(timezone.now().strftime("%Y%m%d")),
-            'order_date': timezone.now().strftime("%d/%m/%Y %H:%M"),
-            'status': 'Pendiente de pago',
-            'cart_items': cart_items,
-            'total': total,
-            'payment_methods': payment_methods
-        })
+        except Exception as e:
+            print(f"Error general: {str(e)}")
+            messages.error(request, "Error procesando tu solicitud")
+            return redirect('carrito')
 
     @staticmethod
     def get_purchase_history(user_id):

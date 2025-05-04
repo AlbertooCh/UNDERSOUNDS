@@ -5,6 +5,7 @@ from model.music.music_models import Song, Album
 from user.models import User
 from controller.store_controller import PurchaseController, CartController, OrderController
 from model.Dto.store_dto import CartItemDTO
+from model.Dao.store_dao import CartDAO
 
 
 @login_required
@@ -62,34 +63,43 @@ def update_cart_item(request, item_id, item_type):
     return redirect('carrito')
 
 
-@login_required
 def pago(request):
-    # Procesar el pago si es POST
-    if request.method == 'POST':
+    if request.method == 'GET':
+        cart_items = CartDAO.get_user_cart(request.user.id)
+        total = sum(float(item.subtotal) for item in cart_items)
+        context = {
+            'cart_items': cart_items,
+            'total': total,
+            'payment_methods': [
+                {'value': 'tarjeta', 'label': 'Tarjeta de crédito/débito'},
+                {'value': 'paypal', 'label': 'PayPal'},
+                {'value': 'bizum', 'label': 'Bizum'},
+            ]
+        }
+        return render(request, 'pago.html', context)
+
+    elif request.method == 'POST':
         return PurchaseController.process_purchase(request)
 
-    # Obtener items del carrito (ahora con toda la información necesaria)
-    cart_items = CartController.get_cart(request.user.id)
+@login_required
+def pago_view(request):
+    if request.method == 'GET':
+        cart_items = CartDAO.get_user_cart(request.user.id)
+        total = sum(float(item.subtotal) for item in cart_items)
 
-    if not cart_items:
-        return redirect('catalogo')
+        context = {
+            'cart_items': cart_items,
+            'total': total,
+            'payment_methods': [
+                {'value': 'tarjeta', 'label': 'Tarjeta de crédito/débito'},
+                {'value': 'paypal', 'label': 'PayPal'},
+                {'value': 'bizum', 'label': 'Bizum'},
+            ]
+        }
+        return render(request, 'pago.html', context)
 
-    total = sum(float(item.subtotal) for item in cart_items)
-
-    # Métodos de pago
-    payment_methods = [
-        {'value': 'credit_card', 'label': 'Tarjeta de crédito'},
-        {'value': 'paypal', 'label': 'PayPal'},
-        {'value': 'bank_transfer', 'label': 'Transferencia bancaria'},
-    ]
-
-    context = {
-        'cart_items': cart_items,
-        'total': total,
-        'payment_methods': payment_methods,
-    }
-
-    return render(request, 'pago.html', context)
+    elif request.method == 'POST':
+        return StoreController.process_purchase(request)
 
 @login_required
 def purchase_success(request, purchase_id):

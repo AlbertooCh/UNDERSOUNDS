@@ -41,6 +41,7 @@ class AlbumFactory:
             genre=album_dto.genre,
             release_date=album_dto.release_date,
             album_cover=album_dto.album_cover,
+            price=album_dto.price,
         )
 
     @staticmethod
@@ -53,6 +54,7 @@ class AlbumFactory:
             release_date=album.release_date,
             album_cover=album.album_cover,
             artist_id=getattr(album, 'artist_id', None),
+            price=album.price,
         )
 
 class FavoriteFactory:

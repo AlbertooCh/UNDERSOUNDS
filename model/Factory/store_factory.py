@@ -5,46 +5,50 @@ from model.Dto.store_dto import CartItemDTO, OrderDTO, PurchaseDTO, PurchaseDeta
 class StoreFactory:
     @staticmethod
     def create_cart_item_dto_from_model(cart_item: CartItem) -> CartItemDTO:
+        artist_name = "Artista desconocido"
+
         if cart_item.song:
-            # Obtener el artista de la canción
-            artist_name = "Artista desconocido"
-            if cart_item.song.artists.exists():  # Asumiendo relación ManyToMany
-                artist = cart_item.song.artists.first()
+            song = cart_item.song
+            if song.artists.exists():
+                artist = song.artists.first()
                 artist_name = artist.get_full_name() or artist.username
 
             return CartItemDTO(
                 id=cart_item.id,
                 user_id=cart_item.user.id,
-                song_id=cart_item.song.id,
-                song_title=cart_item.song.title,
-                song_price=float(cart_item.song.price),
+                song_id=song.id,
+                song_title=song.title,
+                song_price=float(song.price),
                 quantity=cart_item.quantity,
                 subtotal=float(cart_item.subtotal()),
                 added_at=cart_item.added_at,
                 item_type='song',
                 artist_name=artist_name,
-                cover_url=cart_item.song.song_cover.url if cart_item.song.song_cover else None
+                cover_url=song.song_cover.url if song.song_cover else None
             )
+
         elif cart_item.album:
-            # Obtener el artista del álbum
-            artist_name = "Artista desconocido"
-            if cart_item.album.artists.exists():  # Asumiendo relación ManyToMany
-                artist = cart_item.album.artists.first()
+            album = cart_item.album
+            if album.artists.exists():
+                artist = album.artists.first()
                 artist_name = artist.get_full_name() or artist.username
 
             return CartItemDTO(
                 id=cart_item.id,
                 user_id=cart_item.user.id,
-                album_id=cart_item.album.id,
-                album_title=cart_item.album.title,
-                album_price=float(cart_item.album.price),
+                album_id=album.id,
+                album_title=album.title,
+                album_price=float(album.price),
                 quantity=cart_item.quantity,
                 subtotal=float(cart_item.subtotal()),
                 added_at=cart_item.added_at,
                 item_type='album',
                 artist_name=artist_name,
-                cover_url=cart_item.album.album_cover.url if cart_item.album.album_cover else None
+                cover_url=album.album_cover.url if album.album_cover else None
             )
+
+        else:
+            raise ValueError("El cart_item no tiene ni canción ni álbum asociado.")
 
     @staticmethod
     def create_order_dto_from_model(order: Order) -> OrderDTO:

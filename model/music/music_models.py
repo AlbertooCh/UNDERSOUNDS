@@ -25,6 +25,7 @@ class Album(models.Model):
     release_date = models.DateTimeField()
     album_cover = models.ImageField(upload_to='album_covers/', blank=True, null=True)
     description = models.TextField(blank=True, null=True)
+    price = models.DecimalField(max_digits=8, decimal_places=2)  # Cambiado a DecimalField
 
     class Meta:
         app_label = 'music'  # ¡Esto es crucial!
