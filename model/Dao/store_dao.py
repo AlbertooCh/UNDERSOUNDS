@@ -1,6 +1,7 @@
 # store/dao/store_dao.py
 from django.core.exceptions import ObjectDoesNotExist
-from django.db import transaction
+from django.db import transaction, models
+from model.music.music_models import Song, Album
 from model.store.store_models import CartItem, Order, Purchase, PurchaseDetail, OrderItem, AlbumPurchase
 from model.Dto.store_dto import CartItemDTO, OrderDTO, PurchaseDTO, PurchaseDetailDTO
 from model.Factory.store_factory import StoreFactory
@@ -114,6 +115,39 @@ class OrderDAO:
         except Exception as e:
             print(f"Error retrieving order: {str(e)}")
             return None
+
+    @staticmethod
+    def get_top_selling_items(song_limit=10, album_limit=10):
+        # Top canciones
+        top_songs_data = OrderItem.objects.values('song_id').annotate(
+            total_sales=models.Sum('quantity')
+        ).order_by('-total_sales')[:song_limit]
+
+        top_songs = [
+            {
+                'song': Song.objects.get(id=item['song_id']),
+                'total_sales': item['total_sales']
+            }
+            for item in top_songs_data if item['song_id'] is not None
+        ]
+
+        # Top álbumes (suma de ventas de todas sus canciones)
+        top_albums_data = OrderItem.objects.values('song__album_id').annotate(
+            total_sales=models.Sum('quantity')
+        ).order_by('-total_sales')[:album_limit]
+
+        top_albums = [
+            {
+                'album': Album.objects.get(id=item['song__album_id']),
+                'total_sales': item['total_sales']
+            }
+            for item in top_albums_data if item['song__album_id'] is not None
+        ]
+
+        return {
+            'top_songs': top_songs,
+            'top_albums': top_albums
+        }
 
 
 class PurchaseDAO:

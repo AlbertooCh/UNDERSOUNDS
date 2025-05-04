@@ -130,6 +130,11 @@ class OrderController:
         """Obtiene todas las órdenes del usuario"""
         return OrderDAO.get_user_orders(user_id)
 
+    @staticmethod
+    def get_mas_vendidos():
+        """Obtiene los 10 items más vendidos"""
+        return OrderDAO.get_top_selling_items()
+
 
 class PurchaseController:
     @staticmethod

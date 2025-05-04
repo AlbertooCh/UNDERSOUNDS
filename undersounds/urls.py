@@ -26,7 +26,7 @@ urlpatterns = [
     path('contacto/', views.contacto, name='contacto'),
     path('admin/', admin.site.urls),
     path('music/', include('controller.urls.music_urls')),
-    path('novedades/', views.novedades, name='novedades'),
+    path('populares/', views.populares, name='populares'),
     path('', include('controller.urls.music_urls')),
     path('', include('controller.urls.user_urls')),
     path('', include('controller.urls.store_urls')),
