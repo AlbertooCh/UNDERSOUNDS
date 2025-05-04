@@ -48,7 +48,7 @@
             <div class="form-group">
                 <label for="id_release_date">Fecha de lanzamiento*</label>
                 <input type="date" name="release_date" id="id_release_date" class="form-control"
-                       value="{{ form.release_date.value|date:'Y-m-d'|default_if_none:'' }}" required>
+                   value="{{ form.release_date.value|date:'Y-m-d'|default_if_none:'' }}" required>
                 {% if form.release_date.errors %}
                     <div class="error-message">{{ form.release_date.errors }}</div>
                 {% endif %}
@@ -57,7 +57,7 @@
             <div class="form-group">
                 <label for="id_album_cover">Portada del álbum</label>
                 <input type="file" name="album_cover" id="id_album_cover" class="form-control file-input"
-                       accept="image/*">
+                       accept="image/*" >
                 {% if album.album_cover %}
                     <div class="current-file">
                         Actual: <a href="{{ album.album_cover.url }}" target="_blank">{{ album.album_cover.name }}</a>
@@ -69,6 +69,7 @@
             </div>
 
             <button type="submit" class="btn-submit">Actualizar Álbum</button>
+            <button id="btn-cancelar"class="btn-cancelar" onclick="location.href='{% url 'artist_panel' %}'">Cancelar</button>
         </form>
     </div>
 

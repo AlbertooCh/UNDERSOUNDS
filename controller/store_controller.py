@@ -4,7 +4,7 @@ from django.shortcuts import redirect, render
 from django.shortcuts import get_object_or_404
 from model.Dao.store_dao import CartDAO, OrderDAO, PurchaseDAO
 from model.Dto.store_dto import CartItemDTO, OrderDTO, PurchaseDTO
-from model.music.music_models import Song
+from model.music.music_models import Song, Album
 from model.store.store_models import CartItem, Order, Purchase, PurchaseDetail, OrderItem
 from django.urls import reverse
 
@@ -52,7 +52,44 @@ class CartController:
         except Exception as e:
             messages.error(request, f"Error al añadir al carrito: la canción ya está añadida")
             return redirect('music_detail_id', id=song_id)
+    @staticmethod
+    def add_to_cart_album(request, album_id):
+        """
+        Maneja la adición al carrito y redirecciona
+        Args:
+            request: HttpRequest con el usuario
+            song_id: ID de la canción a añadir
+        Returns:
+            HttpResponseRedirect
+        """
+        if not request.user.is_authenticated:
+            messages.error(request, "Debes iniciar sesión para añadir al carrito")
+            return redirect('login')
 
+        try:
+            album = get_object_or_404(Album, id=album_id)
+
+            # Verificar stock si es necesario
+            if hasattr(album, 'stock') and album.stock < 1:
+                messages.error(request, f"No hay stock disponible de {album.title}")
+                return redirect('album_detail', id=album_id)
+
+            # Añadir al carrito (devuelve tupla (success, message))
+            success, message = CartDAO.add_to_cart(request.user.id, album_id)
+
+            if success:
+                messages.success(request, message)
+            else:
+                messages.info(request, message)  # Usamos info en lugar de error para duplicados
+
+            return redirect('album_detail', id=album_id)
+
+        except Song.DoesNotExist:
+            messages.error(request, "La canción no existe")
+            return redirect('inicio')
+        except Exception as e:
+            messages.error(request, f"Error al añadir al carrito: la canción ya está añadida")
+            return redirect('album_detail', id=album_id)
     @staticmethod
     def remove_from_cart(request, song_id):
         success = CartDAO.remove_from_cart(request.user.id, song_id)

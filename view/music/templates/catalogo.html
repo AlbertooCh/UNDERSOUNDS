@@ -54,8 +54,6 @@
                     {% else %}
                         <img src="{% static 'images/default_album.jpg' %}" alt="Sin portada">
                     {% endif %}
-                    <p class="album-artist">{{ album.artist_name }}</p>
-                    <p class="album-meta">{{ album.songs.count }} canciones</p>
                 </div>
             </div>
         {% empty %}

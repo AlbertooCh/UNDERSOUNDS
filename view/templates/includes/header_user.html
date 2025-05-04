@@ -24,7 +24,7 @@
             <li class="profile-dropdown" id="profileDropdown">
                 <a href="#" onclick="toggleDropdown(event)" class="icon-link">
                     {% if request.user.avatar %}
-                        <img src="{{ request.user.avatar.url }}" alt="Perfil" class="nav-icon">
+                        <img src="{{ request.user.avatar.url }}" alt="Perfil" class="nav-icon" style="width: 30px; height: 30px; radius: 50%; border-radius: 50%; object-fit: fill; object-position: center;">
                     {% endif %}
                 </a>
                 <div class="dropdown-content">

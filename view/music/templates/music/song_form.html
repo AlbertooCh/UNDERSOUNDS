@@ -49,7 +49,7 @@
         <div class="form-group">
             <label for="id_album_cover">Portada del álbum</label>
             <input type="file" name="album_cover" id="id_album_cover" class="form-control file-input"
-                   accept="image/*">
+                   accept="image/*" value="{{ form.album_cover.value|default_if_none: song.album_cover.url }}">
             {% if action == 'Editar' and song.album_cover %}
                 <div class="current-file">
                     Actual: <a href="{{ song.album_cover.url }}" target="_blank">{{ song.album_cover.name }}</a>

@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404, redirect
 from model.store.store_models import CartItem, Order, Purchase, PurchaseDetail
-from model.music.music_models import Song
+from model.music.music_models import Song, Album
 from controller.store_controller import PurchaseController, CartController, OrderController
 
 
@@ -49,11 +49,23 @@ def add_to_cart(request, song_id):
     )
     if not created:
         # Si ya existe, incrementamos la cantidad
-        cart_item.quantity += 1
         cart_item.save()
 
     return redirect('carrito')
 
+@login_required
+def add_to_cart_album(request, album_id):
+    song = get_object_or_404(Album, id=album_id)
+    cart_item, created = CartItem.objects.get_or_create(
+        user=request.user,
+        song=song,
+        defaults={'quantity': 1}
+    )
+    if not created:
+        # Si ya existe, incrementamos la cantidad
+        cart_item.save()
+
+    return redirect('carrito')
 
 @login_required
 def remove_from_cart(request, song_id):
