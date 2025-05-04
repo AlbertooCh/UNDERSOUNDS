@@ -20,6 +20,7 @@
             <p><strong>Género:</strong> {{ album.genre }}</p>
             <p><strong>Precio:</strong> €{{ album.price }}</p>
             <p><strong>Canciones:</strong> {{ songs|length }}</p>
+            <p><strong>Valoracion Media:</strong> {{ rating |floatformat:2 }} / 5</p>
 
             <form action="{% url 'add_album_to_cart' album.id %}" method="post" class="add-to-cart-form">
                 {% csrf_token %}

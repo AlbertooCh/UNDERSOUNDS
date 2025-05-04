@@ -9,6 +9,51 @@
 
 {% block content %}
 
+{% if messages %}
+  <div id="flash-message" style="
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #dc3545; /* Rojo Bootstrap */
+  color: white;
+  padding: 15px 20px;
+  border-radius: 8px;
+  z-index: 9999;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  font-family: sans-serif;
+  opacity: 1;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  gap: 10px; /* Espacio entre el icono y el texto */
+">
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-exclamation-triangle-fill" viewBox="0 0 16 16">
+      <path d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.995.995l.174 4.807a.5.5 0 0 1-.993.114L7.002 5.995A.5.5 0 0 1 7 5zm0 7a1 1 0 1 1 0-2 1 1 0 0 1 0 2z"/>
+    </svg>
+    {% for message in messages %}
+      {{ message }}
+    {% endfor %}
+  </div>
+{% endif %}
+<script>
+       window.addEventListener('DOMContentLoaded', () => {
+     const msg = document.getElementById('flash-message');
+     if (msg) {
+       // Espera 1 segundo y luego hace fade out en 0.5s
+       setTimeout(() => {
+         msg.style.transition = 'opacity 0.5s ease';
+         msg.style.opacity = '0';
+
+         // Espera 0.5s más para eliminarlo del DOM
+         setTimeout(() => {
+           msg.remove();
+         }, 500);
+       }, 1500); // 1 segundo visible
+     }
+   });
+</script>
+
 <div class="form-wrapper">
     <h2>{{ action }} Canción</h2>
 
@@ -73,6 +118,7 @@
         <a href="{% if action == 'Editar' %}{% url 'music_detail_id' song.id %}{% else %}{% url 'catalogo' %}{% endif %}"
            class="btn-cancel">Cancelar</a>
     </form>
+
 </div>
 
 {% endblock %}
