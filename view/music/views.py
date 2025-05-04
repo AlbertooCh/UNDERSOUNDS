@@ -1,6 +1,6 @@
 # views.py
 from datetime import date
-from django.db.models import Q, Count, Subquery, OuterRef, IntegerField, Avg
+from django.db.models import Q, Count, Subquery, OuterRef, IntegerField
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
@@ -19,7 +19,6 @@ from model.Dao.music_dao import AlbumDAO
 from model.music.comments_model import Comments
 from model.music.forms import SongForm, AlbumForm
 from django.http import JsonResponse
-
 from model.music.music_models import Song, Album, Favorite
 from model.store.store_models import CartItem, Order, Purchase, OrderItem, PurchaseDetail
 import json
@@ -53,8 +52,16 @@ def music_detail(request, id):
     }
     album = UserController.get_album_by_id(song_dto.album_id) if song_dto.album_id else None
     comments_ratings = list(Comments.objects.filter(song_id=id))
-    average_rating = Comments.objects.filter(song_id=id).aggregate(avg_rating=Avg('rating'))['avg_rating']
     comments_ratings.reverse()
+
+    ratings = []
+    for comment in comments_ratings:  # Asegúrate de que el rating sea un número
+        ratings.append(comment.rating)
+
+    if ratings:
+        rating = sum(ratings) / len(ratings)
+    else:
+        rating = 0
 
     # Verificación adicional para evitar None en artist
     artist_songs = UserController.get_artist_with_songs(artist.id) if artist else None
@@ -83,7 +90,7 @@ def music_detail(request, id):
         'artist_songs': artist_songs.songs.all() if artist_songs else [],
         'album_id': song_dto.album_id,
         'album': album,
-        'rating': average_rating,
+        'rating': rating,
     }
     return render(request, 'music/music_detail.html', context)
 
@@ -264,7 +271,9 @@ def add_album(request):
             else:
                 messages.error(request, "Error al crear el álbum.")
         else:
-            messages.error(request, "Por favor corrige los errores en el formulario.")
+            for field, errors in form.errors.items():
+                for error in errors:
+                    messages.error(request, '{field} is required.'.format(field=field))
     else:
         form = AlbumForm()
 
@@ -278,24 +287,19 @@ def add_album(request):
 @login_required
 def edit_song(request, song_id):
     # Debug: Verifica que el ID de la canción se ha recibido
-    print(f"edit_song: Song ID recibido: {song_id}")
 
     song_dto = SongController.get_song(song_id)
     if not song_dto:
-        print(f"edit_song: No se encontró canción con ID {song_id}")
         return render(request, '404.html', status=404)
 
     # Verificación de propiedad
     if song_dto.artist_name != request.user.artist_name:
-        print(f"edit_song: El artista de la canción no coincide con el usuario. Redirigiendo al panel del artista.")
         return redirect('artist_panel')
 
     if request.method == 'POST':
-        print("edit_song: El formulario se ha enviado con el método POST.")
         form = SongForm(request.POST, request.FILES)
 
         if form.is_valid():
-            print(f"edit_song: El formulario es válido. Procesando los datos.")
 
             # Preparamos los datos para actualizar
             update_data = {
@@ -316,10 +320,9 @@ def edit_song(request, song_id):
             else:
                 messages.error(request, "Error al actualizar la canción.")
         else:
-            print("Errores del formulario:")
             for field, errors in form.errors.items():
                 for error in errors:
-                    print(f"Campo: {field} - Error: {error}")
+                    messages.error(request, '{field} is required.'.format(field=field))
     else:
         # Prellenamos el formulario con los datos actuales
         initial_data = {
@@ -329,8 +332,6 @@ def edit_song(request, song_id):
             'release_date': song_dto.release_date,
         }
         form = SongForm(initial=initial_data)
-
-    return render(request, 'music/song_form.html', {'form': form, 'song': song_dto})
 
     return render(request, 'music/song_form.html', {
         'form': form,
@@ -564,7 +565,7 @@ def edit_album(request, album_id):
                 artist_name=request.user.artist_name,
                 genre=form.cleaned_data['genre'],
                 release_date=form.cleaned_data['release_date'],
-                album_cover=request.FILES.get('album_cover'),
+                album_cover=request.FILES.get('album_cover') or album.album_cover,
                 artist_id=request.user.id,
                 album_id=album_id
             )
@@ -576,8 +577,9 @@ def edit_album(request, album_id):
             else:
                 messages.error(request, "Error al actualizar el álbum")
         else:
-            messages.error(request, "Por favor corrige los errores en el formulario")
-
+            for field, errors in form.errors.items():
+                for error in errors:
+                    messages.error(request, '{field} is required.'.format(field=field))
     # Manejar añadir canción al álbum (desde el formulario integrado)
     elif request.method == 'POST' and 'add_song' in request.POST:
         song_dto = SongDTO(
@@ -636,10 +638,20 @@ def album_detail(request, album_id):
         valor.append(song.price)
     price = sum(valor) / len(valor) if valor else 0
 
+
+
     # Comentarios del álbum
     album_comments = list(Comments.objects.filter(album_id=album_id))
     album_comments.reverse()  # Para mostrar los más recientes primero
-    average_rating = Comments.objects.filter(album_id=album_id).aggregate(avg_rating=Avg('rating'))['avg_rating']
+
+    ratings = []
+    for comment in album_comments:  # Asegúrate de que el rating sea un número
+        ratings.append(comment.rating)
+
+    if ratings:
+        rating = sum(ratings) / len(ratings)
+    else:
+        rating = 0
 
     # Verificación de estado en carrito/comprado
     album_in_cart = False
@@ -692,7 +704,7 @@ def album_detail(request, album_id):
         'album_is_favorite': album_is_favorite,
         'artist_songs': artist_songs,
         'user': request.user,
-        'rating': average_rating,
+        'rating': rating,
     }
     return render(request, 'music/album_detail.html', context)
 
