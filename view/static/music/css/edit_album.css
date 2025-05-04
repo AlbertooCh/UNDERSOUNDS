@@ -132,6 +132,23 @@ label {
     margin-top: 10px;
 }
 
+#btn-cancelar {
+    background-color: red;
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    font-size: 16px;
+    font-weight: 600;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+    margin-top: 10px;
+}
+
+.btn-cancelar:hover {
+    background-color: #c82333;
+}
+
 .btn-submit:hover, .btn-add-song:hover {
     background-color: #179a46;
 }
@@ -185,12 +202,12 @@ label {
 }
 
 .btn-edit {
-    background-color: #17a2b8;
+    background-color: #179a46;
     color: white;
 }
 
 .btn-edit:hover {
-    background-color: #138496;
+    background-color: #179a46;
 }
 
 .btn-delete {

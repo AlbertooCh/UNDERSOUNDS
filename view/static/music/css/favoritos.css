@@ -35,14 +35,14 @@
 }
 
 .tab-button.active {
-    color: #0984e3;
-    border-bottom-color: #0984e3;
+    color: #179644;
+    border-bottom-color: #179644;
     font-weight: bold;
 }
 
 .tab-button:hover:not(.active) {
-    color: #0984e3;
-    border-bottom-color: #74b9ff;
+    color: #179644;
+    border-bottom-color: #179644;
 }
 
 /* Contenido de las pestañas */

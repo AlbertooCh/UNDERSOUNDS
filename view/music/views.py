@@ -359,7 +359,9 @@ def delete_song(request, song_id):
         success = SongController.delete_song(song_id)
         if success:
             messages.success(request, "Canción eliminada.")
-            return redirect('catalogo')
+            return render(request, 'music/song_confirm_delete.html', {
+                'song': song_dto
+            })
         else:
             messages.error(request, "Error al eliminar la canción.")
 
@@ -561,8 +563,8 @@ def edit_album(request, album_id):
     songs = Song.objects.filter(album_id=album.id).order_by('id')
 
     # Manejar actualización del álbum
-    if request.method == 'POST' and 'update_album' in request.POST:
-        form = AlbumForm(request.POST, request.FILES)
+    if request.method == 'POST':
+        form = AlbumForm(request.POST, request.FILES or None)
         if form.is_valid():
             album_dto = AlbumDTO(
                 title=form.cleaned_data['title'],

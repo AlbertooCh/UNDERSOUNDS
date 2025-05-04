@@ -31,8 +31,9 @@
             </li>
             <li class="profile-dropdown" id="profileDropdown">
                 <a href="#" onclick="toggleDropdown(event, 'profileDropdown')" class="icon-link">
-                    <img src="{% static 'images/perfil.png' %}" alt="Perfil" class="nav-icon">
-                </a>
+                    {% if request.user.avatar %}
+                        <img src="{{ request.user.avatar.url }}" alt="Perfil" class="nav-icon" style="width: 30px; height: 30px; radius: 50%; border-radius: 50%; object-fit: fill; object-position: center;">
+                    {% endif %}                </a>
                 <div class="dropdown-content">
                     <a href="{% url 'perfil' %}">Mi perfil</a>
                     <a href="{% url 'historial_compras' %}">Compras</a>
