@@ -6,6 +6,8 @@ from model.music.music_models import Song, Album, Favorite
 from django.db import models
 from model.Dto.music_dto import SongDTO, AlbumDTO, FavoriteDTO
 from model.Factory.music_factory import SongFactory
+import logging
+logger = logging.getLogger(__name__)
 
 class SongDAO:
     @staticmethod
@@ -31,10 +33,13 @@ class SongDAO:
     @staticmethod
     def get_by_id(song_id):
         """Obtiene una canción por su ID"""
+        logger.debug(f"get_by_id: Intentando obtener la canción con ID {song_id}")
         try:
             song = Song.objects.get(id=song_id)
+            logger.debug(f"get_by_id: Canción encontrada: {song}")
             return SongFactory.create_dto_from_model(song)
         except ObjectDoesNotExist:
+            logger.error(f"get_by_id: No se encontró la canción con ID {song_id}")
             return None
 
     @staticmethod
@@ -250,3 +255,7 @@ class FavoriteDAO:
         # Eliminamos posibles valores None
         kwargs = {k: v for k, v in kwargs.items() if v is not None}
         return Favorite.objects.filter(**kwargs).exists()
+
+    @staticmethod
+    def get_artist_favorite_count(artist_id: int):
+        return Favorite.objects.filter(artist_id=artist_id).count()

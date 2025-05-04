@@ -326,3 +326,7 @@ class FavoriteController:
     @staticmethod
     def is_item_favorited(user_id: int, item_type: str, item_id: int) -> bool:
         return FavoriteDAO.is_item_favorited(user_id=user_id, **{f"{item_type}_id": item_id})
+
+    @staticmethod
+    def get_artist_favorite_count(artist_id: int) -> int:
+        return FavoriteDAO.get_artist_favorite_count(artist_id)
